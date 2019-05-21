@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28902.138
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStyled", "src\BlazorStyled\BlazorStyled.csproj", "{C2D06BE5-4AB2-43FA-9678-591C485519EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "src\Sample\Sample.csproj", "{D45FACFE-7A85-48EF-8AA8-1395A012CA80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2D06BE5-4AB2-43FA-9678-591C485519EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D06BE5-4AB2-43FA-9678-591C485519EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D06BE5-4AB2-43FA-9678-591C485519EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D06BE5-4AB2-43FA-9678-591C485519EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D45FACFE-7A85-48EF-8AA8-1395A012CA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45FACFE-7A85-48EF-8AA8-1395A012CA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45FACFE-7A85-48EF-8AA8-1395A012CA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45FACFE-7A85-48EF-8AA8-1395A012CA80}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74BA22E0-A64D-4374-8013-209F5C69C01F}
+	EndGlobalSection
+EndGlobal
