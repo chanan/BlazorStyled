@@ -1,5 +1,64 @@
 ﻿@page "/"
+@inject IStyled Styled
 
-<h1>Hello, world!</h1>
+<div class="@notNested">Plain</div>
 
-Welcome to your new app.
+<div class="@nested">Some text. <a>A link with a bottom border.</a></div>
+
+<div>
+    <header>
+        <p class="@paragraph">
+            This is green since it's inside a header
+        </p>
+    </header>
+    <p class="@paragraph">
+        This is turquoise since it's not inside a header.
+    </p>
+</div>
+
+<div class="@hover">
+    Hover to change color.
+</div>
+
+@functions { 
+    private string notNested, nested, paragraph, hover;
+
+    private string color = "white";
+
+    protected override async Task OnInitAsync()
+    {
+        notNested = await Styled.Css(@"
+            padding: 32px;
+            background-color: hotpink;
+            font-size: 24px;
+            border-radius: 4px;
+        ");
+
+        nested = await Styled.Css(@"
+            color: turquoise;
+
+            & a {
+                border-bottom: 1px solid currentColor;
+                cursor:pointer;
+            }
+        ");
+
+        paragraph = await Styled.Css(@"
+            color: turquoise;
+            header & {
+                color: green;
+            }
+        ");
+
+        hover = await Styled.Css($@"
+            padding: 32px;
+            background-color: hotpink;
+            font-size: 24px;
+            border-radius: 4px;
+            &:hover {{
+                color: {color};
+            }}
+        ");
+
+    }
+}
