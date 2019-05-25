@@ -1,0 +1,19 @@
+﻿@inject IStyled  Styled
+
+<p class="@paragraphClass">@ChildContent</p>
+
+@functions {
+    [Parameter] private RenderFragment ChildContent { get; set; }
+    private string paragraphClass;
+
+    protected override async Task OnInitAsync()
+    {
+        paragraphClass = await Styled.Css(@"
+            font-size: 16px;
+            margin-top: 20px;
+            color: #1B1D1D;
+            font-weight: 400;
+            line-height: 1.7;
+        ");
+    }
+}

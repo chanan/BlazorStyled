@@ -1,15 +1,86 @@
 @inherits LayoutComponentBase
+@inject IStyled Styled
 
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+    <div class="@container">
+        <div class="@navColumn">
+            <div class="@topNav"><h1 class="@brand">BlazorStyled</h1></div>
+            <div class="@bottom">
+                <NavMenu />
+            </div>
+        </div>
+        <div class="@mainColumn">
+            <div class="@topMain">Link to Github</div>
+            <div class="@bottom">
+                @Body
+            </div>
+        </div>
     </div>
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+@functions {
+    private string container, navColumn, mainColumn, topNav, topMain, bottom, brand;
+
+    protected override async Task OnInitAsync()
+    {
+        await Styled.Css("html", @"
+            height: 100%;
+        ");
+
+        await Styled.Css("body", @"
+            height: 100%;
+            overflow: hidden;
+            margin: 0px;
+            box-sizing: border-box;
+        ");
+
+        container = await Styled.Css(@"
+            width: 1024px;
+            height: 100%;   
+            overflow: hidden;
+            margin: auto;
+            display: flex;
+            box-sizing: border-box;
+        ");
+
+        var column = @"
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        ";
+
+        navColumn = await Styled.Css($@"
+            {column}
+            flex-shrink: 0;
+        ");
+
+        mainColumn = await Styled.Css($@"
+            {column}
+            width: 876px;
+        ");
+
+        topNav = await Styled.Css(@"
+            flex-shrink: 0;
+            padding: 20px 20px 20px 0px;
+        ");
+
+        topMain = await Styled.Css(@"
+            flex-shrink: 0;
+            display: inline-flex;
+            padding: 20px;
+        ");
+
+        bottom = await Styled.Css(@"
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        ");
+
+        brand = await Styled.Css(@"
+            margin: 0;
+            margin-left: 16px;
+            padding: 0;
+            font-size: 24px;
+            color: #D36AC2;
+        ");
+    }
+}
+

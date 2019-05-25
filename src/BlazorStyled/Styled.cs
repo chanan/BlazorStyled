@@ -18,7 +18,7 @@ namespace BlazorStyled
             _styleSheet = styleSheet;
         }
 
-        public async Task<string> Css(string css)
+        public async Task<string> Css(string className, string css)
         {
             var classes = ParseCss(css);
 
@@ -26,7 +26,15 @@ namespace BlazorStyled
                                 where cssClass.Name == null
                                 select cssClass).Single();
 
-            primaryClass.Name = GetClassName(classes);
+            if (className != null)
+            {
+                primaryClass.Name = className;
+                primaryClass.IsPreDefinedName = true;
+            }
+            else
+            {
+                primaryClass.Name = GetClassName(classes);
+            }
             primaryClass.IsPrimary = true;
             await AddClassToStyleSheet(primaryClass);
 
@@ -41,6 +49,11 @@ namespace BlazorStyled
             }
 
             return primaryClass.Name;
+        }
+
+        public Task<string> Css(string css)
+        {
+            return Css(null, css);
         }
 
         private List<CssClass> ParseCss(string css)

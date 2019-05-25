@@ -9,13 +9,13 @@ namespace BlazorStyled.Internal
         public string Name { get; set; }
         public List<Rule> Rules { get; set; } = new List<Rule>();
         public bool IsPrimary { get; set; }
-
+        public bool IsPreDefinedName { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();
             if (Name != null)
             {
-                if (IsPrimary) sb.Append('.');
+                if (IsPrimary && !IsPreDefinedName) sb.Append('.');
                 sb.Append(Name);
                 sb.Append(' ');
             }

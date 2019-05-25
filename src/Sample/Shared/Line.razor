@@ -1,0 +1,14 @@
+﻿@inject IStyled Styled
+
+<hr class="@hrClass" />
+
+@functions {
+    private string hrClass;
+
+    protected override async Task OnInitAsync()
+    {
+        hrClass = await Styled.Css(@"
+            border: 1px solid #eac3e4;
+        ");
+    }
+}

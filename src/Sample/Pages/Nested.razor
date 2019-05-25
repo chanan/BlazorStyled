@@ -1,0 +1,129 @@
+﻿@page "/nested"
+@inject IStyled Styled
+
+<Heading>Nested Selectors</Heading>
+
+<Paragraph>Sometimes it’s useful to nest selectors to target elements inside the current class. You can use <code>&</code> which will be replaced with the current class name:</Paragraph>
+
+<div class="@nested">Some text. <a>A link with a bottom border.</a></div>
+
+<CodeBlock>
+&lt;div class="@@nested">Some text. &lt;a>A link with a bottom border.&lt;/a>&lt;/div>
+
+@@functions {
+    private string nested;
+
+    nested = await Styled.Css(@@"
+        color: turquoise;
+
+        & a {
+            border-bottom: 1px solid currentColor;
+            cursor:pointer;
+        }
+    ");
+}
+</CodeBlock>
+
+<Paragraph>Another example:</Paragraph>
+
+<header>
+    <p class="@paragraph">
+        This is green since it's inside a header
+    </p>
+</header>
+<p class="@paragraph">
+    This is turquoise since it's not inside a header.
+</p>
+
+<CodeBlock>
+&lt;header>
+    &lt;p class="@@paragraph">
+        This is green since it's inside a header
+    &lt;/p>
+&lt;/header>
+&lt;p class="@@paragraph">
+    This is turquoise since it's not inside a header.
+&lt;/p>
+
+@@functions {
+    private string paragraph;
+
+    protected override async Task OnInitAsync()
+    {
+        paragraph = await Styled.Css(@@"
+            color: turquoise;
+            header & {
+                color: green;
+            }
+        ");
+    }
+}
+</CodeBlock>
+
+<Heading HeadingSize="HeadingSize.H3">CSS pseudo classes</Heading>
+
+<Paragraph>Lastly, <code>&</code> is also useful for defining pseudo classes such as <code>:hover</code>:</Paragraph>
+
+<div class="@hover">
+    Hover to change color.
+</div>
+
+<CodeBlock>
+&lt;div class="@@hover">
+    Hover to change color.
+&lt;/div>
+
+@@functions {
+    private string hover;
+    private string color = "white";
+
+    protected override async Task OnInitAsync()
+    {
+        hover = await Styled.Css($@@"
+            padding: 32px;
+            background-color: hotpink;
+            font-size: 24px;
+            border-radius: 4px;
+            &:hover {{
+                color: {color};
+            }}
+        ");
+    }
+}
+</CodeBlock>
+
+@functions {
+    private string nested, paragraph, hover;
+
+    private string color = "white";
+
+    protected override async Task OnInitAsync()
+    {
+        nested = await Styled.Css(@"
+            color: turquoise;
+
+            & a {
+                border-bottom: 1px solid currentColor;
+                cursor:pointer;
+            }
+        ");
+
+        paragraph = await Styled.Css(@"
+            color: turquoise;
+            header & {
+                color: green;
+            }
+        ");
+
+        hover = await Styled.Css($@"
+            padding: 32px;
+            background-color: hotpink;
+            font-size: 24px;
+            border-radius: 4px;
+            &:hover {{
+                color: {color};
+            }}
+        ");
+
+    }
+}

@@ -1,0 +1,44 @@
+﻿@inject IStyled Styled
+
+<pre class="@pre">
+    <code class="@code">
+        @ChildContent
+    </code>
+</pre>
+
+@functions {
+    [Parameter] private RenderFragment ChildContent { get; set; }
+    private string pre, code;
+
+    protected override async Task OnInitAsync()
+    {
+        pre = await Styled.Css(@"
+            padding-right: 16px;
+            padding-left: 16px;
+            border-radius: 4px;
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 32px;
+            margin-bottom: 32px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: rgb(40, 41, 54);
+        ");
+
+        code = await Styled.Css(@"
+            color: rgb(204, 204, 204);
+            text-shadow: none;
+            font-family: ""PT Mono"", Consolas, Monaco, ""Andale Mono"", ""Ubuntu Mono"", monospace;
+            text-align: left;
+            white-space: pre;
+            word-spacing: normal;
+            word-break: normal;
+            overflow-wrap: normal;
+            line-height: 1.5;
+            tab-size: 4;
+            hyphens: none;
+            background: rgb(40, 41, 54);
+            width: 787px;
+        ");
+    }
+}

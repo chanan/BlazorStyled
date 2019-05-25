@@ -1,37 +1,77 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Sample</a>
-    <button class="navbar-toggler" onclick="@ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@inject IStyled Styled
 
-<div class="@NavMenuCssClass" onclick="@ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+<nav>
+    <h3>Getting Started</h3>
+    <ul class="@ul">
+        <li>
+            <NavLink class="@link" href="" Match="NavLinkMatch.All">
+                Introduction
             </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            <NavLink class="@link" href="install">
+                Install
             </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            <NavLink class="@link" href="basics">
+                The Basics
+            </NavLink>
+            <NavLink class="@link" href="nested">
+                Nested Selector
             </NavLink>
         </li>
     </ul>
-</div>
+    <h3>Advanced</h3>
+    <ul class="@ul">
+        <li>
+            <NavLink class="@link" href="fonts">
+                Font Faces
+            </NavLink>
+            <NavLink class="@link" href="media">
+                Media Queries
+            </NavLink>
+            <NavLink class="@link" href="keyframes">
+                Keyframes
+            </NavLink>
+            <NavLink class="@link" href="theming">
+                Theming
+            </NavLink>
+        </li>
+    </ul>
+</nav>
 
 @functions {
-    bool collapseNavMenu = true;
+    private string ul, link;
 
-    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    void ToggleNavMenu()
+    protected override async Task OnInitAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        ul = await Styled.Css(@"
+            display: inline-flex;
+            list-style: none;
+            padding-inline-start: 0px;
+        ");
+
+        link = await Styled.Css(@"
+            display: block;
+            font-size: 24px;
+            font-weight: 300;
+            color: #1B1D1D;
+            text-decoration: none;
+            margin: 0;
+            font-size: 16px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-left: 0;
+            padding-right: 0;
+            &:hover {
+                color: #C865B9;;
+            }
+        ");
+
+        await Styled.Css(".active", @"
+            color: #D36AC2;
+            font-size: 16px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-left: 0;
+            padding-right: 0;
+        ");
     }
 }

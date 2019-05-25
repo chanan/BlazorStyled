@@ -1,55 +1,62 @@
 ﻿@page "/"
 @inject IStyled Styled
 
-<div class="@notNested">Plain</div>
+<Heading>Introduction</Heading>
 
-<div class="@nested">Some text. <a>A link with a bottom border.</a></div>
+<Paragraph>BlazorStyled is a library designed for writing css styles directly in a Blazor component.</Paragraph>
 
-<div>
-    <header>
-        <p class="@paragraph">
-            This is green since it's inside a header
-        </p>
-    </header>
-    <p class="@paragraph">
-        This is turquoise since it's not inside a header.
-    </p>
-</div>
+<Line />
 
-<div class="@hover">
+<Heading HeadingSize="HeadingSize.H3">Example</Heading>
+
+<div class="@example">
+    <div class="@hover">
+        Hover to change color.
+    </div>
+
+<CodeBlock>
+&lt;div class="@@hover">
     Hover to change color.
-</div>
+&lt;/div>
 
-@functions { 
-    private string notNested, nested, paragraph, hover;
-
+@@functions {
+    private string hover;
     private string color = "white";
 
     protected override async Task OnInitAsync()
     {
-        notNested = await Styled.Css(@"
+        hover = await Styled.Css($@@"
             padding: 32px;
             background-color: hotpink;
             font-size: 24px;
             border-radius: 4px;
+            &:hover {{
+                color: {color};
+            }}
         ");
+    }
+}
+</CodeBlock>
+</div>
 
-        nested = await Styled.Css(@"
-            color: turquoise;
 
-            & a {
-                border-bottom: 1px solid currentColor;
-                cursor:pointer;
-            }
-        ");
+<Heading HeadingSize="HeadingSize.H3">Motivation</Heading>
 
-        paragraph = await Styled.Css(@"
-            color: turquoise;
-            header & {
-                color: green;
-            }
-        ");
+<ul class="@ul">
+    <li class="@li">Maintain your css inside your component instead of a seperate file</li>
+    <li class="@li">Elimanted all collisions - no need to use !important</li>
+    <li class="@li">No need to worry about depoying css files - great for libraries</li>
+    <li class="@li">css are C# strings - use variables instead of solutions like sass</li>
+    <li class="@li">themes support, font faces, media queries, and animations - coming soon</li>
+</ul>
 
+
+@functions {
+    private string hover, ul, li, example;
+    private string color = "white";
+
+    protected override async Task OnInitAsync()
+    {
         hover = await Styled.Css($@"
             padding: 32px;
             background-color: hotpink;
@@ -59,6 +66,21 @@
                 color: {color};
             }}
         ");
+
+        ul = await Styled.Css(@"
+            margin-top: 20px;
+            padding-left: 20px;
+        ");
+
+        li = await Styled.Css(@"
+            margin-top: 10px;
+            font-size: 16px;
+            color: #1B1D1D;
+            font-weight: 400;
+            line-height: 1.7;
+        ");
+
+        example = await Styled.Css("margin-top: 20px;");
 
     }
 }

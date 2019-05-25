@@ -1,0 +1,44 @@
+﻿@inject IStyled Styled
+
+@if (HeadingSize == HeadingSize.H1)
+{
+    <h1 class="@h1Class">@ChildContent</h1>
+}
+
+@if (HeadingSize == HeadingSize.H3)
+{
+    <h3 class="@h3Class">@ChildContent</h3>
+}
+
+
+@functions {
+    [Parameter] private RenderFragment ChildContent { get; set; }
+    [Parameter]
+    private HeadingSize HeadingSize { get; set; } = HeadingSize.H1;
+    private string h1Class, h3Class;
+
+    protected override async Task OnInitAsync()
+    {
+        var common = @"
+            color: #1B1D1D;
+            margin: 30px 0 0 0;
+            line-height: 1.2;
+        ";
+
+        h1Class = await Styled.Css($@"
+            {common}
+            font-size: 32px;
+            padding-top: 0;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-weight: 700;
+        ");
+
+        h3Class = await Styled.Css($@"
+            {common}
+            font-size: 20px;
+            padding-top: 20px;
+            font-weight: 600;
+        ");
+    }
+}
