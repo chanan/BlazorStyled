@@ -86,15 +86,25 @@ namespace BlazorStyled
 
         private CssClass ParseRules(string css)
         {
-            if (String.IsNullOrEmpty(css)) return null;
+            if (string.IsNullOrEmpty(css)) return null;
             var cssClass = new CssClass();
             var rules = css.Trim().Split(';');
             foreach (var rule in rules)
             {
-                var pair = rule.Trim().Split(':');
-                if (pair.Length == 2) cssClass.Rules.Add(new Rule { Name = pair[0].Trim(), Value = pair[1].Trim() });
+                if (rule.IndexOf(':') != -1)
+                {
+                    var pair = BreakRuleIntoPairs(rule.Trim());
+                    cssClass.Rules.Add(new Rule { Name = pair.name.Trim(), Value = pair.rule.Trim() });
+                }
             }
             return cssClass;
+        }
+
+        private (string name, string rule) BreakRuleIntoPairs(string input)
+        {
+            var name = input.Substring(0, input.IndexOf(':'));
+            var rule = input.Substring(input.IndexOf(':') + 1);
+            return (name, rule);
         }
 
         private async Task AddClassToStyleSheet(CssClass cssClass)
@@ -132,7 +142,6 @@ namespace BlazorStyled
 
         private string ConvertToBase64Arithmetic(uint i)
         {
-            //const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             const string alphabet = "abcdefghijklmnopqrstuvwxyz";
             uint length = (uint)alphabet.Length;
             var sb = new StringBuilder();
