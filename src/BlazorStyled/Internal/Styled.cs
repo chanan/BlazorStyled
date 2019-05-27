@@ -22,12 +22,13 @@ namespace BlazorStyled.Internal
                 if (className.IndexOf("@font-face") != -1)
                 {
                     rule = ParseFontFace(css);
+                    await AddNonUniqueRuleSetToStyleSheet(rule);
                 }
                 else
                 {
                     rule = ParsePredefinedRuleSet(className, css);
+                    await AddUniqueRuleSetToStyleSheet(rule);
                 }
-                await AddRuleSetToStyleSheet(rule);
                 return rule.Selector;
             }
             catch (Exception e)
@@ -42,10 +43,10 @@ namespace BlazorStyled.Internal
             try
             {
                 RuleSet ruleSet = ParseRuleSet(css);
-                await AddRuleSetToStyleSheet(ruleSet);
+                await AddUniqueRuleSetToStyleSheet(ruleSet);
                 foreach(var nestedRuleSet in ruleSet.NestedRules)
                 {
-                    await AddRuleSetToStyleSheet(nestedRuleSet);
+                    await AddUniqueRuleSetToStyleSheet(nestedRuleSet);
                 }
                 return ruleSet.Selector;
             }
@@ -130,13 +131,18 @@ namespace BlazorStyled.Internal
                 throw e;
             }
         }
-        private async Task AddRuleSetToStyleSheet(IRule rule)
+        private async Task AddUniqueRuleSetToStyleSheet(IRule rule)
         {
             if (!_styleSheet.ClassExists(rule.Selector))
             {
                 _styleSheet.Classes.Add(rule);
                 await _styledJsInterop.InsertRule(rule.ToString());
             }
+        }
+        private async Task AddNonUniqueRuleSetToStyleSheet(IRule rule)
+        {
+            _styleSheet.Classes.Add(rule);
+            await _styledJsInterop.InsertRule(rule.ToString());
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Sample
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBlazorStyled();
+            services.AddBlazorStyled(isDevelopment: true);
         }
 
         public void Configure(IComponentsApplicationBuilder app)
