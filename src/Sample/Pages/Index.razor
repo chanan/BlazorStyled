@@ -39,20 +39,8 @@
 </CodeBlock>
 </div>
 
-
-<Heading HeadingSize="HeadingSize.H3">Motivation</Heading>
-
-<ul class="@ul">
-    <li class="@li">Maintain your css inside your component instead of a seperate file</li>
-    <li class="@li">Elimanted all collisions - no need to use !important</li>
-    <li class="@li">No need to worry about depoying css files - great for libraries</li>
-    <li class="@li">css are C# strings - use variables instead of solutions like sass</li>
-    <li class="@li">themes support, font faces, media queries, and animations - coming soon</li>
-</ul>
-
-
 @functions {
-    private string hover, ul, li, example;
+    private string hover, example;
     private string color = "white";
 
     protected override async Task OnInitAsync()
@@ -67,20 +55,6 @@
             }}
         ");
 
-        ul = await Styled.Css(@"
-            margin-top: 20px;
-            padding-left: 20px;
-        ");
-
-        li = await Styled.Css(@"
-            margin-top: 10px;
-            font-size: 16px;
-            color: #1B1D1D;
-            font-weight: 400;
-            line-height: 1.7;
-        ");
-
         example = await Styled.Css("margin-top: 20px;");
-
     }
 }

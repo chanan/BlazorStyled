@@ -1,0 +1,39 @@
+﻿@page "/motivation"
+@inject IStyled Styled
+
+<Heading>Motivation</Heading>
+
+<ul class="@ul">
+    <li class="@li">Maintain your css inside your component instead of a seperate file</li>
+    <li class="@li">Eliminate all collisions - no need to use !important</li>
+    <li class="@li">No need to worry about depoying css files - great for libraries</li>
+    <li class="@li">css are C# strings - use variables instead of solutions like sass</li>
+</ul>
+
+<Heading HeadingSize="HeadingSize.H3">Inspiration</Heading>
+
+<ul class="@ul">
+    <li class="@li"><a href="https://emotion.sh/docs/introduction">Emotion</a></li>
+    <li class="@li"><a href="https://glamorous.rocks/">Glamorous</a></li>
+    <li class="@li"><a href="https://github.com/threepointone/glamor">Glamor</a></li>
+</ul>
+
+@functions {
+    private string ul, li;
+
+    protected override async Task OnInitAsync()
+    {
+        ul = await Styled.Css(@"
+            margin-top: 20px;
+            padding-left: 20px;
+        ");
+
+        li = await Styled.Css(@"
+            margin-top: 10px;
+            font-size: 16px;
+            color: #1B1D1D;
+            font-weight: 400;
+            line-height: 1.7;
+        ");
+    }
+}
