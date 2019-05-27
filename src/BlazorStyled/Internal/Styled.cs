@@ -100,8 +100,17 @@ namespace BlazorStyled.Internal
                         buffer = string.Empty;
                         break;
                     case '{':
-                        var nestedClass = new PredefinedRuleSet();
-                        nestedClass.Selector = buffer.Trim();
+                        IRule nestedClass;
+                        if (buffer.IndexOf("@media") == -1)
+                        {
+                            nestedClass = new PredefinedRuleSet();
+                            nestedClass.Selector = buffer.Trim();
+                        }
+                        else
+                        {
+                            nestedClass = new MediaQuery();
+                            nestedClass.Selector = buffer.Trim() + "{&";
+                        }
                         ruleSet.NestedRules.Add(nestedClass);
                         buffer = string.Empty;
                         current = nestedClass;

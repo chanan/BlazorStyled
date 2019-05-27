@@ -3,4 +3,88 @@
 
 <Heading>Media Queries</Heading>
 
-<Paragraph>Coming soon...</Paragraph>
+<Paragraph>Using media queries in BlazorStyled works just like using media queries in regular css except you don’t have to specify a selector inside the block, 
+    you can put your css directly in the css block.</Paragraph>
+
+<p class="@p1">Some text!</p>
+
+<CodeBlock>
+&lt;p class="@@p1">Some text!&lt;/p>
+
+@@functions {
+    private string p1;
+
+    protected override async Task OnInitAsync()
+    {
+        p1 = await Styled.Css(@@"
+            font-size: 30px;
+            @@media (min-width: 420px) {
+                font-size: 50px;
+            }
+        ");
+    }
+}
+</CodeBlock>
+
+<Heading HeadingSize="HeadingSize.H3">Reusable Media Queries</Heading>
+
+<Paragraph>Media queries can be useful to create responsive apps but repeating them is annoying and can lead to inconsistencies. 
+    Instead of rewriting them each time you use them, you can move them into constants and refer to the variable each time you want to use them like this:</Paragraph>
+
+<p class="@p2">Some other text!</p>
+
+<CodeBlock>
+&lt;p class="@@p2">Some other text!&lt;/p>
+
+@@functions {
+    private string p2;
+
+    private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
+
+    protected override async Task OnInitAsync()
+    {
+        var mq = (from b in breakpoints
+                  select $"@@media (min-width: {b}px)").ToArray();
+
+        p2 = await Styled.Css($@@"
+            color: green;
+            {mq[0]} {{
+              color: gray;
+            }}
+            {mq[1]} {{
+              color: hotpink;
+            }}
+        ");
+    }
+}
+</CodeBlock>
+
+
+@functions {
+    private string p1, p2;
+
+    private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
+
+    protected override async Task OnInitAsync()
+    {
+        p1 = await Styled.Css(@"
+            font-size: 30px;
+            @media (min-width: 420px) {
+                font-size: 50px;
+            }
+        ");
+
+        var mq = (from b in breakpoints
+                  select $"@media (min-width: {b}px)").ToArray();
+
+        p2 = await Styled.Css($@"
+            color: green;
+            {mq[0]} {{
+              color: gray;
+            }}
+            {mq[1]} {{
+              color: hotpink;
+            }}
+        ");
+    }
+}

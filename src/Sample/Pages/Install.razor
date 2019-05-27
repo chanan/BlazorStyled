@@ -9,8 +9,26 @@
 
 <Heading HeadingSize="HeadingSize.H3">Usage</Heading>
 
+<Paragraph>Add BlazorStyled to <code>Startup.cs</code>. Setting <code>isDevelopment</code> to "true" will cause BlazorStyled to write the styles as text nodes in a style tag. 
+    This allows the styles to be edited in the browser dev tools. Setting <code>isDevelopment</code> to "false" (the default if not specified) will cause BlazorStyled to write styles
+    using <code>CSSStyle​Sheet​.insert​Rule()</code> which is faster but not editable in the browser dev tools:
+    </Paragraph>
+
+<CodeBlock>
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddBlazorStyled(isDevelopment: true);
+}
+</CodeBlock>
+
 <Paragraph>Add the reference to the package to your <code>_Imports.razor</code> file:</Paragraph>
 
 <CodeBlock>
 @@using BlazorStyled
+</CodeBlock>
+
+<Paragraph>Finally, inject <code>IStyled</code> into your component:</Paragraph>
+
+<CodeBlock>
+@@inject IStyled Styled
 </CodeBlock>
