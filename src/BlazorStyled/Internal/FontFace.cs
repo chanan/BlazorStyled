@@ -9,6 +9,8 @@ namespace BlazorStyled.Internal
         public string Selector { get; set; } = "@font-face";
         public List<Declaration> Declarations { get; set; } = new List<Declaration>();
         public RuleType RuleType => RuleType.FontFace;
+        public List<IRule> NestedRules { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

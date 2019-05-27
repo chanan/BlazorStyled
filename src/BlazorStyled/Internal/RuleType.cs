@@ -5,6 +5,7 @@
         RuleSet,
         PredefinedRuleSet,
         FontFace,
-        MediaQuery
+        MediaQuery,
+        Keyframe
     }
 }

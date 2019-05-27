@@ -3,4 +3,69 @@
 
 <Heading>Keyframes</Heading>
 
-<Paragraph>Coming soon...</Paragraph>
+<Paragraph>You can define animations using the <code>Keyframes</code> method from <code>IStyled</code>. 
+    <code>Keyframes</code> takes in a css keyframe definition and returns a classname you can use in styles.</Paragraph>
+
+<div class="@example">Some bouncing text!</div>
+
+<CodeBlock>
+&lt;div class="@@example">Some bouncing text!&lt;/div>
+
+@@functions {
+    private string bounce, example;
+
+    protected override async Task OnInitAsync()
+    {
+        bounce = await Styled.Keyframes(@@"
+            from, 20%, 53%, 80%, to {
+                transform: translate3d(0,0,0);
+            }
+
+            40%, 43% {
+               transform: translate3d(0, -30px, 0);
+            }
+
+            70% {
+                transform: translate3d(0, -15px, 0);
+            }
+
+            90% {
+                transform: translate3d(0,-4px,0);
+            }
+        ");
+
+        example = await Styled.Css($@@"
+            animation: {bounce} 1s ease infinite;
+        ");
+    }
+}
+</CodeBlock>
+
+@functions {
+    private string bounce, example;
+
+    protected override async Task OnInitAsync()
+    {
+        bounce = await Styled.Keyframes(@"
+            from, 20%, 53%, 80%, to {
+                transform: translate3d(0,0,0);
+            }
+
+            40%, 43% {
+               transform: translate3d(0, -30px, 0);
+            }
+
+            70% {
+                transform: translate3d(0, -15px, 0);
+            }
+
+            90% {
+                transform: translate3d(0,-4px,0);
+            }
+        ");
+
+        example = await Styled.Css($@"
+            animation: {bounce} 1s ease infinite;
+        ");
+    }
+}

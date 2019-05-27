@@ -7,5 +7,6 @@ namespace BlazorStyled.Internal
         string Selector { get; set; }
         List<Declaration> Declarations { get; set; }
         RuleType RuleType { get; }
+        List<IRule> NestedRules { get; set; }
     }
 }

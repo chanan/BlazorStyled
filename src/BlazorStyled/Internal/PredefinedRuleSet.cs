@@ -8,6 +8,8 @@ namespace BlazorStyled.Internal
         public string Selector { get; set; }
         public List<Declaration> Declarations { get; set; } = new List<Declaration>();
         public RuleType RuleType => RuleType.PredefinedRuleSet;
+        public List<IRule> NestedRules { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

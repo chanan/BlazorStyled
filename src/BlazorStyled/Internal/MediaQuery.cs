@@ -9,6 +9,8 @@ namespace BlazorStyled.Internal
         public string Selector { get; set; }
         public List<Declaration> Declarations { get; set; } = new List<Declaration>();
         public RuleType RuleType => RuleType.MediaQuery;
+        public List<IRule> NestedRules { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

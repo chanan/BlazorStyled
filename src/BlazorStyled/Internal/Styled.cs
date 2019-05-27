@@ -14,6 +14,7 @@ namespace BlazorStyled.Internal
             _styledJsInterop = styledJsInterop;
             _styleSheet = styleSheet;
         }
+
         public async Task<string> Css(string className, string css)
         {
             try
@@ -38,6 +39,7 @@ namespace BlazorStyled.Internal
                 throw new Exception("Parse Error", e);
             }
         }
+
         public async Task<string> Css(string css)
         {
             try
@@ -57,12 +59,63 @@ namespace BlazorStyled.Internal
                 throw new Exception("Parse Error", e);
             }
         }
+
+        public async Task<string> Keyframes(string css)
+        {
+            try
+            {
+                var keyframe = ParseKeyframe(css);
+                await AddUniqueRuleSetToStyleSheet(keyframe);
+                return keyframe.Selector;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error in CSS string:");
+                Console.WriteLine(css);
+                throw new Exception("Parse Error", e);
+            }
+        }
+
+        private Keyframe ParseKeyframe(string css)
+        {
+            Keyframe keyframe = new Keyframe();
+            IRule current = keyframe;
+            string buffer = string.Empty;
+            foreach (char ch in css)
+            {
+                switch (ch)
+                {
+                    case ';':
+                        var declaration = ParseDeclaration(buffer.Trim());
+                        if (declaration != null) current.Declarations.Add(declaration);
+                        buffer = string.Empty;
+                        break;
+                    case '{':
+                        IRule nestedClass;
+                        nestedClass = new PredefinedRuleSet();
+                        nestedClass.Selector = buffer.Trim();
+                        keyframe.NestedRules.Add(nestedClass);
+                        buffer = string.Empty;
+                        current = nestedClass;
+                        break;
+                    case '}':
+                        break;
+                    default:
+                        buffer += ch;
+                        break;
+                }
+            }
+            keyframe.SetClassName();
+            return keyframe;
+        }
+
         private IRule ParseFontFace(string css)
         {
             var fontface = new FontFace();
             fontface.Declarations = ParseDeclarations(css);
             return fontface;
         }
+
         private PredefinedRuleSet ParsePredefinedRuleSet(string className, string css)
         {
             var predefinedRuleSet = new PredefinedRuleSet { Selector = className.Trim() };
@@ -125,6 +178,7 @@ namespace BlazorStyled.Internal
             ruleSet.SetClassName();
             return ruleSet;
         }
+
         private Declaration ParseDeclaration(string input)
         {
             if (string.IsNullOrEmpty(input)) return null;
@@ -140,6 +194,7 @@ namespace BlazorStyled.Internal
                 throw e;
             }
         }
+
         private async Task AddUniqueRuleSetToStyleSheet(IRule rule)
         {
             if (!_styleSheet.ClassExists(rule.Selector))
@@ -148,6 +203,7 @@ namespace BlazorStyled.Internal
                 await _styledJsInterop.InsertRule(rule.ToString());
             }
         }
+
         private async Task AddNonUniqueRuleSetToStyleSheet(IRule rule)
         {
             _styleSheet.Classes.Add(rule);
