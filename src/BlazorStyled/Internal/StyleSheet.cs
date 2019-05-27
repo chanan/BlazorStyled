@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace BlazorStyled.Internal
 {
-    public class StyleSheet
+    class StyleSheet
     {
-        public List<CssClass> Classes { get; } = new List<CssClass>();
+        public List<IRule> Classes { get; } = new List<IRule>();
 
-        public bool ClassExists(string name) => Classes.Where(c => c.Name == name).SingleOrDefault() != null;
+        public bool ClassExists(string selector) => Classes.Where(c => c.Selector == selector).SingleOrDefault() != null;
     }
 }

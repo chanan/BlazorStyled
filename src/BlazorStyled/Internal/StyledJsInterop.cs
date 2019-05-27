@@ -1,9 +1,9 @@
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
 
-namespace BlazorStyled
+namespace BlazorStyled.Internal
 {
-    public class StyledJsInterop
+    class StyledJsInterop
     {
         private readonly IJSRuntime _jsRuntime;
 
