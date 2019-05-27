@@ -3,11 +3,14 @@ document.head.appendChild(styleEl);
 var styleSheet = styleEl.sheet;
 
 window.styledJsFunctions = {
-    insertRule: function (rule) {
-        var num = styleSheet.insertRule(rule);
-        var text = styleEl.innerText;
-        text = text + rule;
-        styleEl.innerText = text;
-        return num;
+    insertRule: function (rule, development) {
+        if (development) {
+            var text = styleEl.innerText;
+            text = text + rule;
+            styleEl.innerText = text;
+            return -1;
+        } else {
+            return styleSheet.insertRule(rule);
+        }
     }
 };
