@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorStyled.Internal
@@ -17,9 +18,17 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                PredefinedRuleSet predefinedRuleSet = ParsePredefinedRuleSet(className, css);
-                await AddRuleSetToStyleSheet(predefinedRuleSet);
-                return predefinedRuleSet.Selector;
+                IRule rule;
+                if (className.IndexOf("@font-face") != -1)
+                {
+                    rule = ParseFontFace(css);
+                }
+                else
+                {
+                    rule = ParsePredefinedRuleSet(className, css);
+                }
+                await AddRuleSetToStyleSheet(rule);
+                return rule.Selector;
             }
             catch (Exception e)
             {
@@ -47,20 +56,34 @@ namespace BlazorStyled.Internal
                 throw new Exception("Parse Error", e);
             }
         }
+        private IRule ParseFontFace(string css)
+        {
+            var fontface = new FontFace();
+            fontface.Declarations = ParseDeclarations(css);
+            return fontface;
+        }
         private PredefinedRuleSet ParsePredefinedRuleSet(string className, string css)
         {
             var predefinedRuleSet = new PredefinedRuleSet { Selector = className.Trim() };
+            predefinedRuleSet.Declarations = ParseDeclarations(css);
+            return predefinedRuleSet;
+        }
+
+        private List<Declaration> ParseDeclarations(string css)
+        {
+            var declarations = new List<Declaration>();
             var declarationsString = css.Trim().Split(';');
             foreach (var declarationString in declarationsString)
             {
                 if (declarationString.IndexOf(':') != -1)
                 {
                     var declaration = ParseDeclaration(declarationString.Trim());
-                    if (declaration != null) predefinedRuleSet.Declarations.Add(declaration);
+                    if (declaration != null) declarations.Add(declaration);
                 }
             }
-            return predefinedRuleSet;
+            return declarations;
         }
+
         private RuleSet ParseRuleSet(string css)
         {
             RuleSet ruleSet = new RuleSet();

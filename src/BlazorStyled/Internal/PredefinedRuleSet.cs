@@ -12,7 +12,7 @@ namespace BlazorStyled.Internal
         {
             var sb = new StringBuilder();
             sb.Append(Selector);
-            sb.Append(" {");
+            sb.Append('{');
             foreach (var rule in Declarations)
             {
                 sb.Append(rule.ToString());
