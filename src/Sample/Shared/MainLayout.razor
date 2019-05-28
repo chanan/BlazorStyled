@@ -37,6 +37,27 @@
             box-sizing: border-box;
         ");
 
+        await Styled.Fontface(@"
+            font-family: 'Fira Mono';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: local('Fira Mono Regular'), local('FiraMono-Regular'), url(https://fonts.gstatic.com/s/firamono/v7/N0bX2SlFPv1weGeLZDtgJv7S.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        ");
+
+        await Styled.Css(":not(pre) > code", @"
+            font-family: 'Fira Mono';
+            margin-top: 20px;
+            color: #1B1D1D;
+            font-weight: 400;
+            line-height: 1.7;
+            background-color: rgba(117,63,131,0.07);
+            border-radius: 0.325rem;
+            margin: 0;
+            padding: 0.2rem 0.325rem;
+        ");
+
         container = await Styled.Css(@"
             width: 1024px;
             height: 100%;   
