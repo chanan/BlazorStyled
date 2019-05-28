@@ -10,8 +10,10 @@
         </div>
         <div class="@mainColumn">
             <div class="@topMain">
-                <a href="https://github.com/chanan/BlazorStyled"><img src="https://img.shields.io/github/stars/chanan/BlazorStyled.svg?style=social&label=Stars" /></a>
-                <a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a>
+                <ul class="@ul">
+                    <li class="@li"><a href="https://github.com/chanan/BlazorStyled"><img src="https://img.shields.io/github/stars/chanan/BlazorStyled.svg?style=social&label=Stars" /></a></li>
+                    <li class="@li"><a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></li>
+                </ul>
             </div>
             <div class="@bottom">
                 @Body
@@ -20,7 +22,7 @@
     </div>
 
 @functions {
-    private string container, navColumn, mainColumn, topNav, topMain, bottom, brand;
+    private string container, navColumn, mainColumn, topNav, topMain, bottom, brand, ul, li;
 
     protected override async Task OnInitAsync()
     {
@@ -83,6 +85,16 @@
             padding: 0;
             font-size: 24px;
             color: #D36AC2;
+        ");
+
+        ul = await Styled.Css(@"
+            display: inline-flex;
+            list-style: none;
+            margin: 0;
+        ");
+
+        li = await Styled.Css(@"
+            margin-right: 20px;
         ");
     }
 }
