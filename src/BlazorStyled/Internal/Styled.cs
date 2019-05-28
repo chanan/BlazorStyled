@@ -78,9 +78,24 @@ namespace BlazorStyled.Internal
             }
         }
 
+        public async Task Fontface(string css)
+        {
+            try
+            {
+                var fontface = ParseFontFace(css);
+                await AddUniqueRuleSetToStyleSheet(fontface);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error in CSS string:");
+                Console.WriteLine(css);
+                throw new Exception("Parse Error", e);
+            }
+        }
+
         private Keyframe ParseKeyframe(string css)
         {
-            Keyframe keyframe = new Keyframe();
+            var keyframe = new Keyframe();
             IRule current = keyframe;
             string buffer = string.Empty;
             foreach (char ch in css)
@@ -94,8 +109,10 @@ namespace BlazorStyled.Internal
                         break;
                     case '{':
                         IRule nestedClass;
-                        nestedClass = new PredefinedRuleSet();
-                        nestedClass.Selector = buffer.Trim();
+                        nestedClass = new PredefinedRuleSet
+                        {
+                            Selector = buffer.Trim()
+                        };
                         keyframe.NestedRules.Add(nestedClass);
                         buffer = string.Empty;
                         current = nestedClass;
@@ -111,10 +128,13 @@ namespace BlazorStyled.Internal
             return keyframe;
         }
 
-        private IRule ParseFontFace(string css)
+        private FontFace ParseFontFace(string css)
         {
-            var fontface = new FontFace();
-            fontface.Declarations = ParseDeclarations(css);
+            var fontface = new FontFace
+            {
+                Declarations = ParseDeclarations(css)
+            };
+            fontface.SetClassName();
             return fontface;
         }
 
@@ -192,7 +212,7 @@ namespace BlazorStyled.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine("input: " + input);
+                Console.WriteLine("Declaration: " + input);
                 throw e;
             }
         }

@@ -36,9 +36,12 @@ namespace BlazorStyled.Internal
                 }
             }
             ruleset.Selector = ConvertToBase64Arithmetic(hash);
-            foreach (var nestedRuleSet in ruleset.NestedRules)
+            if (ruleset.RuleType != RuleType.FontFace)
             {
-                nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + ruleset.Selector);
+                foreach (var nestedRuleSet in ruleset.NestedRules)
+                {
+                    nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + ruleset.Selector);
+                }
             }
         }
 
