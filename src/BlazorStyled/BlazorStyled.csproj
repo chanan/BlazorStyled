@@ -11,7 +11,7 @@
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PackageId>BlazorStyled</PackageId>
-    <Version>1.0.0-preview4</Version>
+    <Version>1.0.0-preview4-01</Version>
     <Authors>Chanan Braunstein</Authors>
     <Title>BlazorStyled</Title>
     <Description>CSS in Blazor Components</Description>
