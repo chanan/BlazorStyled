@@ -3,4 +3,48 @@
 
 <Heading>Theming</Heading>
 
-<Paragraph>Coming soon...</Paragraph>
+<Paragraph>Using the <code>Theme</code> property in <code>IStyled</code> lets you store variables in a <code>Dictionary</code> you can use in your CSS later.
+    You can also define <code>Theme</code> objects and allow your user to switch between them. (Example coming soon).</Paragraph>
+
+<Paragraph>
+    The usage of theming will improve in the future. For now, you will need to define a temporary variable like <code>color</code> in the
+    example below. The reason for that is that in .net you can't use <code>Dictionary</code> objects in string interpolation.
+</Paragraph>
+
+<p class="@example">Some text</p>
+
+<CodeBlock>
+&lt;p class="@@example">Some text&lt;/p>
+
+@@functions {
+    private string example;
+
+    protected override async Task OnInitAsync()
+    {
+        //Normally this would be defined else where
+        Styled.Theme.Values.Add("colors.primary", "hotpink");
+
+        //We need for now to define a temporary variable
+        var color = Styled.Theme.Values["colors.primary"];
+        example = await Styled.Css($@@"
+            color: {color};
+        ");
+    }
+}
+</CodeBlock>
+
+@functions {
+    private string example;
+
+    protected override async Task OnInitAsync()
+    {
+        //Normally this would be defined else where
+        Styled.Theme.Values.Add("colors.primary", "hotpink");
+
+        //We need for now to define a temporary variable
+        var color = Styled.Theme.Values["colors.primary"];
+        example = await Styled.Css($@"
+            color: {color};
+        ");
+    }
+}

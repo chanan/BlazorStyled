@@ -15,6 +15,8 @@ namespace BlazorStyled.Internal
             _styleSheet = styleSheet;
         }
 
+        public Theme Theme { get; set; } = new Theme();
+
         public async Task<string> Css(string className, string css)
         {
             try
