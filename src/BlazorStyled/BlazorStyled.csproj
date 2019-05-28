@@ -10,6 +10,14 @@
     <LangVersion>7.3</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <PackageId>BlazorStyled</PackageId>
+    <Version>1.0.0-preview4</Version>
+    <Authors>Chanan Braunstein</Authors>
+    <Title>BlazorStyled</Title>
+    <Description>CSS in Blazor Components</Description>
+    <PackageProjectUrl>https://chanan.github.io/BlazorStyled/</PackageProjectUrl>
+    <PackageTags>blazor;css;styled-components</PackageTags>
+    <RepositoryUrl>https://github.com/chanan/BlazorStyled</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +29,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="3.0.0-preview5-19227-01" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="*.razor">
+      <Pack>false</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>
