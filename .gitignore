@@ -338,3 +338,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Include dlls in the docs folder
+!/docs/*
+!/docs/_framework/*
+!/docs/_framework/_bin/*
