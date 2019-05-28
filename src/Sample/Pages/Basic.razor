@@ -47,7 +47,7 @@
 
     protected async void click(string color)
     {
-        example2 = await Styled.Css($"background-color: {color}");
+        example2 = await Styled.Css($"background-color: {color};");
         StateHasChanged();
     }
 }
@@ -121,12 +121,12 @@
 
     protected override async Task OnInitAsync()
     {
-        example1 = await Styled.Css("background-color: hotpink");
+        example1 = await Styled.Css("background-color: hotpink;");
     }
 
     protected async void click(string color)
     {
-        example2 = await Styled.Css($"background-color: {color}");
+        example2 = await Styled.Css($"background-color: {color};");
         StateHasChanged();
     }
 }

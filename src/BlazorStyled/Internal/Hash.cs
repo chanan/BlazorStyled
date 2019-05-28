@@ -15,11 +15,14 @@ namespace BlazorStyled.Internal
                     hashs.Add(rule.GetHashCode());
                 }
             }
-            foreach (var nestedRuleSet in ruleset.NestedRules)
+            if(ruleset.RuleType != RuleType.FontFace)
             {
-                foreach (var rule in nestedRuleSet.Declarations)
+                foreach (var nestedRuleSet in ruleset.NestedRules)
                 {
-                    hashs.Add(rule.GetHashCode());
+                    foreach (var rule in nestedRuleSet.Declarations)
+                    {
+                        hashs.Add(rule.GetHashCode());
+                    }
                 }
             }
             hashs.Sort();

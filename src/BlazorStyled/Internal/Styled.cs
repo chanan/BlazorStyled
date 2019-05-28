@@ -23,7 +23,7 @@ namespace BlazorStyled.Internal
                 if (className.IndexOf("@font-face") != -1)
                 {
                     rule = ParseFontFace(css);
-                    await AddNonUniqueRuleSetToStyleSheet(rule);
+                    await AddUniqueRuleSetToStyleSheet(rule);
                 }
                 else
                 {
