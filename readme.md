@@ -17,6 +17,12 @@ View the detailed [docs](https://chanan.github.io/BlazorStyled/) at https://chan
 * No need to worry about depoying css files - great for libraries
 * css are C# strings - use variables instead of solutions like sass
 
+### Insperation
+
+* [Emotion](https://emotion.sh/docs/introduction)
+* [Glamorous](https://glamorous.rocks/)
+* [Glamor](https://github.com/threepointone/glamor)
+
 ## Short Example
 
 ```
