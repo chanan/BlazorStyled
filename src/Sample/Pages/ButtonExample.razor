@@ -1,0 +1,59 @@
+﻿@page "/buttonexample"
+@inject IStyled Styled
+
+<Heading>Creating Reusable Components</Heading>
+
+<Paragraph>The example below is taken from <a href="https://glamorous.rocks/examples/#button">Glamorous Community</a>. </Paragraph>
+
+<MyButton OnClick="@onclick" Color="green">Green Button</MyButton>
+<MyButton OnClick="@onclick" Color="hotpink">Hotpink Button</MyButton>
+
+<Paragraph>The code below is in ...</Paragraph>
+
+<CodeBlock>@@inject IStyled Styled
+
+&lt;button class="@@buttonClass" onclick="@@OnClick">@@ChildContent&lt;/button>
+
+@@functions {
+    [Parameter] private RenderFragment ChildContent { get; set; }
+    [Parameter] private EventCallback&lt;UIMouseEventArgs> OnClick { get; set; }
+    [Parameter] private string Color { get; set; } = "green";
+
+    private string buttonClass;
+
+    protected override async Task OnInitAsync()
+    {
+        buttonClass = await Styled.Css($@@"
+            font-size:16px;
+            margin:18px;
+            border:none;
+            cursor:pointer;
+            display:inline-block;
+            padding:10px 20px;
+            text-align:center;
+            transition:0.25s cubic-bezier(0.17, 0.67, 0.52, 0.97);
+            border-radius:4px;
+            color:#fff;
+            box-shadow:0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+            background-color:{Color};
+            &:hover {{
+                opacity: 0.7;
+                transform:translateY(-1px);
+                box-shadow:0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+            }}
+            &:focus {{
+                outline:0;
+            }}
+            &:active {{
+                transform:translateY(1px);
+            }}
+        ");
+    }
+}</CodeBlock>
+
+@functions {
+    private void onclick(UIMouseEventArgs e)
+    {
+        Console.WriteLine("Onclick");
+    } 
+}

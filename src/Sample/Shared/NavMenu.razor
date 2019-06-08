@@ -1,44 +1,55 @@
 ﻿@inject IStyled Styled
 
-<nav>
-    <h3>Getting Started</h3>
-    <ul class="@ul">
-        <li>
-            <NavLink class="@link" href="" Match="NavLinkMatch.All">
-                Introduction
-            </NavLink>
-            <NavLink class="@link" href="motivation">
-                Motivation
-            </NavLink>
-            <NavLink class="@link" href="install">
-                Install
-            </NavLink>
-            <NavLink class="@link" href="basics">
-                The Basics
-            </NavLink>
-            <NavLink class="@link" href="nested">
-                Nested Selectors
-            </NavLink>
-        </li>
-    </ul>
-    <h3>Advanced</h3>
-    <ul class="@ul">
-        <li>
-            <NavLink class="@link" href="fonts">
-                Font Faces
-            </NavLink>
-            <NavLink class="@link" href="media">
-                Media Queries
-            </NavLink>
-            <NavLink class="@link" href="keyframes">
-                Keyframes
-            </NavLink>
-            <NavLink class="@link" href="theming">
-                Theming
-            </NavLink>
-        </li>
-    </ul>
-</nav>
+    <nav>
+        <h3>Getting Started</h3>
+        <ul class="@ul">
+            <li>
+                <NavLink class="@link" href="" Match="NavLinkMatch.All">
+                    Introduction
+                </NavLink>
+                <NavLink class="@link" href="motivation">
+                    Motivation
+                </NavLink>
+                <NavLink class="@link" href="install">
+                    Install
+                </NavLink>
+                <NavLink class="@link" href="basics">
+                    The Basics
+                </NavLink>
+                <NavLink class="@link" href="nested">
+                    Nested Selectors
+                </NavLink>
+            </li>
+        </ul>
+        <h3>Advanced</h3>
+        <ul class="@ul">
+            <li>
+                <NavLink class="@link" href="fonts">
+                    Font Faces
+                </NavLink>
+                <NavLink class="@link" href="media">
+                    Media Queries
+                </NavLink>
+                <NavLink class="@link" href="keyframes">
+                    Keyframes
+                </NavLink>
+                <NavLink class="@link" href="theming">
+                    Theming
+                </NavLink>
+            </li>
+        </ul>
+        <h3>How To</h3>
+        <ul class="@ul">
+            <li>
+                <NavLink class="@link" href="polished">
+                    Polished.net
+                </NavLink>
+                <NavLink class="@link" href="buttonexample">
+                    Reusable Components
+                </NavLink>
+            </li>
+        </ul>
+    </nav>
 
 @functions {
     private string ul, link;

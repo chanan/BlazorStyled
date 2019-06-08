@@ -1,0 +1,70 @@
+﻿@page "/polished"
+@inject IStyled Styled
+@inject IMixins Mixins
+@inject IShorthand Shorthand
+
+<Heading>Integrate With Polished.net</Heading>
+
+<Paragraph>
+    <a href="https://github.com/chanan/Polished.net">Polished.net</a> &amp; BlazorStyled complement each other nicely. Polished.net has lots of useful
+    utilities, shorthand functions and mixins for creating CSS which can then be using with <code>Styled.Css</code> statements.
+</Paragraph>
+
+<div class="@arrow"></div>
+
+<div class="@gradient"></div>
+
+<CodeBlock>
+@@inject IMixins Mixins
+@@inject IShorthand Shorthand
+
+&lt;div class="@@arrow">&lt;/div>
+
+&lt;div class="@@gradient">&lt;/div>
+
+@@functions {
+    private string arrow, gradient;
+
+    protected override async Task OnInitAsync()
+    {
+        arrow = await Styled.Css(Mixins.Triangle(new TriangleConfiguration
+        {
+            ForegroundColor = "red",
+            BackgroundColor = "transparent",
+            PointingDirection = Side.Right,
+            Height = "20px",
+            Width = "20px"
+        }));
+
+        var gradientCss = Mixins.LinearGradient(new List&lt;string> { "#00FFFF 0%", "rgba(0, 0, 255, 0) 50%", "#0000FF 95%" }, "#FFF", "to top right");
+        var size = Shorthand.Size("100px", "300px");
+        gradient = await Styled.Css($@@"
+            {size}
+            {gradientCss}
+        ");
+    }
+}
+</CodeBlock>
+
+@functions {
+    private string arrow, gradient;
+
+    protected override async Task OnInitAsync()
+    {
+        arrow = await Styled.Css(Mixins.Triangle(new TriangleConfiguration
+        {
+            ForegroundColor = "red",
+            BackgroundColor = "transparent",
+            PointingDirection = Side.Right,
+            Height = "20px",
+            Width = "20px"
+        }));
+
+        var gradientCss = Mixins.LinearGradient(new List<string> { "#00FFFF 0%", "rgba(0, 0, 255, 0) 50%", "#0000FF 95%" }, "#FFF", "to top right");
+        var size = Shorthand.Size("100px", "300px");
+        gradient = await Styled.Css($@"
+            {size}
+            {gradientCss}
+        ");
+    }
+}
