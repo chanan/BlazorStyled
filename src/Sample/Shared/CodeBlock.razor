@@ -1,11 +1,11 @@
 ﻿@inject IStyled Styled
 @inject IMixins Mixins
 
-<pre class="@pre"><code class="@code">@ChildContent</code></pre>
+<pre class="@pre"><code class="@codeClass">@ChildContent</code></pre>
 
-@functions {
+@code {
     [Parameter] private RenderFragment ChildContent { get; set; }
-    private string pre, code;
+    private string pre, codeClass;
 
     protected override async Task OnInitAsync()
     {
@@ -33,7 +33,7 @@
             background: rgb(40, 41, 54);
         ");
 
-        code = await Styled.Css(@"
+        codeClass = await Styled.Css(@"
             color: rgb(204, 204, 204);
             text-shadow: none;
             font-family: 'Fira Mono';

@@ -2,7 +2,7 @@
 
 <button class="@buttonClass" onclick="@OnClick">@ChildContent</button>
 
-@functions {
+@code {
     [Parameter] private RenderFragment ChildContent { get; set; }
     [Parameter] private EventCallback<UIMouseEventArgs> OnClick { get; set; }
     [Parameter] private string Color { get; set; } = "green";
