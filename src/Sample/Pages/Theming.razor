@@ -13,25 +13,7 @@
 
 <p class="@example">Some text</p>
 
-<CodeBlock>
-&lt;p class="@@example">Some text&lt;/p>
-
-@@functions {
-    private string example;
-
-    protected override async Task OnInitAsync()
-    {
-        //Normally this would be defined else where
-        Styled.Theme.Values.Add("colors.primary", "hotpink");
-
-        //We need for now to define a temporary variable
-        var color = Styled.Theme.Values["colors.primary"];
-        example = await Styled.Css($@@"
-            color: {color};
-        ");
-    }
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/theme.html" />
 
 @code {
     private string example;

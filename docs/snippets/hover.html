@@ -1,0 +1,20 @@
+﻿<div class="@hover">
+    Hover to change color.
+</div>
+
+@code {
+    private string color = "white";
+
+    protected override async Task OnInitAsync()
+    {
+        hover = await Styled.Css($@"
+            padding: 32px;
+            background-color: hotpink;
+            font-size: 24px;
+            border-radius: 4px;
+            &:hover {{
+                color: {color};
+            }}
+        ");
+    }
+}

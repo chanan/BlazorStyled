@@ -1,0 +1,10 @@
+﻿<div class="@example1">The background of this div is hotpink</div>
+
+@code {
+    private string example1;
+
+    protected override async Task OnInitAsync()
+    {
+        example1 = await Styled.Css("background-color: hotpink;");
+    }
+}

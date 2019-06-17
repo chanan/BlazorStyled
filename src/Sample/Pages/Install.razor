@@ -16,21 +16,12 @@
     using <code>CSSStyle​Sheet​.insert​Rule()</code> which is faster but not editable in the browser dev tools (note the documentation site is set to development mode):
     </Paragraph>
 
-<CodeBlock>
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddBlazorStyled(isDevelopment: true);
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/startup.html" />
 
 <Paragraph>Add the reference to the package to your <code>_Imports.razor</code> file:</Paragraph>
 
-<CodeBlock>
-@@using BlazorStyled
-</CodeBlock>
+<PrettyCode CodeFile="snippets/using.html" ShowLineNumbers="false" />
 
 <Paragraph>Finally, inject <code>IStyled</code> into your component:</Paragraph>
 
-<CodeBlock>
-@@inject IStyled Styled
-</CodeBlock>
+<PrettyCode CodeFile="snippets/inject.html" ShowLineNumbers="false" />

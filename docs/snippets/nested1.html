@@ -1,0 +1,14 @@
+﻿<div class="@nested">Some text. <a>A link with a bottom border.</a></div>
+
+@code {
+    private string nested;
+
+    nested = await Styled.Css(@"
+        color: turquoise;
+
+        & a {
+        border-bottom: 1px solid currentColor;
+        cursor:pointer;
+        }
+    ");
+}

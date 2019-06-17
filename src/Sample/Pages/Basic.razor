@@ -11,18 +11,7 @@
 
 <div class="@example1">The background of this div is hotpink</div>
 
-<CodeBlock>
-&lt;div class="@@example1">The background of this div is hotpink&lt;/div>
-
-@@functions {
-    private string example1;
-
-    protected override async Task OnInitAsync()
-    {
-        example1 = await Styled.Css("background-color: hotpink");
-    }
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/pinkdiv.html" />
 
 <Paragraph>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</Paragraph>
 
@@ -34,24 +23,7 @@
 
 <Paragraph>Note that if you keep clicking on the buttons, the CSS classes are reused.</Paragraph>
 
-<CodeBlock>
-&lt;button onclick="@@(x => click("red"))">Make the div red&lt;/button>
-
-&lt;button onclick="@@(x => click("hotpink"))">Make the div hotpink&lt;/button>
-
-&lt;div class="@@example2">The background of this div will change color 
-    depending on the button pressed above&lt;/div>
-
-@@functions {
-    private string example2;
-
-    protected async void click(string color)
-    {
-        example2 = await Styled.Css($"background-color: {color};");
-        StateHasChanged();
-    }
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/colorchange.html" />
 
 <Heading HeadingSize="HeadingSize.H3">Using predefined class names</Heading>
 
@@ -61,60 +33,11 @@
     <code>NavLink</code> in turn sets the classname <code>active</code>, therefore the code below uses the selector <code>active</code>.
     </Paragraph>
 
-<CodeBlock>
-&lt;NavLink class="@@link" href="basics">
-    The Basics
-&lt;/NavLink>
-
-@@functions {
-    private string link;
-
-    protected override async Task OnInitAsync()
-    {
-        link = await Styled.Css(@@"
-            display: block;
-            font-size: 24px;
-            font-weight: 300;
-            color: #1B1D1D;
-            text-decoration: none;
-            margin: 0;
-            font-size: 16px;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 0;
-            padding-right: 0;
-            &:hover {
-                color: #C865B9;;
-            }
-        ");
-
-        await Styled.Css(".active", @@"
-            color: #D36AC2;
-            font-size: 16px;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 0;
-            padding-right: 0;
-        ");
-    }
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/nav.html" />
 
 <Paragraph>Another usage is to set classes on html elements, for example in <code>MainLayout.razor</code> the code below sets a class on the body tag:</Paragraph>
 
-<CodeBlock>
-@@functions {
-    protected override async Task OnInitAsync()
-    {
-        await Styled.Css("body", @@"
-            height: 100%;
-            overflow: hidden;
-            margin: 0px;
-            box-sizing: border-box;
-        ");
-    }
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/body.html" />
 
 @code {
     private string example1, example2;

@@ -8,23 +8,7 @@
 
 <p class="@p1">Some text!</p>
 
-<CodeBlock>
-&lt;p class="@@p1">Some text!&lt;/p>
-
-@@functions {
-    private string p1;
-
-    protected override async Task OnInitAsync()
-    {
-        p1 = await Styled.Css(@@"
-            font-size: 30px;
-            @@media (min-width: 420px) {
-                font-size: 50px;
-            }
-        ");
-    }
-}
-</CodeBlock>
+<PrettyCode CodeFile="snippets/media1.html" />
 
 <Heading HeadingSize="HeadingSize.H3">Reusable Media Queries</Heading>
 
@@ -33,32 +17,7 @@
 
 <p class="@p2">Some other text!</p>
 
-<CodeBlock>
-&lt;p class="@@p2">Some other text!&lt;/p>
-
-@@functions {
-    private string p2;
-
-    private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
-
-    protected override async Task OnInitAsync()
-    {
-        var mq = (from b in breakpoints
-                  select $"@@media (min-width: {b}px)").ToArray();
-
-        p2 = await Styled.Css($@@"
-            color: green;
-            {mq[0]} {{
-              color: gray;
-            }}
-            {mq[1]} {{
-              color: hotpink;
-            }}
-        ");
-    }
-}
-</CodeBlock>
-
+<PrettyCode CodeFile="snippets/media2.html" />
 
 @code {
     private string p1, p2;

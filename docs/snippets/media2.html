@@ -1,0 +1,23 @@
+﻿<p class="@p2">Some other text!</p>
+
+@code {
+    private string p2;
+
+    private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
+
+    protected override async Task OnInitAsync()
+    {
+        var mq = (from b in breakpoints
+                  select $"@media (min-width: {b}px)").ToArray();
+
+        p2 = await Styled.Css($@"
+            color: green;
+            {mq[0]} {{
+              color: gray;
+            }}
+            {mq[1]} {{
+              color: hotpink;
+            }}
+        ");
+    }
+}

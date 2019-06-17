@@ -13,30 +13,7 @@
     <div class="@hover">
         Hover to change color.
     </div>
-
-<CodeBlock>
-&lt;div class="@@hover">
-    Hover to change color.
-&lt;/div>
-
-@@functions {
-    private string hover;
-    private string color = "white";
-
-    protected override async Task OnInitAsync()
-    {
-        hover = await Styled.Css($@@"
-            padding: 32px;
-            background-color: hotpink;
-            font-size: 24px;
-            border-radius: 4px;
-            &:hover {{
-                color: {color};
-            }}
-        ");
-    }
-}
-</CodeBlock>
+    <PrettyCode CodeFile="snippets/hover.html" />
 </div>
 
 @code {

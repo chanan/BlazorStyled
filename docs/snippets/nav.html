@@ -1,0 +1,36 @@
+﻿<NavLink class="@link" href="basics">
+    The Basics
+</NavLink>
+
+@functions {
+    private string link;
+
+    protected override async Task OnInitAsync()
+    {
+        link = await Styled.Css(@"
+            display: block;
+            font-size: 24px;
+            font-weight: 300;
+            color: #1B1D1D;
+            text-decoration: none;
+            margin: 0;
+            font-size: 16px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-left: 0;
+            padding-right: 0;
+            &:hover {
+                color: #C865B9;;
+            }
+        ");
+
+        await Styled.Css(".active", @"
+            color: #D36AC2;
+            font-size: 16px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-left: 0;
+            padding-right: 0;
+        ");
+    }
+}

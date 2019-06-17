@@ -1,20 +1,9 @@
-﻿@page "/polished"
-@inject IStyled Styled
-@inject IMixins Mixins
+﻿@inject IMixins Mixins
 @inject IShorthand Shorthand
 
-<Heading>Integrate With Polished.net</Heading>
+<div class="@arrow" />
 
-<Paragraph>
-    <a href="https://github.com/chanan/Polished.net">Polished.net</a> &amp; BlazorStyled complement each other nicely. Polished.net has lots of useful
-    utilities, shorthand functions and mixins for creating CSS which can then be using with <code>Styled.Css</code> statements.
-</Paragraph>
-
-<div class="@arrow"></div>
-
-<div class="@gradient"></div>
-
-<PrettyCode CodeFile="snippets/polished.html" />
+<div class="@gradient" />
 
 @code {
     private string arrow, gradient;
