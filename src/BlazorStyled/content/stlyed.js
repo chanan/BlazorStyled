@@ -11,7 +11,15 @@ window.styledJsFunctions = {
             styleEl.innerText = text;
             return -1;
         } else {
-            return styleSheet.insertRule(rule);
+            let num = -1;
+            try {
+                num = styleSheet.insertRule(rule);
+            } catch{
+                //ignored
+            }
+            finally {
+                return num;
+            }
         }
     }
 };
