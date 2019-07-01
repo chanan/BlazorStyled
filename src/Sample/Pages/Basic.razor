@@ -11,7 +11,7 @@
 
 <div class="@example1">The background of this div is hotpink</div>
 
-<PrettyCode CodeFile="snippets/pinkdiv.html" />
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/Pages/Basic.razor" CodeFileLineNumbers="12" CodeSectionFileLineNumbers="43,46-49" />
 
 <Paragraph>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</Paragraph>
 
@@ -23,7 +23,7 @@
 
 <Paragraph>Note that if you keep clicking on the buttons, the CSS classes are reused.</Paragraph>
 
-<PrettyCode CodeFile="snippets/colorchange.html" />
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/Pages/Basic.razor" CodeFileLineNumbers="18-22" CodeSectionFileLineNumbers="44,51-55" />
 
 <Heading HeadingSize="HeadingSize.H3">Using predefined class names</Heading>
 
@@ -40,7 +40,8 @@
 <PrettyCode CodeFile="snippets/body.html" />
 
 @code {
-    private string example1, example2;
+    private string example1;
+    private string example2;
 
     protected override async Task OnInitAsync()
     {
