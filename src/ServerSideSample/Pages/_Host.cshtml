@@ -1,0 +1,19 @@
+﻿@page "/"
+@namespace ServerSideSample.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlazorStyled Server-Side Sample</title>
+    <base href="~/" />
+</head>
+<body>
+    <app>@(await Html.RenderComponentAsync<App>())</app>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="_content/BlazorStyled/styled.js"></script>
+</body>
+</html>

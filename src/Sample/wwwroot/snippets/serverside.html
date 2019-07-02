@@ -1,0 +1,16 @@
+﻿@page "/"
+@inject IStyled  Styled
+
+<h1>Blazor Styled Server-Side Blazor Test</h1>
+
+<p class="@div">If everything is working right, the background of this paragraph tag should be pink.</p>
+
+@code {
+    private string div;
+
+    protected override async Task OnAfterRenderAsync()
+    {
+       div = await Styled.Css("background-color: pink;");
+       StateHasChanged();
+    }
+}

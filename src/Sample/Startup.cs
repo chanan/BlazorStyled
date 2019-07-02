@@ -13,10 +13,7 @@ namespace Sample
             services.AddBlazorStyled(isDevelopment: true);
             services.AddSingleton<IMixins, Mixins>();
             services.AddSingleton<IShorthand, Shorthand>();
-            services.AddBlazorPrettyCode(defaultSettings =>
-            {
-                defaultSettings.IsDevelopmentMode = true;
-            });
+            services.AddBlazorPrettyCode();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

@@ -10,7 +10,7 @@ namespace BlazorStyled
             var config = new Config();
             config.IsDevelopment = isDevelopment;
             serviceCollection.AddSingleton<IConfig>(config);
-            serviceCollection.AddSingleton<StyledJsInterop>();
+            serviceCollection.AddTransient<StyledJsInterop>();
             serviceCollection.AddSingleton<StyleSheet>();
             serviceCollection.AddTransient<IStyled, Styled>();
             return serviceCollection;
