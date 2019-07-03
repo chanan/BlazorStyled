@@ -3,12 +3,12 @@
 
 <Heading>Creating Reusable Components</Heading>
 
-<Paragraph>The example below is taken from <a href="https://glamorous.rocks/examples/#button">Glamorous Community</a>.</Paragraph>
+<Paragraph>The example below is taken from <a href="https://glamorous.rocks/examples/#button">Glamorous Community</a>. The highlighted lines show how variables can be used in the css.</Paragraph>
 
 <MyButton OnClick="@onclick" Color="green">Green Button</MyButton>
 <MyButton OnClick="@onclick" Color="hotpink">Hotpink Button</MyButton>
 
-<PrettyCode CodeFile="snippets/button.html" />
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/Shared/MyButton.razor" HighlightLines="8,26" />
 
 @code {
     private void onclick(UIMouseEventArgs e)
