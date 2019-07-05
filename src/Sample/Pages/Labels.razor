@@ -1,0 +1,30 @@
+@page "/labels"
+@inject IStyled Styled
+
+<Heading>Labels</Heading>
+
+<Paragraph>You can append a label to the end of the css class name using <code>IStyled.CssWithLabel(string label, string css)</code>, 
+    so it's more readable than a hash. This can be helpful in debugging your styles.</Paragraph>
+
+<div class="@div1">@div1</div>
+
+<div class="@div2">@div2</div>
+
+<div>code goes here</div>
+
+@code {
+    private string div1, div2;
+
+    protected override async Task OnInitAsync()
+    {
+        div1 = await Styled.Css(@"
+            color: hotpink;
+            label: some-name;
+        ");
+
+        div2 = await Styled.Css(@"
+            label: another-name;
+            color: lightgreen;
+        ");
+    }
+}
