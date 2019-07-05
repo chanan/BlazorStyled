@@ -4,7 +4,7 @@ var styleSheet = styleEl.sheet;
 
 window.styledJsFunctions = {
     insertRule: function (rule, development) {
-        //console.log(rule)
+        //console.log(rule);
         if (development) {
             var text = styleEl.innerText;
             text = text + rule;

@@ -34,11 +34,13 @@ namespace BlazorStyled.Internal
                 }
                 return rule.Selector;
             }
+            catch (StyledException e)
+            {
+                throw e;
+            }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Error in CSS string:");
-                Console.Error.WriteLine(css);
-                throw new Exception("Parse Error", e);
+                throw StyledException.GetException(css, e);
             }
         }
 
@@ -54,33 +56,15 @@ namespace BlazorStyled.Internal
                 }
                 return ruleSet.Selector;
             }
+            catch (StyledException e)
+            {
+                throw e;
+            }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Error in CSS string:");
-                Console.Error.WriteLine(css);
-                throw new Exception("Parse Error", e);
+                throw StyledException.GetException(css, e);
             }
         }
-
-        /*public async Task<string> CssWithLabel(string label, string css)
-        {
-            try
-            {
-                RuleSet ruleSet = ParseRuleSet(css);
-                await AddUniqueRuleSetToStyleSheet(ruleSet);
-                foreach (var nestedRuleSet in ruleSet.NestedRules)
-                {
-                    await AddUniqueRuleSetToStyleSheet(nestedRuleSet);
-                }
-                return ruleSet.Selector;
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("Error in CSS string:");
-                Console.Error.WriteLine(css);
-                throw new Exception("Parse Error", e);
-            }
-        }*/
 
         public async Task<string> Keyframes(string css)
         {
@@ -90,11 +74,13 @@ namespace BlazorStyled.Internal
                 await AddUniqueRuleSetToStyleSheet(keyframe);
                 return keyframe.Selector;
             }
+            catch (StyledException e)
+            {
+                throw e;
+            }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Error in CSS string:");
-                Console.Error.WriteLine(css);
-                throw new Exception("Parse Error", e);
+                throw StyledException.GetException(css, e);
             }
         }
 
@@ -105,11 +91,13 @@ namespace BlazorStyled.Internal
                 var fontface = ParseFontFace(css);
                 await AddUniqueRuleSetToStyleSheet(fontface);
             }
+            catch (StyledException e)
+            {
+                throw e;
+            }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Error in CSS string:");
-                Console.Error.WriteLine(css);
-                throw new Exception("Parse Error", e);
+                throw StyledException.GetException(css, e);
             }
         }
 
@@ -118,6 +106,7 @@ namespace BlazorStyled.Internal
             var keyframe = new Keyframe();
             IRule current = keyframe;
             string buffer = string.Empty;
+            bool nestedClassClosed = true;
             foreach (char ch in css)
             {
                 switch (ch)
@@ -139,13 +128,23 @@ namespace BlazorStyled.Internal
                         keyframe.NestedRules.Add(nestedClass);
                         buffer = string.Empty;
                         current = nestedClass;
+                        nestedClassClosed = false;
                         break;
                     case '}':
+                        nestedClassClosed = true;
                         break;
                     default:
                         buffer += ch;
                         break;
                 }
+            }
+            if (!nestedClassClosed)
+            {
+                throw StyledException.GetException(css, "A nested class is missing a '}' character", null);
+            }
+            if (buffer.Trim() != string.Empty)
+            {
+                throw StyledException.GetException(buffer, "This is usually caused by a missing ';' character at the end of a declaration", null);
             }
             keyframe.SetClassName();
             return keyframe;
@@ -153,7 +152,7 @@ namespace BlazorStyled.Internal
 
         private FontFace ParseFontFace(string css)
         {
-            var fontface = new FontFace
+            FontFace fontface = new FontFace
             {
                 Declarations = ParseDeclarations(css)
             };
@@ -163,21 +162,24 @@ namespace BlazorStyled.Internal
 
         private PredefinedRuleSet ParsePredefinedRuleSet(string className, string css)
         {
-            var predefinedRuleSet = new PredefinedRuleSet { Selector = className.Trim() };
+            PredefinedRuleSet predefinedRuleSet = new PredefinedRuleSet { Selector = className.Trim() };
             predefinedRuleSet.Declarations = ParseDeclarations(css);
             return predefinedRuleSet;
         }
 
         private List<Declaration> ParseDeclarations(string css)
         {
-            var declarations = new List<Declaration>();
-            var declarationsString = css.Trim().Split(';');
+            List<Declaration> declarations = new List<Declaration>();
+            string[] declarationsString = css.Trim().Split(';');
             foreach (var declarationString in declarationsString)
             {
                 if (declarationString.IndexOf(':') != -1)
                 {
-                    var declaration = ParseDeclaration(declarationString.Trim());
-                    if (declaration != null) declarations.Add(declaration);
+                    Declaration declaration = ParseDeclaration(declarationString.Trim());
+                    if (declaration != null)
+                    {
+                        declarations.Add(declaration);
+                    }
                 }
             }
             return declarations;
@@ -188,12 +190,13 @@ namespace BlazorStyled.Internal
             RuleSet ruleSet = new RuleSet();
             IRule current = ruleSet;
             string buffer = string.Empty;
+            bool nestedClassClosed = true; //Start from true becuase the parent doesnt need to be closed
             foreach (char ch in css)
             {
                 switch (ch)
                 {
                     case ';':
-                        var declaration = ParseDeclaration(buffer.Trim());
+                        Declaration declaration = ParseDeclaration(buffer.Trim());
                         if (declaration != null)
                         {
                             if (declaration.Property == "label")
@@ -211,24 +214,38 @@ namespace BlazorStyled.Internal
                         IRule nestedClass;
                         if (buffer.IndexOf("@media") == -1)
                         {
-                            nestedClass = new PredefinedRuleSet();
-                            nestedClass.Selector = buffer.Trim();
+                            nestedClass = new PredefinedRuleSet
+                            {
+                                Selector = buffer.Trim()
+                            };
                         }
                         else
                         {
-                            nestedClass = new MediaQuery();
-                            nestedClass.Selector = buffer.Trim() + "{&";
+                            nestedClass = new MediaQuery
+                            {
+                                Selector = buffer.Trim() + "{&"
+                            };
                         }
                         ruleSet.NestedRules.Add(nestedClass);
                         buffer = string.Empty;
                         current = nestedClass;
+                        nestedClassClosed = false;
                         break;
                     case '}':
+                        nestedClassClosed = true;
                         break;
                     default:
                         buffer += ch;
                         break;
                 }
+            }
+            if(!nestedClassClosed)
+            {
+                throw StyledException.GetException(css, "A nested class is missing a '}' character", null);
+            }
+            if(buffer.Trim() != string.Empty)
+            {
+                throw StyledException.GetException(buffer, "This is usually caused by a missing ';' character at the end of a declaration", null);
             }
             ruleSet.SetClassName();
             return ruleSet;
@@ -239,14 +256,13 @@ namespace BlazorStyled.Internal
             if (string.IsNullOrEmpty(input)) return null;
             try
             {
-                var property = input.Substring(0, input.IndexOf(':'));
-                var value = input.Substring(input.IndexOf(':') + 1);
+                string property = input.Substring(0, input.IndexOf(':'));
+                string value = input.Substring(input.IndexOf(':') + 1);
                 return new Declaration { Property = property, Value = value };
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Declaration: " + input);
-                throw e;
+                throw StyledException.GetException(input, "This is likely cause by a missing ':' character", e);
             }
         }
 
@@ -257,12 +273,6 @@ namespace BlazorStyled.Internal
                 _styleSheet.Classes.Add(rule);
                 await _styledJsInterop.InsertRule(rule.ToString());
             }
-        }
-
-        private async Task AddNonUniqueRuleSetToStyleSheet(IRule rule)
-        {
-            _styleSheet.Classes.Add(rule);
-            await _styledJsInterop.InsertRule(rule.ToString());
         }
     }
 }
