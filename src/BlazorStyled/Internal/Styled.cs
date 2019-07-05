@@ -36,8 +36,8 @@ namespace BlazorStyled.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error in CSS string:");
-                Console.WriteLine(css);
+                Console.Error.WriteLine("Error in CSS string:");
+                Console.Error.WriteLine(css);
                 throw new Exception("Parse Error", e);
             }
         }
@@ -48,7 +48,7 @@ namespace BlazorStyled.Internal
             {
                 RuleSet ruleSet = ParseRuleSet(css);
                 await AddUniqueRuleSetToStyleSheet(ruleSet);
-                foreach(var nestedRuleSet in ruleSet.NestedRules)
+                foreach (var nestedRuleSet in ruleSet.NestedRules)
                 {
                     await AddUniqueRuleSetToStyleSheet(nestedRuleSet);
                 }
@@ -56,11 +56,31 @@ namespace BlazorStyled.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error in CSS string:");
-                Console.WriteLine(css);
+                Console.Error.WriteLine("Error in CSS string:");
+                Console.Error.WriteLine(css);
                 throw new Exception("Parse Error", e);
             }
         }
+
+        /*public async Task<string> CssWithLabel(string label, string css)
+        {
+            try
+            {
+                RuleSet ruleSet = ParseRuleSet(css);
+                await AddUniqueRuleSetToStyleSheet(ruleSet);
+                foreach (var nestedRuleSet in ruleSet.NestedRules)
+                {
+                    await AddUniqueRuleSetToStyleSheet(nestedRuleSet);
+                }
+                return ruleSet.Selector;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Error in CSS string:");
+                Console.Error.WriteLine(css);
+                throw new Exception("Parse Error", e);
+            }
+        }*/
 
         public async Task<string> Keyframes(string css)
         {
@@ -72,8 +92,8 @@ namespace BlazorStyled.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error in CSS string:");
-                Console.WriteLine(css);
+                Console.Error.WriteLine("Error in CSS string:");
+                Console.Error.WriteLine(css);
                 throw new Exception("Parse Error", e);
             }
         }
@@ -87,8 +107,8 @@ namespace BlazorStyled.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error in CSS string:");
-                Console.WriteLine(css);
+                Console.Error.WriteLine("Error in CSS string:");
+                Console.Error.WriteLine(css);
                 throw new Exception("Parse Error", e);
             }
         }
@@ -103,8 +123,11 @@ namespace BlazorStyled.Internal
                 switch (ch)
                 {
                     case ';':
-                        var declaration = ParseDeclaration(buffer.Trim());
-                        if (declaration != null) current.Declarations.Add(declaration);
+                        Declaration declaration = ParseDeclaration(buffer.Trim());
+                        if (declaration != null)
+                        {
+                            current.Declarations.Add(declaration);
+                        }
                         buffer = string.Empty;
                         break;
                     case '{':
@@ -171,7 +194,17 @@ namespace BlazorStyled.Internal
                 {
                     case ';':
                         var declaration = ParseDeclaration(buffer.Trim());
-                        if (declaration != null) current.Declarations.Add(declaration);
+                        if (declaration != null)
+                        {
+                            if (declaration.Property == "label")
+                            {
+                                current.Label = declaration.Value.Trim();
+                            }
+                            else
+                            {
+                                current.Declarations.Add(declaration);
+                            }
+                        }
                         buffer = string.Empty;
                         break;
                     case '{':
@@ -212,7 +245,7 @@ namespace BlazorStyled.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine("Declaration: " + input);
+                Console.Error.WriteLine("Declaration: " + input);
                 throw e;
             }
         }

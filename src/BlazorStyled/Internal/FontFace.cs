@@ -7,6 +7,7 @@ namespace BlazorStyled.Internal
     class FontFace : IRule
     {
         public string Selector { get; set; }
+        public string Label { get; set; }
         public List<Declaration> Declarations { get; set; } = new List<Declaration>();
         public RuleType RuleType => RuleType.FontFace;
         public List<IRule> NestedRules { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -26,7 +27,7 @@ namespace BlazorStyled.Internal
 
         public void SetClassName()
         {
-            _hash.GetHashCode(this);
+            _hash.GetHashCode(this, null);
         }
     }
 }

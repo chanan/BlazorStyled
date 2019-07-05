@@ -7,6 +7,7 @@ namespace BlazorStyled.Internal
     class Keyframe : IRule
     {
         public string Selector { get; set; }
+        public string Label { get; set; }
         public List<Declaration> Declarations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public RuleType RuleType => RuleType.Keyframe;
         public List<IRule> NestedRules { get; set; } = new List<IRule>();
@@ -26,7 +27,7 @@ namespace BlazorStyled.Internal
 
         public void SetClassName()
         {
-            _hash.GetHashCode(this);
+            _hash.GetHashCode(this, null);
         }
     }
 }

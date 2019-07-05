@@ -5,7 +5,7 @@ namespace BlazorStyled.Internal
 {
     class Hash
     {
-        public void GetHashCode(IRule ruleset)
+        public void GetHashCode(IRule ruleset, string label)
         {
             var hashs = new List<int>();
             if(ruleset.RuleType != RuleType.Keyframe)
@@ -35,7 +35,7 @@ namespace BlazorStyled.Internal
                     hash += (uint)code;
                 }
             }
-            ruleset.Selector = ConvertToBase64Arithmetic(hash);
+            ruleset.Selector = label == null ? ConvertToBase64Arithmetic(hash) : ConvertToBase64Arithmetic(hash) + "-" + label;
             if (ruleset.RuleType != RuleType.FontFace)
             {
                 foreach (var nestedRuleSet in ruleset.NestedRules)

@@ -6,6 +6,7 @@ namespace BlazorStyled.Internal
     class RuleSet : IRule
     {
         public string Selector { get; set; }
+        public string Label { get; set; }
         public List<Declaration> Declarations { get; set; } = new List<Declaration>();
         public RuleType RuleType => RuleType.RuleSet;
         public List<IRule> NestedRules { get; set; } = new List<IRule>();
@@ -25,7 +26,7 @@ namespace BlazorStyled.Internal
         
         public void SetClassName()
         {
-            _hash.GetHashCode(this);
+            _hash.GetHashCode(this, Label);
         }
     }
 }

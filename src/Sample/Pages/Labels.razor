@@ -3,14 +3,14 @@
 
 <Heading>Labels</Heading>
 
-<Paragraph>You can append a label to the end of the css class name using <code>IStyled.CssWithLabel(string label, string css)</code>, 
+<Paragraph>You can append a label to the end of the css class name using adding <code>label: name;</code> to your css, 
     so it's more readable than a hash. This can be helpful in debugging your styles.</Paragraph>
 
 <div class="@div1">@div1</div>
 
 <div class="@div2">@div2</div>
 
-<div>code goes here</div>
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/Pages/Labels.razor" CodeFileLineNumbers="9-11" CodeSectionFileLineNumbers="16-29" />
 
 @code {
     private string div1, div2;
