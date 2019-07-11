@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorStyled.Internal
@@ -64,6 +65,17 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(css, e);
             }
+        }
+
+        public async Task<string> Css(List<string> classes, string css)
+        {
+            var sb = new StringBuilder();
+            foreach(var cssClass in classes)
+            {
+                var result = await Css(cssClass, css);
+                sb.Append(result).Append(' ');
+            }
+            return sb.ToString().Trim();
         }
 
         public async Task<string> Keyframes(string css)

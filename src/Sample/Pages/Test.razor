@@ -1,0 +1,25 @@
+@page "/test"
+@inject IStyled Styled
+
+<h1>This is a test</h1>
+
+<h2>This is another test</h2>
+
+@code { 
+    protected override async Task OnInitAsync()
+    {
+        await Styled.Css(new List<string>
+        {
+            "h1",
+            "h2"
+        }, @"
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: 0;
+            padding-bottom: 0;
+            padding-left: 0;
+            padding-right: 0;
+            padding-top: 0;"
+        );
+    }
+}
