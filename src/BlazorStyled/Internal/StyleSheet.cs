@@ -7,6 +7,6 @@ namespace BlazorStyled.Internal
     {
         public List<IRule> Classes { get; } = new List<IRule>();
 
-        public bool ClassExists(string selector) => Classes.Where(c => c.Selector == selector).SingleOrDefault() != null;
+        public bool ClassExists(string selector) => Classes.Where(c => c.Selector == selector).ToList().Count > 0;
     }
 }

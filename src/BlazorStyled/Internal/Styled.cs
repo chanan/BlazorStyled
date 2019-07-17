@@ -300,7 +300,7 @@ namespace BlazorStyled.Internal
             await _styledJsInterop.InsertRule(rule.ToString());
         }
 
-        private List<string> _elements = new List<string>
+        private readonly List<string> _elements = new List<string>
         {
             "a",
             "abbr",
