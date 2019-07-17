@@ -8,18 +8,7 @@
 @code { 
     protected override async Task OnInitAsync()
     {
-        await Styled.Css(new List<string>
-        {
-            "h1",
-            "h2"
-        }, @"
-            margin-left: 0;
-            margin-right: 0;
-            margin-top: 0;
-            padding-bottom: 0;
-            padding-left: 0;
-            padding-right: 0;
-            padding-top: 0;"
-        );
+        await Styled.Css("html", "color: red;");
+        await Styled.Css("html", "background-color: yellow;");
     }
 }
