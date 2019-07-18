@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    class RuleSet : IRule
+    internal class RuleSet : IRule
     {
         public string Selector { get; set; }
         public string Label { get; set; }
@@ -14,16 +14,16 @@ namespace BlazorStyled.Internal
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.Append('.').Append(Selector).Append('{');
-            foreach(var rule in Declarations)
+            foreach (Declaration rule in Declarations)
             {
                 sb.Append(rule.ToString());
             }
             sb.Append('}');
             return sb.ToString();
         }
-        
+
         public void SetClassName()
         {
             _hash.GetHashCode(this, Label);

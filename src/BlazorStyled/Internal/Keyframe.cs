@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    class Keyframe : IRule
+    internal class Keyframe : IRule
     {
         public string Selector { get; set; }
         public string Label { get; set; }
@@ -15,9 +15,9 @@ namespace BlazorStyled.Internal
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.Append("@keyframes ").Append(Selector).Append('{');
-            foreach (var nestedRule in NestedRules)
+            foreach (IRule nestedRule in NestedRules)
             {
                 sb.Append(nestedRule.ToString());
             }

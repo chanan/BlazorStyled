@@ -2,7 +2,7 @@
 
 namespace BlazorStyled.Internal
 {
-    interface IRule
+    internal interface IRule
     {
         string Selector { get; set; }
         string Label { get; set; }

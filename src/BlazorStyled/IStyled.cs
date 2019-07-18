@@ -13,4 +13,4 @@ namespace BlazorStyled
         Task<string> Keyframes(string css);
         Task Fontface(string css);
     }
-}   
+}

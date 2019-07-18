@@ -3,23 +3,23 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    class Hash
+    internal class Hash
     {
         public void GetHashCode(IRule ruleset, string label)
         {
-            var hashs = new List<int>();
-            if(ruleset.RuleType != RuleType.Keyframe)
+            List<int> hashs = new List<int>();
+            if (ruleset.RuleType != RuleType.Keyframe)
             {
-                foreach (var rule in ruleset.Declarations)
+                foreach (Declaration rule in ruleset.Declarations)
                 {
                     hashs.Add(rule.GetHashCode());
                 }
             }
-            if(ruleset.RuleType != RuleType.FontFace)
+            if (ruleset.RuleType != RuleType.FontFace)
             {
-                foreach (var nestedRuleSet in ruleset.NestedRules)
+                foreach (IRule nestedRuleSet in ruleset.NestedRules)
                 {
-                    foreach (var rule in nestedRuleSet.Declarations)
+                    foreach (Declaration rule in nestedRuleSet.Declarations)
                     {
                         hashs.Add(rule.GetHashCode());
                     }
@@ -38,7 +38,7 @@ namespace BlazorStyled.Internal
             ruleset.Selector = label == null ? ConvertToBase64Arithmetic(hash) : ConvertToBase64Arithmetic(hash) + "-" + label;
             if (ruleset.RuleType != RuleType.FontFace)
             {
-                foreach (var nestedRuleSet in ruleset.NestedRules)
+                foreach (IRule nestedRuleSet in ruleset.NestedRules)
                 {
                     nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + ruleset.Selector);
                 }
@@ -49,8 +49,8 @@ namespace BlazorStyled.Internal
         {
             const string alphabet = "abcdefghijklmnopqrstuvwxyz";
             uint length = (uint)alphabet.Length;
-            var sb = new StringBuilder();
-            var pos = 0;
+            StringBuilder sb = new StringBuilder();
+            int pos = 0;
             do
             {
                 sb.Append(alphabet[(int)(i % length)]);
@@ -59,7 +59,10 @@ namespace BlazorStyled.Internal
                 if (pos == 4)
                 {
                     pos = 0;
-                    if (i != 0) sb.Append('-');
+                    if (i != 0)
+                    {
+                        sb.Append('-');
+                    }
                 }
             } while (i != 0);
             return sb.ToString();

@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace BlazorStyled.Internal
 {
-    class StyledJsInterop
+    internal class StyledJsInterop
     {
         private readonly IJSRuntime _jsRuntime;
-        private IConfig _config;
+        private readonly IConfig _config;
 
         public StyledJsInterop(IJSRuntime jsRuntime, IConfig config)
         {

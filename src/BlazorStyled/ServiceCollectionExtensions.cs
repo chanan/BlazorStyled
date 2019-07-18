@@ -7,11 +7,11 @@ namespace BlazorStyled
     {
         public static IServiceCollection AddBlazorStyled(this IServiceCollection serviceCollection, bool isDevelopment)
         {
-            var config = new Config
+            Config config = new Config
             {
                 IsDevelopment = isDevelopment
             };
-            if(!serviceCollection.Contains("IConfig"))
+            if (!serviceCollection.Contains("IConfig"))
             {
                 serviceCollection.AddSingleton<IConfig>(config);
             }
@@ -29,7 +29,7 @@ namespace BlazorStyled
         private static bool Contains(this IServiceCollection serviceCollection, string serviceName)
         {
             bool found = false;
-            foreach (var service in serviceCollection)
+            foreach (ServiceDescriptor service in serviceCollection)
             {
                 if (service.ServiceType != null && service.ServiceType.Name == serviceName)
                 {

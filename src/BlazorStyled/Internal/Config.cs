@@ -1,6 +1,6 @@
 ﻿namespace BlazorStyled.Internal
 {
-    class Config : IConfig
+    internal class Config : IConfig
     {
         public bool IsDevelopment { get; set; }
     }

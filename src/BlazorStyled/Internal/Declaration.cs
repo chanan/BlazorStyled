@@ -1,6 +1,6 @@
 ﻿namespace BlazorStyled.Internal
 {
-    class Declaration
+    internal class Declaration
     {
         public string Property { get; set; }
         public string Value { get; set; }
@@ -12,7 +12,7 @@
 
         public override int GetHashCode()
         {
-            return this.ToString().GetHashCode();
+            return ToString().GetHashCode();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    class FontFace : IRule
+    internal class FontFace : IRule
     {
         public string Selector { get; set; }
         public string Label { get; set; }
@@ -15,9 +15,9 @@ namespace BlazorStyled.Internal
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.Append("@font-face").Append('{');
-            foreach (var rule in Declarations)
+            foreach (Declaration rule in Declarations)
             {
                 sb.Append(rule.ToString());
             }

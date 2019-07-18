@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorStyled.Internal
 {
-    class Styled : IStyled
+    internal class Styled : IStyled
     {
         private readonly StyledJsInterop _styledJsInterop;
         private readonly StyleSheet _styleSheet;
@@ -31,7 +31,7 @@ namespace BlazorStyled.Internal
                 else
                 {
                     rule = ParsePredefinedRuleSet(className, css);
-                    if(_elements.Contains(className))
+                    if (_elements.Contains(className))
                     {
                         await AddNonUniqueRuleSetToStyleSheet(rule);
                     }
@@ -58,7 +58,7 @@ namespace BlazorStyled.Internal
             {
                 RuleSet ruleSet = ParseRuleSet(css);
                 await AddUniqueRuleSetToStyleSheet(ruleSet);
-                foreach (var nestedRuleSet in ruleSet.NestedRules)
+                foreach (IRule nestedRuleSet in ruleSet.NestedRules)
                 {
                     await AddUniqueRuleSetToStyleSheet(nestedRuleSet);
                 }
@@ -76,10 +76,10 @@ namespace BlazorStyled.Internal
 
         public async Task<string> Css(List<string> classes, string css)
         {
-            var sb = new StringBuilder();
-            foreach(var cssClass in classes)
+            StringBuilder sb = new StringBuilder();
+            foreach (string cssClass in classes)
             {
-                var result = await Css(cssClass, css);
+                string result = await Css(cssClass, css);
                 sb.Append(result).Append(' ');
             }
             return sb.ToString().Trim();
@@ -89,7 +89,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                var keyframe = ParseKeyframe(css);
+                Keyframe keyframe = ParseKeyframe(css);
                 await AddUniqueRuleSetToStyleSheet(keyframe);
                 return keyframe.Selector;
             }
@@ -107,7 +107,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                var fontface = ParseFontFace(css);
+                FontFace fontface = ParseFontFace(css);
                 await AddUniqueRuleSetToStyleSheet(fontface);
             }
             catch (StyledException e)
@@ -122,7 +122,7 @@ namespace BlazorStyled.Internal
 
         private Keyframe ParseKeyframe(string css)
         {
-            var keyframe = new Keyframe();
+            Keyframe keyframe = new Keyframe();
             IRule current = keyframe;
             string buffer = string.Empty;
             bool nestedClassClosed = true;
@@ -190,7 +190,7 @@ namespace BlazorStyled.Internal
         {
             List<Declaration> declarations = new List<Declaration>();
             string[] declarationsString = css.Trim().Split(';');
-            foreach (var declarationString in declarationsString)
+            foreach (string declarationString in declarationsString)
             {
                 if (declarationString.IndexOf(':') != -1)
                 {
@@ -258,11 +258,11 @@ namespace BlazorStyled.Internal
                         break;
                 }
             }
-            if(!nestedClassClosed)
+            if (!nestedClassClosed)
             {
                 throw StyledException.GetException(css, "A nested class is missing a '}' character", null);
             }
-            if(buffer.Trim() != string.Empty)
+            if (buffer.Trim() != string.Empty)
             {
                 throw StyledException.GetException(buffer, "This is usually caused by a missing ';' character at the end of a declaration", null);
             }
@@ -272,7 +272,11 @@ namespace BlazorStyled.Internal
 
         private Declaration ParseDeclaration(string input)
         {
-            if (string.IsNullOrEmpty(input)) return null;
+            if (string.IsNullOrEmpty(input))
+            {
+                return null;
+            }
+
             try
             {
                 string property = input.Substring(0, input.IndexOf(':'));
