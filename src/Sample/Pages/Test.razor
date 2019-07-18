@@ -5,10 +5,22 @@
 
 <h2>This is another test</h2>
 
+<button @onclick="@onclick">Clear</button>
+
 @code { 
     protected override async Task OnInitAsync()
     {
-        await Styled.Css("html", "color: red;");
-        await Styled.Css("html", "background-color: yellow;");
+        await Styled.Css(@"
+            @media only screen and (max-width:480px) {
+                html {
+                    color: red;
+                }
+            }
+        ");
+    }
+
+    private void onclick() 
+    {
+        Styled.ClearStyles();
     }
 }

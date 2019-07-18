@@ -304,6 +304,11 @@ namespace BlazorStyled.Internal
             await _styledJsInterop.InsertRule(rule.ToString());
         }
 
+        public async Task ClearStyles()
+        {
+            await _styledJsInterop.ClearAllRules();
+        }
+
         private readonly List<string> _elements = new List<string>
         {
             "a",
