@@ -328,6 +328,7 @@ namespace BlazorStyled.Internal
         public async Task ClearStyles()
         {
             await _styledJsInterop.ClearAllRules();
+            _styleSheet.ClearStyles();
         }
 
         private readonly List<string> _elements = new List<string>

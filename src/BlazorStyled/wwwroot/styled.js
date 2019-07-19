@@ -24,7 +24,7 @@ window.styledJsFunctions = {
     },
     clearAllRules: function () {
         const head = document.head;
-        head.removeChild(styleEl);
+        if (styleEl !== undefined) head.removeChild(styleEl);
         createStylesheet();
         return true;
     }
