@@ -1,8 +1,8 @@
+using BlazorPrettyCode;
+using BlazorStyled;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using BlazorStyled;
 using Polished;
-using BlazorPrettyCode;
 
 namespace Sample
 {

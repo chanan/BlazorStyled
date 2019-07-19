@@ -28,6 +28,11 @@ namespace BlazorStyled.Internal
                     rule = ParseFontFace(css);
                     await AddUniqueRuleSetToStyleSheet(rule);
                 }
+                else if (className.IndexOf("@media") != -1)
+                {
+                    rule = ParseMediaQuery(className, css);
+                    await AddNonUniqueRuleSetToStyleSheet(rule);
+                }
                 else
                 {
                     rule = ParsePredefinedRuleSet(className, css);
@@ -51,6 +56,8 @@ namespace BlazorStyled.Internal
                 throw StyledException.GetException(css, e);
             }
         }
+
+
 
         public async Task<string> Css(string css)
         {
@@ -118,6 +125,20 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(css, e);
             }
+        }
+
+        private IRule ParseMediaQuery(string classname, string css)
+        {
+            IRule mediaQuery = new MediaQuery
+            {
+                Selector = classname
+            };
+            //Trim the css from the surrending class
+            int first = css.IndexOf('{') + 1;
+            int last = css.LastIndexOf('}');
+            string parsed = css.Substring(first, last - first).Trim();
+            mediaQuery.NestedRules = ParseRuleSet(css).NestedRules; //?
+            return mediaQuery;
         }
 
         private Keyframe ParseKeyframe(string css)

@@ -1,10 +1,10 @@
-var styleEl = document.createElement('style');
-document.head.appendChild(styleEl);
-var styleSheet = styleEl.sheet;
+var styleEl;
+var styleSheet;
 
 window.styledJsFunctions = {
     insertRule: function (rule, development) {
         //console.log(rule);
+        if (styleEl === undefined) createStylesheet();
         if (development) {
             var text = styleEl.innerText;
             text = text + rule;
@@ -21,5 +21,22 @@ window.styledJsFunctions = {
                 return num;
             }
         }
+    },
+    clearAllRules: function () {
+        const head = document.head;
+        head.removeChild(styleEl);
+        createStylesheet();
+        return true;
     }
 };
+
+function createStylesheet() {
+    styleEl = document.createElement('style');
+    const head = document.head;
+    if (head.firstChild) {
+        head.insertBefore(styleEl, head.firstChild);
+    } else {
+        head.appendChild(styleEl);
+    }
+    styleSheet = styleEl.sheet;
+}

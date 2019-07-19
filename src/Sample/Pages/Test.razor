@@ -10,11 +10,9 @@
 @code { 
     protected override async Task OnInitAsync()
     {
-        await Styled.Css(@"
-            @media only screen and (max-width:480px) {
-                html {
-                    color: red;
-                }
+        await Styled.Css("@media only screen and (max-width:480px)", @"
+            html {
+                color: red;
             }
         ");
     }

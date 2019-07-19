@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace BlazorStyled.Internal
@@ -10,18 +9,31 @@ namespace BlazorStyled.Internal
         public string Label { get; set; }
         public List<Declaration> Declarations { get; set; } = new List<Declaration>();
         public RuleType RuleType => RuleType.MediaQuery;
-        public List<IRule> NestedRules { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<IRule> NestedRules { get; set; } = new List<IRule>();
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(Selector);
-            sb.Append('{');
-            foreach (Declaration rule in Declarations)
+            if (Declarations.Count > 0)
             {
-                sb.Append(rule.ToString());
+                sb.Append(Selector);
+                sb.Append('{');
+                foreach (Declaration rule in Declarations)
+                {
+                    sb.Append(rule.ToString());
+                }
+                sb.Append("}}");
             }
-            sb.Append("}}");
+            else
+            {
+                sb.Append(Selector);
+                sb.Append('{');
+                foreach (IRule rule in NestedRules)
+                {
+                    sb.Append(rule.ToString());
+                }
+                sb.Append("}");
+            }
             return sb.ToString();
         }
     }
