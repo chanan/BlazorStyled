@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polished;
 
 namespace ServerSideSample
 {
@@ -22,7 +23,9 @@ namespace ServerSideSample
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazorStyled();
+            services.AddSingleton<IMixins, Mixins>();
+            services.AddSingleton<IShorthand, Shorthand>();
+            services.AddBlazorStyled(isDevelopment: true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

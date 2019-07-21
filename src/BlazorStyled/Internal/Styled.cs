@@ -64,10 +64,13 @@ namespace BlazorStyled.Internal
             try
             {
                 RuleSet ruleSet = ParseRuleSet(css);
-                await AddUniqueRuleSetToStyleSheet(ruleSet);
+                if(ruleSet.Declarations.Count > 0)
+                {
+                    await AddUniqueRuleSetToStyleSheet(ruleSet);
+                }
                 foreach (IRule nestedRuleSet in ruleSet.NestedRules)
                 {
-                    await AddUniqueRuleSetToStyleSheet(nestedRuleSet);
+                    await AddNonUniqueRuleSetToStyleSheet(nestedRuleSet);
                 }
                 return ruleSet.Selector;
             }

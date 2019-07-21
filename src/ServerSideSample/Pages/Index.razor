@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IStyled  Styled
+@inject IMixins Mixins
 
 <h1>Blazor Styled Server-Side Blazor Test</h1>
 
@@ -7,17 +8,19 @@
 
 @code {
     private string div;
+    private bool hasBeenDone;
 
     protected override async Task OnAfterRenderAsync()
     {
-       div = await Styled.Css("background-color: pink;");
+        if (!hasBeenDone)
+        {
+            await Styled.Css(Mixins.Normalize());
 
-        await Styled.Css("@media only screen and (max-width:480px)", @"
-            html {
-                color: red;
-            }
-        ");
+            div = await Styled.Css("background-color: pink;");
 
-       StateHasChanged();
+            hasBeenDone = true;
+        }
+
+        StateHasChanged();
     }
 }

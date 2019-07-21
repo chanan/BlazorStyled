@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Polished" Version="1.0.0-preview-02" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BlazorStyled\BlazorStyled.csproj" />
   </ItemGroup>
 
