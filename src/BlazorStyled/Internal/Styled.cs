@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,7 +65,7 @@ namespace BlazorStyled.Internal
             try
             {
                 RuleSet ruleSet = ParseRuleSet(css);
-                if(ruleSet.Declarations.Count > 0)
+                if (ruleSet.Declarations.Count > 0)
                 {
                     await AddUniqueRuleSetToStyleSheet(ruleSet);
                 }
@@ -332,6 +333,13 @@ namespace BlazorStyled.Internal
         {
             await _styledJsInterop.ClearAllRules();
             _styleSheet.ClearStyles();
+        }
+
+        public async Task AddGoogleFonts(List<GoogleFont> googleFonts)
+        {
+            string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
+            string uri = $"//fonts.googleapis.com/css?family={fontString}";
+            await _styledJsInterop.AddGoogleFont(uri);
         }
 
         private readonly List<string> _elements = new List<string>

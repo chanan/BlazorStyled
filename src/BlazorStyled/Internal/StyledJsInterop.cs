@@ -23,5 +23,10 @@ namespace BlazorStyled.Internal
         {
             return _jsRuntime.InvokeAsync<bool>("styledJsFunctions.clearAllRules");
         }
+
+        public Task AddGoogleFont(string font)
+        {
+            return _jsRuntime.InvokeAsync<bool>("styledJsFunctions.addGoogleFont", font);
+        }
     }
 }

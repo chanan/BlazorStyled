@@ -1,0 +1,28 @@
+@page "/googlefonts"
+@inject IStyled Styled
+
+<Heading>Google Fonts</Heading>
+
+<Paragraph>Google fonts is a fast and easy way to add <a href="https://fonts.google.com/">Google fonts </a> to your site. If you need more control or want to add fonts other than Google fonts,
+    you can use access the full power of the <a href="/fonts">@@font-face tag</a>.
+    </Paragraph>
+
+<p class="@geostar">This is the Geostar font</p>
+
+<div>Pretty code here</div>
+
+<Paragraph>
+    Note: <code>Styles</code> is a list of strings that can be any font style accepted by Google font API such as: "normal", "bold", "300", "400" up to "900", and italic versions such as "700i". 
+    For more information see <a href="https://developers.google.com/fonts/docs/getting_started#specifying_font_families_and_styles_in_a_stylesheet_url">the Google font developer API</a>.
+</Paragraph>
+
+@code { 
+    private string geostar;
+
+    protected override async Task OnInitAsync()
+    {
+        await Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Geostar", Styles = new List<string> { "normal" } }});
+
+        geostar = await Styled.Css("font-family: Geostar;");
+    }
+}
