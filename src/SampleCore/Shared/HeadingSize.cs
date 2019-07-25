@@ -1,4 +1,4 @@
-﻿namespace Sample.Shared
+﻿namespace SampleCore.Shared
 {
     public enum HeadingSize
     {
