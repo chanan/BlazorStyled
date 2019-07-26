@@ -1,3 +1,4 @@
+using BlazorStyled;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +43,8 @@ namespace ServerSideSample
                 });
             }
 
+            //services.AddBlazorStyled();
+
             services.AddServicesForSampleSites();
         }
 
@@ -66,7 +69,7 @@ namespace ServerSideSample
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub().AddComponent(typeof(App), "app");
+                endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

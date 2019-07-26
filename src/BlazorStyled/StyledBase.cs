@@ -8,12 +8,18 @@ namespace BlazorStyled
     {
         [Inject] protected StyleSheet StyleSheet { get; private set; }
         private string _hashCode = null;
+        private bool _shouldRender = true;
 
         private IDisposable _unsubscriber;
 
         protected override void OnInit()
         {
             _unsubscriber = StyleSheet.Subscribe(this);
+        }
+
+        protected override bool ShouldRender()
+        {
+            return _shouldRender;
         }
 
         public void OnCompleted()
@@ -32,8 +38,13 @@ namespace BlazorStyled
             string newHashCode = StyleSheet.GetHashCodes();
             if (_hashCode != newHashCode)
             {
-                StateHasChanged();
+                _shouldRender = true;
+                Invoke(StateHasChanged);
                 _hashCode = newHashCode;
+            }
+            else
+            {
+                _shouldRender = false;
             }
         }
 
