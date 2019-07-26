@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28902.138
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStyled", "src\BlazorStyled\BlazorStyled.csproj", "{C2D06BE5-4AB2-43FA-9678-591C485519EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "src\Sample\Sample.csproj", "{AB70A8D3-2D33-47C8-B32E-87C53E80CBCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSideSample", "src\Sample\ClientSideSample.csproj", "{AB70A8D3-2D33-47C8-B32E-87C53E80CBCF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{50D8561D-7717-4DBB-B6BA-5113407E1FA5}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSideSample", "src\ServerSideSample\ServerSideSample.csproj", "{1DD68860-66A4-4D68-9A5D-FBE20CBA5E62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleCore", "src\SampleCore\SampleCore.csproj", "{B1D0FFB9-FF31-4E26-9F67-FCB0B7F7B62D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCore", "src\SampleCore\SampleCore.csproj", "{B1D0FFB9-FF31-4E26-9F67-FCB0B7F7B62D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

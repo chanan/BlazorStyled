@@ -18,14 +18,14 @@
 @code {
     private string example;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
         //Normally this would be defined else where
         Styled.Theme.Values.Add("colors.primary", "hotpink");
 
         //We need for now to define a temporary variable
         var color = Styled.Theme.Values["colors.primary"];
-        example = await Styled.Css($@"
+        example = Styled.Css($@"
             color: {color};
         ");
     }

@@ -8,9 +8,9 @@
 <button @onclick="@onclick">Clear</button>
 
 @code { 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        await Styled.Css("@media only screen and (max-width:480px)", @"
+        Styled.Css("@media only screen and (max-width:480px)", @"
             html {
                 color: red;
             }

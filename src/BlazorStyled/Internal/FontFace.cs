@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorStyled.Stylesheets;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -27,7 +28,7 @@ namespace BlazorStyled.Internal
 
         public void SetClassName()
         {
-            _hash.GetHashCode(this, null);
+            _hash.SetHashCode(this, null);
         }
     }
 }

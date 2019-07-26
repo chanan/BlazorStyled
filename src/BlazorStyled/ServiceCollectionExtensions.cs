@@ -1,4 +1,5 @@
 ﻿using BlazorStyled.Internal;
+using BlazorStyled.Stylesheets;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorStyled
@@ -17,7 +18,7 @@ namespace BlazorStyled
             }
             serviceCollection.AddTransient<StyledJsInterop>();
             serviceCollection.AddSingleton<StyleSheet>();
-            serviceCollection.AddTransient<IStyled, Styled>();
+            serviceCollection.AddTransient<IStyled, Internal.Styled>();
             return serviceCollection;
         }
 

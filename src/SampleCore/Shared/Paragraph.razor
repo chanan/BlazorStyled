@@ -6,9 +6,9 @@
     [Parameter] private RenderFragment ChildContent { get; set; }
     private string paragraphClass;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        paragraphClass = await Styled.Css(@"
+        paragraphClass = Styled.Css(@"
             font-size: 16px;
             margin-top: 20px;
             color: #1B1D1D;

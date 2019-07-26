@@ -1,6 +1,6 @@
-﻿namespace BlazorStyled.Internal
+﻿namespace BlazorStyled.Stylesheets
 {
-    internal class Declaration
+    public class Declaration
     {
         public string Property { get; set; }
         public string Value { get; set; }

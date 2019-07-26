@@ -1,6 +1,6 @@
-﻿namespace BlazorStyled.Internal
+﻿namespace BlazorStyled.Stylesheets
 {
-    internal enum RuleType
+    public enum RuleType
     {
         RuleSet,
         PredefinedRuleSet,

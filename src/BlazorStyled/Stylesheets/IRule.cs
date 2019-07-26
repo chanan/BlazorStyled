@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace BlazorStyled.Internal
+namespace BlazorStyled.Stylesheets
 {
-    internal interface IRule
+    public interface IRule
     {
         string Selector { get; set; }
         string Label { get; set; }

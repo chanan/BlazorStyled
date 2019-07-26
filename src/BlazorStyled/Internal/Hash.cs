@@ -1,11 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using BlazorStyled.Stylesheets;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BlazorStyled.Internal
 {
     internal class Hash
     {
-        public void GetHashCode(IRule ruleset, string label)
+        public void SetHashCode(IRule ruleset, string label = null)
+        {
+            ruleset.Selector = GetHashCode(ruleset, label);
+            if (ruleset.RuleType != RuleType.FontFace)
+            {
+                foreach (IRule nestedRuleSet in ruleset.NestedRules)
+                {
+                    nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + ruleset.Selector);
+                }
+            }
+        }
+
+        public string GetHashCode(IRule ruleset, string label = null)
         {
             List<int> hashs = new List<int>();
             if (ruleset.RuleType != RuleType.Keyframe)
@@ -15,7 +28,7 @@ namespace BlazorStyled.Internal
                     hashs.Add(rule.GetHashCode());
                 }
             }
-            if (ruleset.RuleType != RuleType.FontFace)
+            if (ruleset.RuleType != RuleType.FontFace && ruleset.RuleType != RuleType.PredefinedRuleSet)
             {
                 foreach (IRule nestedRuleSet in ruleset.NestedRules)
                 {
@@ -35,14 +48,7 @@ namespace BlazorStyled.Internal
                     hash += (uint)code;
                 }
             }
-            ruleset.Selector = label == null ? ConvertToBase64Arithmetic(hash) : ConvertToBase64Arithmetic(hash) + "-" + label;
-            if (ruleset.RuleType != RuleType.FontFace)
-            {
-                foreach (IRule nestedRuleSet in ruleset.NestedRules)
-                {
-                    nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + ruleset.Selector);
-                }
-            }
+            return label == null ? ConvertToBase64Arithmetic(hash) : ConvertToBase64Arithmetic(hash) + "-" + label;
         }
 
         private string ConvertToBase64Arithmetic(uint i)

@@ -25,9 +25,9 @@
 
     private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        p1 = await Styled.Css(@"
+        p1 = Styled.Css(@"
             font-size: 30px;
             @media (min-width: 420px) {
                 font-size: 50px;
@@ -37,7 +37,7 @@
         var mq = (from b in breakpoints
                   select $"@media (min-width: {b}px)").ToArray();
 
-        p2 = await Styled.Css($@"
+        p2 = Styled.Css($@"
             color: green;
             {mq[0]} {{
               color: gray;

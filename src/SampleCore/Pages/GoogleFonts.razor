@@ -23,6 +23,6 @@
     {
         await Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Geostar", Styles = new List<string> { "normal" } }});
 
-        geostar = await Styled.Css("font-family: Geostar;");
+        geostar = Styled.Css("font-family: Geostar;");
     }
 }

@@ -16,7 +16,8 @@ namespace BlazorStyled.Internal
 
         public Task<int> InsertRule(string rule)
         {
-            return _jsRuntime.InvokeAsync<int>("styledJsFunctions.insertRule", rule, _config.IsDevelopment);
+            //return _jsRuntime.InvokeAsync<int>("styledJsFunctions.insertRule", rule, _config.IsDevelopment);
+            return Task.FromResult<int>(1);
         }
 
         public Task ClearAllRules()

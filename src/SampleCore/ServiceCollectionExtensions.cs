@@ -1,4 +1,4 @@
-﻿using BlazorPrettyCode;
+﻿//using BlazorPrettyCode;
 using BlazorStyled;
 using Microsoft.Extensions.DependencyInjection;
 using Polished;
@@ -12,7 +12,7 @@ namespace SampleCore
             serviceCollection.AddBlazorStyled(isDevelopment: true);
             serviceCollection.AddSingleton<IMixins, Mixins>();
             serviceCollection.AddSingleton<IShorthand, Shorthand>();
-            serviceCollection.AddBlazorPrettyCode();
+            //serviceCollection.AddBlazorPrettyCode();
             return serviceCollection;
         }
     }

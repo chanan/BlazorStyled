@@ -15,17 +15,17 @@
     [Parameter] private RenderFragment ChildContent { get; set; }
     [Parameter]
     private HeadingSize HeadingSize { get; set; } = HeadingSize.H1;
+    private readonly string common = @"
+        color: #1B1D1D;
+        margin: 30px 0 0 0;
+        line-height: 1.2;
+    ";
+
     private string h1Class, h3Class;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        var common = @"
-            color: #1B1D1D;
-            margin: 30px 0 0 0;
-            line-height: 1.2;
-        ";
-
-        h1Class = await Styled.Css($@"
+        h1Class = Styled.Css($@"
             {common}
             font-size: 32px;
             padding-top: 0;
@@ -34,7 +34,7 @@
             font-weight: 700;
         ");
 
-        h3Class = await Styled.Css($@"
+        h3Class = Styled.Css($@"
             {common}
             font-size: 20px;
             padding-top: 20px;

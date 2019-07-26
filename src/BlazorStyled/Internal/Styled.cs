@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorStyled.Stylesheets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace BlazorStyled.Internal
 
         public Theme Theme { get; set; } = new Theme();
 
-        public async Task<string> Css(string className, string css)
+        public string Css(string className, string css)
         {
             try
             {
@@ -27,23 +28,23 @@ namespace BlazorStyled.Internal
                 if (className.IndexOf("@font-face") != -1)
                 {
                     rule = ParseFontFace(css);
-                    await AddUniqueRuleSetToStyleSheet(rule);
+                    _styleSheet.AddClass(rule);
                 }
                 else if (className.IndexOf("@media") != -1)
                 {
                     rule = ParseMediaQuery(className, css);
-                    await AddNonUniqueRuleSetToStyleSheet(rule);
+                    _styleSheet.AddClass(rule);
                 }
                 else
                 {
                     rule = ParsePredefinedRuleSet(className, css);
                     if (_elements.Contains(className))
                     {
-                        await AddNonUniqueRuleSetToStyleSheet(rule);
+                        _styleSheet.AddClass(rule);
                     }
                     else
                     {
-                        await AddUniqueRuleSetToStyleSheet(rule);
+                        _styleSheet.AddClass(rule);
                     }
                 }
                 return rule.Selector;
@@ -58,20 +59,18 @@ namespace BlazorStyled.Internal
             }
         }
 
-
-
-        public async Task<string> Css(string css)
+        public string Css(string css)
         {
             try
             {
                 RuleSet ruleSet = ParseRuleSet(css);
                 if (ruleSet.Declarations.Count > 0)
                 {
-                    await AddUniqueRuleSetToStyleSheet(ruleSet);
+                    _styleSheet.AddClass(ruleSet);
                 }
                 foreach (IRule nestedRuleSet in ruleSet.NestedRules)
                 {
-                    await AddNonUniqueRuleSetToStyleSheet(nestedRuleSet);
+                    _styleSheet.AddClass(nestedRuleSet);
                 }
                 return ruleSet.Selector;
             }
@@ -85,23 +84,23 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public async Task<string> Css(List<string> classes, string css)
+        public string Css(List<string> classes, string css)
         {
             StringBuilder sb = new StringBuilder();
             foreach (string cssClass in classes)
             {
-                string result = await Css(cssClass, css);
+                string result = Css(cssClass, css);
                 sb.Append(result).Append(' ');
             }
             return sb.ToString().Trim();
         }
 
-        public async Task<string> Keyframes(string css)
+        public string Keyframes(string css)
         {
             try
             {
                 Keyframe keyframe = ParseKeyframe(css);
-                await AddUniqueRuleSetToStyleSheet(keyframe);
+                _styleSheet.AddClass(keyframe);
                 return keyframe.Selector;
             }
             catch (StyledException e)
@@ -114,12 +113,12 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public async Task Fontface(string css)
+        public void Fontface(string css)
         {
             try
             {
                 FontFace fontface = ParseFontFace(css);
-                await AddUniqueRuleSetToStyleSheet(fontface);
+                _styleSheet.AddClass(fontface);
             }
             catch (StyledException e)
             {
@@ -129,6 +128,18 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(css, e);
             }
+        }
+
+        public void ClearStyles()
+        {
+            _styleSheet.ClearStyles();
+        }
+
+        public async Task AddGoogleFonts(List<GoogleFont> googleFonts)
+        {
+            string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
+            string uri = $"//fonts.googleapis.com/css?family={fontString}";
+            await _styledJsInterop.AddGoogleFont(uri);
         }
 
         private IRule ParseMediaQuery(string classname, string css)
@@ -312,34 +323,6 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(input, "This is likely cause by a missing ':' character", e);
             }
-        }
-
-        private async Task AddUniqueRuleSetToStyleSheet(IRule rule)
-        {
-            if (!_styleSheet.ClassExists(rule.Selector))
-            {
-                _styleSheet.Classes.Add(rule);
-                await _styledJsInterop.InsertRule(rule.ToString());
-            }
-        }
-
-        private async Task AddNonUniqueRuleSetToStyleSheet(IRule rule)
-        {
-            _styleSheet.Classes.Add(rule);
-            await _styledJsInterop.InsertRule(rule.ToString());
-        }
-
-        public async Task ClearStyles()
-        {
-            await _styledJsInterop.ClearAllRules();
-            _styleSheet.ClearStyles();
-        }
-
-        public async Task AddGoogleFonts(List<GoogleFont> googleFonts)
-        {
-            string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
-            string uri = $"//fonts.googleapis.com/css?family={fontString}";
-            await _styledJsInterop.AddGoogleFont(uri);
         }
 
         private readonly List<string> _elements = new List<string>

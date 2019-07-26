@@ -13,9 +13,9 @@
 @code {
     private string bounce, example;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        bounce = await Styled.Keyframes(@"
+        bounce = Styled.Keyframes(@"
             from, 20%, 53%, 80%, to {
                 transform: translate3d(0,0,0);
             }
@@ -33,7 +33,7 @@
             }
         ");
 
-        example = await Styled.Css($@"
+        example = Styled.Css($@"
             animation: {bounce} 1s ease infinite;
         ");
     }

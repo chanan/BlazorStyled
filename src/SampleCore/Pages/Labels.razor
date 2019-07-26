@@ -15,14 +15,14 @@
 @code {
     private string div1, div2;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        div1 = await Styled.Css(@"
+        div1 = Styled.Css(@"
             color: hotpink;
             label: some-name;
         ");
 
-        div2 = await Styled.Css(@"
+        div2 = Styled.Css(@"
             label: another-name;
             color: lightgreen;
         ");

@@ -39,9 +39,9 @@
 
     private string color = "white";
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        nested = await Styled.Css(@"
+        nested = Styled.Css(@"
             color: turquoise;
 
             & a {
@@ -50,14 +50,14 @@
             }
         ");
 
-        paragraph = await Styled.Css(@"
+        paragraph = Styled.Css(@"
             color: turquoise;
             header & {
                 color: green;
             }
         ");
 
-        hover = await Styled.Css($@"
+        hover = Styled.Css($@"
             padding: 32px;
             background-color: hotpink;
             font-size: 24px;
@@ -66,6 +66,5 @@
                 color: {color};
             }}
         ");
-
     }
 }

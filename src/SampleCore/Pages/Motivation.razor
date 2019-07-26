@@ -21,14 +21,14 @@
 @code {
     private string ul, li;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        ul = await Styled.Css(@"
+        ul = Styled.Css(@"
             margin-top: 20px;
             padding-left: 20px;
         ");
 
-        li = await Styled.Css(@"
+        li = Styled.Css(@"
             margin-top: 10px;
             font-size: 16px;
             color: #1B1D1D;

@@ -17,9 +17,9 @@
 
 <Paragraph>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</Paragraph>
 
-<button onclick="@(x => click(" red"))">Make the div red</button>
+<button @onclick="@(x => click(" red"))">Make the div red</button>
 
-<button onclick="@(x => click(" hotpink"))">Make the div hotpink</button>
+<button @onclick="@(x => click(" hotpink"))">Make the div hotpink</button>
 
 <div class="@example2">The background of this div will change color depending on the button pressed above</div>
 
@@ -46,14 +46,14 @@
     private string example1;
     private string example2;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        example1 = await Styled.Css("background-color: hotpink;");
+        example1 = Styled.Css("background-color: hotpink;");
     }
 
-    protected async void click(string color)
+    protected void click(string color)
     {
-        example2 = await Styled.Css($"background-color: {color};");
+        example2 = Styled.Css($"background-color: {color};");
         StateHasChanged();
     }
 }

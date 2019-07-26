@@ -1,6 +1,6 @@
 ﻿@inject IStyled Styled
 
-<button class="@buttonClass" onclick="@OnClick">@ChildContent</button>
+<button class="@buttonClass" @onclick="@OnClick">@ChildContent</button>
 
 @code {
     [Parameter] private RenderFragment ChildContent { get; set; }
@@ -9,9 +9,9 @@
 
     private string buttonClass;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        buttonClass = await Styled.Css($@"
+        buttonClass = Styled.Css($@"
             font-size:16px;
             margin:18px;
             border:none;
