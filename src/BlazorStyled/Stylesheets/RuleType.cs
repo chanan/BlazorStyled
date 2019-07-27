@@ -6,6 +6,7 @@
         PredefinedRuleSet,
         FontFace,
         MediaQuery,
-        Keyframe
+        Keyframe,
+        Import
     }
 }

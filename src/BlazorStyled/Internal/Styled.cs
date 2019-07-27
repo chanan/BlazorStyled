@@ -135,11 +135,11 @@ namespace BlazorStyled.Internal
             _styleSheet.ClearStyles();
         }
 
-        public async Task AddGoogleFonts(List<GoogleFont> googleFonts)
+        public void AddGoogleFonts(List<GoogleFont> googleFonts)
         {
             string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
-            string uri = $"//fonts.googleapis.com/css?family={fontString}";
-            await _styledJsInterop.AddGoogleFont(uri);
+            string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
+            _styleSheet.AddClass(new ImportUri(uri));
         }
 
         private IRule ParseMediaQuery(string classname, string css)
@@ -152,7 +152,7 @@ namespace BlazorStyled.Internal
             int first = css.IndexOf('{') + 1;
             int last = css.LastIndexOf('}');
             string parsed = css.Substring(first, last - first).Trim();
-            mediaQuery.NestedRules = ParseRuleSet(css).NestedRules; //?
+            mediaQuery.NestedRules = ParseRuleSet(parsed).NestedRules;
             return mediaQuery;
         }
 

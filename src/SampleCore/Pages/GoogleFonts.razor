@@ -16,13 +16,19 @@
     For more information see <a href="https://developers.google.com/fonts/docs/getting_started#specifying_font_families_and_styles_in_a_stylesheet_url">the Google font developer API</a>.
 </Paragraph>
 
-@code { 
-    private string geostar;
+<p class="@roboto">This is the Roboto font</p>
 
-    protected override async Task OnInitAsync()
+@code { 
+    private string geostar, roboto;
+
+    protected override void OnInit()
     {
-        await Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Geostar", Styles = new List<string> { "normal" } }});
+        Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Geostar", Styles = new List<string> { "normal" } }});
+
+        Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Roboto", Styles = new List<string> { "400" } }});
 
         geostar = Styled.Css("font-family: Geostar;");
+
+        roboto = Styled.Css("font-family: Roboto;");
     }
 }

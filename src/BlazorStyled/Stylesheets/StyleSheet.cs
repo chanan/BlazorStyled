@@ -75,14 +75,24 @@ namespace BlazorStyled.Stylesheets
             return string.Join("", list);
         }
 
+        //Return @import at the top of the list
         public IEnumerator<IRule> GetEnumerator()
         {
-            return _classes.Values.GetEnumerator();
+            var list = new List<IRule>();
+            var imports = (from rule in _classes.Values
+                          where rule.RuleType == RuleType.Import
+                          select rule).ToList();
+            var notImports = (from rule in _classes.Values
+                              where rule.RuleType != RuleType.Import
+                              select rule).ToList();
+            list.AddRange(imports);
+            list.AddRange(notImports);
+            return list.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _classes.Values.GetEnumerator();
+            return GetEnumerator();
         }
 
         public IDisposable Subscribe(IObserver<StyleSheet> observer)

@@ -28,7 +28,7 @@ namespace BlazorStyled.Internal
                     hashs.Add(rule.GetHashCode());
                 }
             }
-            if (ruleset.RuleType != RuleType.FontFace && ruleset.RuleType != RuleType.PredefinedRuleSet)
+            if (ruleset.RuleType != RuleType.FontFace && ruleset.RuleType != RuleType.PredefinedRuleSet && ruleset.RuleType != RuleType.Import)
             {
                 foreach (IRule nestedRuleSet in ruleset.NestedRules)
                 {

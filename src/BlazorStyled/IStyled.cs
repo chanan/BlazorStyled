@@ -13,6 +13,6 @@ namespace BlazorStyled
         string Keyframes(string css);
         void Fontface(string css);
         Theme Theme { get; set; }
-        Task AddGoogleFonts(List<GoogleFont> googleFonts);
+        void AddGoogleFonts(List<GoogleFont> googleFonts);
     }
 }
