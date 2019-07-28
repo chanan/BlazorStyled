@@ -8,50 +8,44 @@ namespace BlazorStyled.Stylesheets
 {
     internal class StyleSheet : IEnumerable<IRule>, IObservable<IStyleSheet>, IStyleSheet
     {
+        private const string DEFAULT = "Default";
         private readonly List<IObserver<IStyleSheet>> _observers = new List<IObserver<IStyleSheet>>();
-        private IDictionary<string, IRule> _classes = new Dictionary<string, IRule>();
+        private IDictionary<string, IDictionary<string, IRule>> _classes = new Dictionary<string, IDictionary<string, IRule>>();
         private readonly Hash _hash = new Hash();
 
-        public StyleSheet() : this("Default")
+        public void ClearStyles(string id = null)
         {
-
-        }
-
-        public StyleSheet(string id)
-        {
-            Id = id;
-        }
-
-        public string Id { get; private set; }
-
-        public void ClearStyles()
-        {
-            _classes = new Dictionary<string, IRule>();
-            foreach (IObserver<IStyleSheet> observer in _observers)
+            string key = id ?? DEFAULT;
+            if (_classes.ContainsKey(key))
             {
-                observer.OnNext(this);
+                _classes[key].Clear();
+                foreach (IObserver<IStyleSheet> observer in _observers)
+                {
+                    observer.OnNext(this);
+                }
             }
         }
 
-        public void AddClass(IRule rule)
+        public void AddClass(IRule rule, string id = null)
         {
+            IDictionary<string, IRule> classes = GetClassesForId(id);
             if (rule.Selector.StartsWith("."))
             {
-                if (!_classes.ContainsKey(rule.Selector))
+                if (!classes.ContainsKey(rule.Selector))
                 {
-                    _classes.Add(rule.Selector, rule);
+                    classes.Add(rule.Selector, rule);
                 }
             }
             else
             {
-                if (!_classes.ContainsKey(rule.Selector))
+                if (!classes.ContainsKey(rule.Selector))
                 {
-                    _classes.Add(rule.Selector, rule);
+                    classes.Add(rule.Selector, rule);
                 }
                 else
                 {
                     //For non class rules such as html elements check to see if they are the same before adding
-                    IRule existingRule = _classes[rule.Selector];
+                    IRule existingRule = classes[rule.Selector];
                     if (_hash.GetHashCode(existingRule) != _hash.GetHashCode(rule))
                     {
                         MergeClasses(existingRule, rule);
@@ -63,6 +57,16 @@ namespace BlazorStyled.Stylesheets
             {
                 observer.OnNext(this);
             }
+        }
+
+        private IDictionary<string, IRule> GetClassesForId(string id)
+        {
+            string key = id ?? DEFAULT;
+            if(!_classes.ContainsKey(key))
+            {
+                _classes.Add(key, new Dictionary<string, IRule>());
+            }
+            return _classes[key];
         }
 
         private void MergeClasses(IRule existingRule, IRule rule)
@@ -82,7 +86,8 @@ namespace BlazorStyled.Stylesheets
 
         public string GetHashCodes()
         {
-            List<string> list = (from cssClass in _classes.Values
+            List<string> list = (from classes in _classes.Values
+                                 from cssClass in classes.Values
                                  select _hash.GetHashCode(cssClass)).ToList();
             return string.Join("", list);
         }
@@ -91,10 +96,12 @@ namespace BlazorStyled.Stylesheets
         public IEnumerator<IRule> GetEnumerator()
         {
             List<IRule> list = new List<IRule>();
-            List<IRule> imports = (from rule in _classes.Values
+            List<IRule> imports = (from classes in _classes.Values
+                                   from rule in classes.Values
                                    where rule.RuleType == RuleType.Import
                                    select rule).ToList();
-            List<IRule> notImports = (from rule in _classes.Values
+            List<IRule> notImports = (from classes in _classes.Values
+                                      from rule in classes.Values
                                       where rule.RuleType != RuleType.Import
                                       select rule).ToList();
             list.AddRange(imports);

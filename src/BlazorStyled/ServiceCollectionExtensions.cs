@@ -17,7 +17,7 @@ namespace BlazorStyled
                 serviceCollection.AddSingleton<IConfig>(config);
             }
             serviceCollection.AddSingleton<IStyleSheet, StyleSheet>();
-            serviceCollection.AddTransient<IStyled, Internal.Styled>();
+            serviceCollection.AddTransient<IStyled, Styled>();
             return serviceCollection;
         }
 
