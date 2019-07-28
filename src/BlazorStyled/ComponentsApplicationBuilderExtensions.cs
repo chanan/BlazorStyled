@@ -4,9 +4,9 @@ namespace BlazorStyled
 {
     public static class ComponentsApplicationBuilderExtensions
     {
-        public static IComponentsApplicationBuilder AddClientSideStyled(this IComponentsApplicationBuilder componentsApplicationBuilder, string id)
+        public static IComponentsApplicationBuilder AddClientSideStyled(this IComponentsApplicationBuilder componentsApplicationBuilder)
         {
-            componentsApplicationBuilder.AddComponent<ClientSideStyled>("#" + id);
+            componentsApplicationBuilder.AddComponent<ClientSideStyled>("#styled");
             return componentsApplicationBuilder;
         }
     }

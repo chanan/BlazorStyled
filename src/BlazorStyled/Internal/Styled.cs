@@ -30,7 +30,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css.RemoveUnneededSpaces();
+                css = css.RemoveDuplicateSpaces();
                 IRule rule;
                 if (className.IndexOf("@font-face") != -1)
                 {
@@ -70,7 +70,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css.RemoveUnneededSpaces();
+                css = css.RemoveDuplicateSpaces();
                 RuleSet ruleSet = ParseRuleSet(css);
                 if (ruleSet.Declarations.Count > 0)
                 {
@@ -107,7 +107,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css.RemoveUnneededSpaces();
+                css = css.RemoveDuplicateSpaces();
                 Keyframe keyframe = ParseKeyframe(css);
                 _styleSheet.AddClass(keyframe, _id);
                 return keyframe.Selector;
@@ -126,7 +126,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css.RemoveUnneededSpaces();
+                css = css.RemoveDuplicateSpaces();
                 FontFace fontface = ParseFontFace(css);
                 _styleSheet.AddClass(fontface, _id);
             }
@@ -336,8 +336,8 @@ namespace BlazorStyled.Internal
 
             try
             {
-                string property = input.Substring(0, input.IndexOf(':'));
-                string value = input.Substring(input.IndexOf(':') + 1);
+                string property = input.Substring(0, input.IndexOf(':')).Trim();
+                string value = input.Substring(input.IndexOf(':') + 1).Trim();
                 return new Declaration { Property = property, Value = value };
             }
             catch (Exception e)

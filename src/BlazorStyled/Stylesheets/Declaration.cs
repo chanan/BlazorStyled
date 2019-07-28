@@ -7,7 +7,7 @@
 
         public override string ToString()
         {
-            return $"{Property}: {Value};";
+            return $"{Property}:{Value};";
         }
 
         public override int GetHashCode()
