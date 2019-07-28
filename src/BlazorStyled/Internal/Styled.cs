@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorStyled.Internal
 {
@@ -32,7 +31,7 @@ namespace BlazorStyled.Internal
                 }
                 else if (className.IndexOf("@media") != -1)
                 {
-                    rule = ParseMediaQuery(className, css);
+                    rule = ParseMediaQuery(className, "{" + css + "}");
                     _styleSheet.AddClass(rule);
                 }
                 else

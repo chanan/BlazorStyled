@@ -1,11 +1,10 @@
 ﻿using BlazorStyled.Stylesheets;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    class ImportUri : IRule
+    internal class ImportUri : IRule
     {
         private readonly string _uri;
         private readonly Hash _hash = new Hash();

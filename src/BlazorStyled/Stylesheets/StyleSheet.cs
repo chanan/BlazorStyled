@@ -78,13 +78,13 @@ namespace BlazorStyled.Stylesheets
         //Return @import at the top of the list
         public IEnumerator<IRule> GetEnumerator()
         {
-            var list = new List<IRule>();
-            var imports = (from rule in _classes.Values
-                          where rule.RuleType == RuleType.Import
-                          select rule).ToList();
-            var notImports = (from rule in _classes.Values
-                              where rule.RuleType != RuleType.Import
-                              select rule).ToList();
+            List<IRule> list = new List<IRule>();
+            List<IRule> imports = (from rule in _classes.Values
+                                   where rule.RuleType == RuleType.Import
+                                   select rule).ToList();
+            List<IRule> notImports = (from rule in _classes.Values
+                                      where rule.RuleType != RuleType.Import
+                                      select rule).ToList();
             list.AddRange(imports);
             list.AddRange(notImports);
             return list.GetEnumerator();
