@@ -8,12 +8,10 @@ namespace BlazorStyled.Internal
 {
     internal class Styled : IStyled
     {
-        private readonly StyledJsInterop _styledJsInterop;
-        private readonly StyleSheet _styleSheet;
+        private readonly IStyleSheet _styleSheet;
 
-        public Styled(StyledJsInterop styledJsInterop, StyleSheet styleSheet)
+        public Styled(IStyleSheet styleSheet)
         {
-            _styledJsInterop = styledJsInterop;
             _styleSheet = styleSheet;
         }
 

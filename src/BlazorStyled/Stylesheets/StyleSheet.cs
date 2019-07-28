@@ -6,16 +6,28 @@ using System.Linq;
 
 namespace BlazorStyled.Stylesheets
 {
-    public class StyleSheet : IEnumerable<IRule>, IObservable<StyleSheet>
+    internal class StyleSheet : IEnumerable<IRule>, IObservable<IStyleSheet>, IStyleSheet
     {
-        private readonly List<IObserver<StyleSheet>> _observers = new List<IObserver<StyleSheet>>();
+        private readonly List<IObserver<IStyleSheet>> _observers = new List<IObserver<IStyleSheet>>();
         private IDictionary<string, IRule> _classes = new Dictionary<string, IRule>();
         private readonly Hash _hash = new Hash();
+
+        public StyleSheet() : this("Default")
+        {
+
+        }
+
+        public StyleSheet(string id)
+        {
+            Id = id;
+        }
+
+        public string Id { get; private set; }
 
         public void ClearStyles()
         {
             _classes = new Dictionary<string, IRule>();
-            foreach (IObserver<StyleSheet> observer in _observers)
+            foreach (IObserver<IStyleSheet> observer in _observers)
             {
                 observer.OnNext(this);
             }
@@ -95,22 +107,22 @@ namespace BlazorStyled.Stylesheets
             return GetEnumerator();
         }
 
-        public IDisposable Subscribe(IObserver<StyleSheet> observer)
+        public IDisposable Subscribe(IObserver<IStyleSheet> observer)
         {
             if (!_observers.Contains(observer))
             {
                 _observers.Add(observer);
             }
-            return new Unsubscriber<StyleSheet>(_observers, observer);
+            return new Unsubscriber<IStyleSheet>(_observers, observer);
         }
     }
 
-    internal class Unsubscriber<StyleSheet> : IDisposable
+    internal class Unsubscriber<IStyleSheet> : IDisposable
     {
-        private readonly List<IObserver<StyleSheet>> _observers;
-        private readonly IObserver<StyleSheet> _observer;
+        private readonly List<IObserver<IStyleSheet>> _observers;
+        private readonly IObserver<IStyleSheet> _observer;
 
-        internal Unsubscriber(List<IObserver<StyleSheet>> observers, IObserver<StyleSheet> observer)
+        internal Unsubscriber(List<IObserver<IStyleSheet>> observers, IObserver<IStyleSheet> observer)
         {
             _observers = observers;
             _observer = observer;

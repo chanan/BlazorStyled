@@ -4,9 +4,9 @@ using System;
 
 namespace BlazorStyled
 {
-    public class StyledBase : ComponentBase, IObserver<StyleSheet>, IDisposable
+    public class StyledBase : ComponentBase, IObserver<IStyleSheet>, IDisposable
     {
-        [Inject] protected StyleSheet StyleSheet { get; private set; }
+        [Inject] protected IStyleSheet StyleSheet { get; private set; }
         private string _hashCode = null;
         private bool _shouldRender = true;
 
@@ -32,7 +32,7 @@ namespace BlazorStyled
             throw new NotImplementedException();
         }
 
-        public void OnNext(StyleSheet value)
+        public void OnNext(IStyleSheet value)
         {
             //Only call state has changed if the stylesheet really changed
             string newHashCode = StyleSheet.GetHashCodes();
