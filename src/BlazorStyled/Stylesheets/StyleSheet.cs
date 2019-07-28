@@ -10,10 +10,10 @@ namespace BlazorStyled.Stylesheets
     {
         private const string DEFAULT = "Default";
         private readonly List<IObserver<IStyleSheet>> _observers = new List<IObserver<IStyleSheet>>();
-        private IDictionary<string, IDictionary<string, IRule>> _classes = new Dictionary<string, IDictionary<string, IRule>>();
+        private readonly IDictionary<string, IDictionary<string, IRule>> _classes = new Dictionary<string, IDictionary<string, IRule>>();
         private readonly Hash _hash = new Hash();
 
-        public void ClearStyles(string id = null)
+        public void ClearStyles(string id)
         {
             string key = id ?? DEFAULT;
             if (_classes.ContainsKey(key))
@@ -26,7 +26,7 @@ namespace BlazorStyled.Stylesheets
             }
         }
 
-        public void AddClass(IRule rule, string id = null)
+        public void AddClass(IRule rule, string id)
         {
             IDictionary<string, IRule> classes = GetClassesForId(id);
             if (rule.Selector.StartsWith("."))
@@ -62,7 +62,7 @@ namespace BlazorStyled.Stylesheets
         private IDictionary<string, IRule> GetClassesForId(string id)
         {
             string key = id ?? DEFAULT;
-            if(!_classes.ContainsKey(key))
+            if (!_classes.ContainsKey(key))
             {
                 _classes.Add(key, new Dictionary<string, IRule>());
             }

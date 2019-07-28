@@ -13,5 +13,6 @@ namespace BlazorStyled
         void Fontface(string css);
         Theme Theme { get; set; }
         void AddGoogleFonts(List<GoogleFont> googleFonts);
+        IStyled WithId(string id);
     }
 }

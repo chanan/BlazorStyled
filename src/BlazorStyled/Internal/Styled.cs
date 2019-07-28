@@ -8,11 +8,20 @@ namespace BlazorStyled.Internal
 {
     internal class Styled : IStyled
     {
+        private const string DEFAULT = "Default";
         private readonly IStyleSheet _styleSheet;
+        private readonly string _id;
 
         public Styled(IStyleSheet styleSheet)
         {
             _styleSheet = styleSheet;
+            _id = DEFAULT;
+        }
+
+        private Styled(IStyleSheet styleSheet, string id)
+        {
+            _styleSheet = styleSheet;
+            _id = id;
         }
 
         public Theme Theme { get; set; } = new Theme();
@@ -21,27 +30,28 @@ namespace BlazorStyled.Internal
         {
             try
             {
+                css.RemoveUnneededSpaces();
                 IRule rule;
                 if (className.IndexOf("@font-face") != -1)
                 {
                     rule = ParseFontFace(css);
-                    _styleSheet.AddClass(rule);
+                    _styleSheet.AddClass(rule, _id);
                 }
                 else if (className.IndexOf("@media") != -1)
                 {
                     rule = ParseMediaQuery(className, "{" + css + "}");
-                    _styleSheet.AddClass(rule);
+                    _styleSheet.AddClass(rule, _id);
                 }
                 else
                 {
                     rule = ParsePredefinedRuleSet(className, css);
                     if (_elements.Contains(className))
                     {
-                        _styleSheet.AddClass(rule);
+                        _styleSheet.AddClass(rule, _id);
                     }
                     else
                     {
-                        _styleSheet.AddClass(rule);
+                        _styleSheet.AddClass(rule, _id);
                     }
                 }
                 return rule.Selector;
@@ -60,14 +70,15 @@ namespace BlazorStyled.Internal
         {
             try
             {
+                css.RemoveUnneededSpaces();
                 RuleSet ruleSet = ParseRuleSet(css);
                 if (ruleSet.Declarations.Count > 0)
                 {
-                    _styleSheet.AddClass(ruleSet);
+                    _styleSheet.AddClass(ruleSet, _id);
                 }
                 foreach (IRule nestedRuleSet in ruleSet.NestedRules)
                 {
-                    _styleSheet.AddClass(nestedRuleSet);
+                    _styleSheet.AddClass(nestedRuleSet, _id);
                 }
                 return ruleSet.Selector;
             }
@@ -96,8 +107,9 @@ namespace BlazorStyled.Internal
         {
             try
             {
+                css.RemoveUnneededSpaces();
                 Keyframe keyframe = ParseKeyframe(css);
-                _styleSheet.AddClass(keyframe);
+                _styleSheet.AddClass(keyframe, _id);
                 return keyframe.Selector;
             }
             catch (StyledException e)
@@ -114,8 +126,9 @@ namespace BlazorStyled.Internal
         {
             try
             {
+                css.RemoveUnneededSpaces();
                 FontFace fontface = ParseFontFace(css);
-                _styleSheet.AddClass(fontface);
+                _styleSheet.AddClass(fontface, _id);
             }
             catch (StyledException e)
             {
@@ -129,14 +142,23 @@ namespace BlazorStyled.Internal
 
         public void ClearStyles()
         {
-            _styleSheet.ClearStyles();
+            _styleSheet.ClearStyles(_id);
         }
 
         public void AddGoogleFonts(List<GoogleFont> googleFonts)
         {
             string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
             string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
-            _styleSheet.AddClass(new ImportUri(uri));
+            _styleSheet.AddClass(new ImportUri(uri), _id);
+        }
+
+        public IStyled WithId(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                id = DEFAULT;
+            }
+            return new Styled(_styleSheet, id.Replace(" ", "-"));
         }
 
         private IRule ParseMediaQuery(string classname, string css)
@@ -145,7 +167,6 @@ namespace BlazorStyled.Internal
             {
                 Selector = classname
             };
-            //Trim the css from the surrending class
             int first = css.IndexOf('{') + 1;
             int last = css.LastIndexOf('}');
             string parsed = css.Substring(first, last - first).Trim();
@@ -239,7 +260,10 @@ namespace BlazorStyled.Internal
 
         private RuleSet ParseRuleSet(string css)
         {
-            RuleSet ruleSet = new RuleSet();
+            RuleSet ruleSet = new RuleSet
+            {
+                Label = _id != DEFAULT ? _id : null
+            };
             IRule current = ruleSet;
             string buffer = string.Empty;
             bool nestedClassClosed = true; //Start from true becuase the parent doesnt need to be closed
@@ -253,7 +277,7 @@ namespace BlazorStyled.Internal
                         {
                             if (declaration.Property == "label")
                             {
-                                current.Label = declaration.Value.Trim();
+                                current.Label = current.Label == null ? declaration.Value.Trim() : $"{current.Label}-{declaration.Value.Trim()}";
                             }
                             else
                             {

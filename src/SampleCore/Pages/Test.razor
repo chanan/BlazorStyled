@@ -5,20 +5,19 @@
 
 <h2>This is another test</h2>
 
-<button @onclick="@onclick">Clear</button>
+<button @onclick="onclick">Clear test only</button>
+
 
 @code { 
     protected override void OnInit()
     {
-        Styled.Css("@media only screen and (max-width:480px)", @"
-            html {
-                color: red;
-            }
-        ");
+        Styled.Css("h1", "color: blue");
+        Styled.WithId("test").Css("h2", "color: yellow;");
     }
 
     private void onclick() 
     {
-        Styled.ClearStyles();
+        Console.WriteLine("Clear");
+        Styled.WithId("test").ClearStyles();
     }
 }
