@@ -34,9 +34,9 @@ View the detailed [docs](https://blazorstyled.io) at https://blazorstyled.io.
     private string hover;
     private string color = "white";
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
-        hover = await Styled.Css($@"
+        hover = Styled.Css($@"
             padding: 32px;
             background-color: hotpink;
             font-size: 24px;
