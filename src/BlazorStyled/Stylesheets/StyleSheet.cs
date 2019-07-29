@@ -114,6 +114,32 @@ namespace BlazorStyled.Stylesheets
             return GetEnumerator();
         }
 
+        public IEnumerable<IRule> GetRulesWithoutImport()
+        {
+            IEnumerable<IRule> q = from classes in _classes.Values
+                                   from rule in classes.Values
+                                   where rule.RuleType != RuleType.Import
+                                   select rule;
+
+            return q.AsEnumerable();
+        }
+
+        public IEnumerable<string> GetImportRules()
+        {
+            List<string> list = new List<string>();
+            List<IRule> rules = (from classes in _classes.Values
+                                 from rule in classes.Values
+                                 where rule.RuleType == RuleType.Import
+                                 select rule).ToList();
+
+            foreach (IRule rule in rules)
+            {
+                ImportUri import = (ImportUri)rule;
+                list.Add(import.Declarations[0].Value);
+            }
+            return list.AsEnumerable();
+        }
+
         public IDisposable Subscribe(IObserver<IStyleSheet> observer)
         {
             if (!_observers.Contains(observer))

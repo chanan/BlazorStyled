@@ -10,6 +10,8 @@ namespace BlazorStyled.Stylesheets
         void ClearStyles(string id);
         IEnumerator<IRule> GetEnumerator();
         string GetHashCodes();
+        IEnumerable<string> GetImportRules();
+        IEnumerable<IRule> GetRulesWithoutImport();
         IDisposable Subscribe(IObserver<IStyleSheet> observer);
     }
 }

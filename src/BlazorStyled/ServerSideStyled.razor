@@ -1,7 +1,12 @@
 ﻿@inherits StyledBase
 
+@foreach (var href in StyleSheet.GetImportRules())
+{
+    <link href="@href" rel="stylesheet" />
+}
+
 <style>
-    @foreach (var cssClass in StyleSheet)
+    @foreach (var cssClass in StyleSheet.GetRulesWithoutImport())
     {
         @cssClass.ToString();
     }

@@ -42,8 +42,6 @@ namespace ServerSideSample
                 });
             }
 
-            //services.AddBlazorStyled();
-
             services.AddServicesForSampleSites();
         }
 
