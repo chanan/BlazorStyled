@@ -10,17 +10,22 @@
 
 <Heading HeadingSize="HeadingSize.H3">Usage</Heading>
 
-<Paragraph>Add BlazorStyled to <code>Startup.cs</code>. Setting <code>isDevelopment</code> to "true" will cause BlazorStyled to write the styles as text nodes in a style tag. 
-    This allows the styles to be edited in the browser dev tools. Setting <code>isDevelopment</code> to "false" (the default if not specified) will cause BlazorStyled to write styles
-    using <code>CSSStyle​Sheet​.insert​Rule()</code> which is faster but not editable in the browser dev tools (note the documentation site is set to development mode):
-    </Paragraph>
+<Paragraph>
+    Add BlazorStyled to <code>Startup.cs</code>. <code>isDevelopment</code> is not currently used but left in the API for backward compatibility.
+</Paragraph>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/Startup.cs" CodeFileLineNumbers="11,12,13,17" />
+<PrettyCode CodeFile="_content/SampleCore/install1.html" HighlightLines="5,11" />
+
+<Paragraph>
+    Add a <code>style</code> tag to your <code>index.html</code>:
+</Paragraph>
+
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/wwwroot/index.html" HighlightLines="8" />
 
 <Paragraph>Add the reference to the package to your <code>_Imports.razor</code> file:</Paragraph>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/_Imports.razor" ShowLineNumbers="false" CodeFileLineNumbers="9" />
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/_Imports.razor" ShowLineNumbers="false" CodeFileLineNumbers="9" />
 
 <Paragraph>Finally, inject <code>IStyled</code> into your component:</Paragraph>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/Pages/Index.razor" ShowLineNumbers="false" CodeFileLineNumbers="1" />
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Index.razor" ShowLineNumbers="false" CodeFileLineNumbers="2" />

@@ -2,12 +2,7 @@
 
 <Heading>Server Side Usage</Heading>
 
-<p>The examples on this documentation side are for Blazor Client Side, however, Server Side is supported with some minor changes. Follow the install directions on the 
-    <a href="install">install page</a>. Then add a <code>script</code> tag to your <code>_Host.cshtml</code> file:</p>
+<Paragraph>The examples on this documentation side are for Blazor Client Side, however, Server Side is supported with some minor changes. Follow the install directions on the 
+    <a href="install">install page</a>. Then add component to the <code>head</code> of your <code>_Host.cshtml</code> file:</Paragraph>
 
-<PrettyCode Title="_Host.cshtml" CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/ServerSideSample/Pages/_Host.cshtml" HighlightLines="17" />
-
-<p>Lastly, Server Side Blazor calls should be done in <code>OnInitAsync</code> with a call to <code>StateHasChanged()</code> at the end. Making those changes, any exmaple on this 
-    site should work in Blazor Server Side as well as Client Side. Here is an exmple from the included ServerSideSample project:</p>
-
-<PrettyCode Title="Index.razor" CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/ServerSideSample/Pages/Index.razor" HighlightLines="11,14" />
+<PrettyCode Title="_Host.cshtml" CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/ServerSideSample/Pages/_Host.cshtml" HighlightLines="12" />

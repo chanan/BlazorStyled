@@ -1,0 +1,13 @@
+﻿public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        serviceCollection.AddBlazorStyled();
+    }
+
+    public void Configure(IComponentsApplicationBuilder app)
+    {
+        app.AddComponent<App>("app");
+        app.AddClientSideStyled();
+    }
+}
