@@ -17,6 +17,8 @@ namespace BlazorStyled
 
         [Parameter] private RenderFragment ChildContent { get; set; }
         [Parameter] private string Classname { get; set; }
+        [Parameter] private MediaQueries MediaQuery { get; set; } = MediaQueries.None;
+        [Parameter] private bool IsKeyframes { get; set; }
         [Parameter] private EventCallback<string> ClassnameChanged { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
@@ -24,11 +26,36 @@ namespace BlazorStyled
         protected override async Task OnInitAsync()
         {
             string content = RenderAsString();
-            string classname = StyledService.Css(content);
+            string classname;
+            if (IsKeyframes)
+            {
+                classname = StyledService.Keyframes(content);
+            } else
+            {
+                if (MediaQuery != MediaQueries.None)
+                {
+                    content = WrapWithMediaQuery(content);
+                }
+                classname = StyledService.Css(content);
+            }
             if(ClassnameChanged.HasDelegate)
             {
                 await ClassnameChanged.InvokeAsync(classname);
             }
+        }
+
+        private string WrapWithMediaQuery(string content)
+        {
+            var query = MediaQuery switch
+            {
+                MediaQueries.Mobile => "@media only screen and (max-width:480px)",
+                MediaQueries.Tablet => "@media only screen and (max-width:768px)",
+                MediaQueries.Default => "@media only screen and (max-width:768px)",
+                MediaQueries.Large => "@media only screen and (max-width:768px)",
+                MediaQueries.Larger => "@media only screen and (max-width:768px)",
+                _ => string.Empty,
+            };
+            return $"{query}{{{content}}}";
         }
 
         private string RenderAsString()

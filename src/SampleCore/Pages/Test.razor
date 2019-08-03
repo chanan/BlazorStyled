@@ -1,19 +1,29 @@
 @page "/test"
 
-<Styled @bind-Classname="@MyClass">
-    label: hover-example;
-    padding: 32px;
-    background-color: green;
-    font-size: 24px;
-    border-radius: 4px;
-    &:hover {
-        color: @color;
+<Styled @bind-Classname="@bounce" IsKeyframes="true">
+    from, 20%, 53%, 80%, to {
+        transform: translate3d(0,0,0);
+    }
+
+    40%, 43% {
+        transform: translate3d(0, -30px, 0);
+    }
+
+    70% {
+        transform: translate3d(0, -15px, 0);
+    }
+
+    90% {
+        transform: translate3d(0,-4px,0);
     }
 </Styled>
 
-<p class="@MyClass">This is a test</p>
+<Styled @bind-Classname="@example">
+    animation: vlzl-qdd 1s ease infinite;
+</Styled>
+
+<div class="@example">Bouncy text!</div>
 
 @code {
-    private string color = "white";
-    private string MyClass;
+    private string MyClass1, MyClass2, MyClass3, MyClass4, MyClass5, bounce, example;
 }
