@@ -1,23 +1,19 @@
 @page "/test"
-@inject IStyled Styled
 
-<h1>This is a test</h1>
-
-<h2>This is another test</h2>
-
-<button @onclick="onclick">Clear test only</button>
-
-
-@code { 
-    protected override void OnInit()
-    {
-        Styled.Css("h1", "color: blue");
-        Styled.WithId("test").Css("h2", "color: yellow;");
+<Styled @bind-Classname="@MyClass">
+    label: hover-example;
+    padding: 32px;
+    background-color: green;
+    font-size: 24px;
+    border-radius: 4px;
+    &:hover {
+        color: @color;
     }
+</Styled>
 
-    private void onclick() 
-    {
-        Console.WriteLine("Clear");
-        Styled.WithId("test").ClearStyles();
-    }
+<p class="@MyClass">This is a test</p>
+
+@code {
+    private string color = "white";
+    private string MyClass;
 }

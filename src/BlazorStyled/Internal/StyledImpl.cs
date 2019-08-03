@@ -6,19 +6,19 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    internal class Styled : IStyled
+    internal class StyledImpl : IStyled
     {
         private const string DEFAULT = "Default";
         private readonly IStyleSheet _styleSheet;
         private readonly string _id;
 
-        public Styled(IStyleSheet styleSheet)
+        public StyledImpl(IStyleSheet styleSheet)
         {
             _styleSheet = styleSheet;
             _id = DEFAULT;
         }
 
-        private Styled(IStyleSheet styleSheet, string id)
+        private StyledImpl(IStyleSheet styleSheet, string id)
         {
             _styleSheet = styleSheet;
             _id = id;
@@ -158,7 +158,7 @@ namespace BlazorStyled.Internal
             {
                 id = DEFAULT;
             }
-            return new Styled(_styleSheet, id.Replace(" ", "-"));
+            return new StyledImpl(_styleSheet, id.Replace(" ", "-"));
         }
 
         private IRule ParseMediaQuery(string classname, string css)
