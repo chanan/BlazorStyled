@@ -4,10 +4,16 @@
 
 <Paragraph>The example below is taken from <a href="https://glamorous.rocks/examples/#button">Glamorous Community</a>. The highlighted lines show how variables can be used in the css.</Paragraph>
 
-<MyButton OnClick="@onclick" Color="green">Green Button</MyButton>
+<MyButton OnClick="@onclick">Green Button</MyButton>
 <MyButton OnClick="@onclick" Color="hotpink">Hotpink Button</MyButton>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Shared/MyButton.razor" HighlightLines="8,26" />
+<Paragraph>The button is used like so:</Paragraph>
+
+<PrettyCode CodeFile="_content/SampleCore/components1.html" HighlightLines="13,22" />
+
+<Paragraph>Below is the source for the button:</Paragraph>
+
+<PrettyCode CodeFile="_content/SampleCore/components2.html" />
 
 @code {
     private void onclick(UIMouseEventArgs e)

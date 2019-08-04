@@ -1,6 +1,17 @@
 ﻿@page "/media"
 @inject IStyled Styled
 
+<Styled @bind-Classname="@p1">
+    font-size: 30px;
+    @@media (min-width: 420px) {
+        font-size: 50px;
+    }
+</Styled>
+
+<Styled @bind-Classname="@p3" MediaQuery="MediaQueries.Mobile">
+    color: red;
+</Styled>
+
 <Heading>Media Queries</Heading>
 
 <Paragraph>Using media queries in BlazorStyled works just like using media queries in regular css except you don’t have to specify a selector inside the block, 
@@ -8,7 +19,7 @@
 
 <p class="@p1">Some text!</p>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/media.razor" CodeFileLineNumbers="9" CodeSectionFileLineNumbers="23,28-35,49" />
+<PrettyCode CodeFile="_content/SampleCore/media1.html" />
 
 <Heading HeadingSize="HeadingSize.H3">Reusable Media Queries</Heading>
 
@@ -17,23 +28,21 @@
 
 <p class="@p2">Some other text!</p>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/media.razor" CodeFileLineNumbers="18" CodeSectionFileLineNumbers="24,26,28,29,37-49" />
+<PrettyCode CodeFile="_content/SampleCore/media2.html" />
+
+<Paragraph>BlazorStyled comes with some common media queries pre-defined:</Paragraph>
+
+<p class="@p3">This paragraph will be red on a mobile phone</p>
+
+<PrettyCode CodeFile="_content/SampleCore/media3.html" />
 
 @code {
-    private string p1;
-    private string p2;
+    private string p1, p2, p3;
 
     private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
 
     protected override void OnInit()
     {
-        p1 = Styled.Css(@"
-            font-size: 30px;
-            @media (min-width: 420px) {
-                font-size: 50px;
-            }
-        ");
-
         var mq = (from b in breakpoints
                   select $"@media (min-width: {b}px)").ToArray();
 

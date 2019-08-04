@@ -1,5 +1,14 @@
 @page "/labels"
-@inject IStyled Styled
+
+<Styled @bind-Classname="div1">
+    color: hotpink;
+    label: some-name;
+</Styled>
+
+<Styled @bind-Classname="@div2" Id="some-id">
+    label: another-name;
+    color: lightgreen;
+</Styled>
 
 <Heading>Labels</Heading>
 
@@ -10,21 +19,8 @@
 
 <div class="@div2">@div2</div>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Labels.razor" CodeFileLineNumbers="9-11" CodeSectionFileLineNumbers="16-29" HighlightLines="12,17" />
+<PrettyCode CodeFile="_content/SampleCore/labels1.html" HighlightLines="3,7" />
 
 @code {
     private string div1, div2;
-
-    protected override void OnInit()
-    {
-        div1 = Styled.Css(@"
-            color: hotpink;
-            label: some-name;
-        ");
-
-        div2 = Styled.WithId("some-id").Css(@"
-            label: another-name;
-            color: lightgreen;
-        ");
-    }
 }

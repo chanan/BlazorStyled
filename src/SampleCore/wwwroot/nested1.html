@@ -1,0 +1,9 @@
+﻿<Styled @bind-Classname="@nested">
+    color: turquoise;
+    & a {
+    border-bottom: 1px solid currentColor;
+    cursor:pointer;
+    }
+</Styled>
+
+<div class="@nested">Some text. <a>A link with a bottom border.</a></div>

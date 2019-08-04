@@ -84,6 +84,8 @@ namespace BlazorStyled.Stylesheets
 
         public int Count => _classes.Count;
 
+        public Theme Theme { get; set; } = new Theme();
+
         public string GetHashCodes()
         {
             List<string> list = (from classes in _classes.Values

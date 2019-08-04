@@ -13,5 +13,6 @@ namespace BlazorStyled.Stylesheets
         IEnumerable<string> GetImportRules();
         IEnumerable<IRule> GetRulesWithoutImport();
         IDisposable Subscribe(IObserver<IStyleSheet> observer);
+        Theme Theme { get; set; }
     }
 }

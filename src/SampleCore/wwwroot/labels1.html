@@ -1,0 +1,17 @@
+﻿<Styled @bind-Classname="div1">
+    color: hotpink;
+    label: some-name;
+</Styled>
+
+<Styled @bind-Classname="@div2" Id="some-id">
+    label: another-name;
+    color: lightgreen;
+</Styled>
+
+<div class="@div1">@div1</div>
+
+<div class="@div2">@div2</div>
+
+@code {
+    private string div1, div2;
+}

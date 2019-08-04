@@ -1,32 +1,29 @@
 ﻿@page "/theming"
 @inject IStyled Styled
 
+<Styled @bind-Classname="@example">
+    color: {colors.primary};
+</Styled>
+
 <Heading>Theming</Heading>
 
 <Paragraph>Using the <code>Theme</code> property in <code>IStyled</code> lets you store variables in a <code>Dictionary</code> you can use in your CSS later.
     You can also define <code>Theme</code> objects and allow your user to switch between them. (Example coming soon).</Paragraph>
 
 <Paragraph>
-    The usage of theming will improve in the future. For now, you will need to define a temporary variable like <code>color</code> in the
-    example below. The reason for that is that in .net you can't use <code>Dictionary</code> objects in string interpolation.
+    To use a theme variable surround it with brackets { } like in the example below.
 </Paragraph>
 
 <p class="@example">Some text</p>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Theming.razor" CodeFileLineNumbers="14" CodeSectionFileLineNumbers="19-31" />
+<PrettyCode CodeFile="_content/SampleCore/theming1.html" />
 
 @code {
     private string example;
 
     protected override void OnInit()
     {
-        //Normally this would be defined else where
+        //Normally this would be defined else where such as in MainLayout.cs
         Styled.Theme.Values.Add("colors.primary", "hotpink");
-
-        //We need for now to define a temporary variable
-        var color = Styled.Theme.Values["colors.primary"];
-        example = Styled.Css($@"
-            color: {color};
-        ");
     }
 }

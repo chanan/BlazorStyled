@@ -1,6 +1,4 @@
-﻿@page "/fonts"
-
-<Styled>
+﻿<Styled>
     @@font-face {
         font-family: 'Indie Flower';
         font-style: normal;
@@ -15,14 +13,7 @@
     font-family: 'Indie Flower';
 </Styled>
 
-<Heading>Font Faces</Heading>
-
-<Paragraph>if you need more control than the <a href="/googlefonts">Google Fonts support</a> gives you, or need to load your own fonts, 
-    you can assign fonts to an element by first defining the font using <code>Styled.Fontface()</code> and then using it on an element. Below is an example:</Paragraph>
-
 <p class="@p">This paragraph is in Indie Flower font.</p>
-
-<PrettyCode CodeFile="_content/SampleCore/fonts1.html" CodeFileLineNumbers="8" CodeSectionFileLineNumbers="13-27" />
 
 @code {
     private string p;

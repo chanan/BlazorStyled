@@ -1,7 +1,19 @@
 ﻿@page "/motivation"
-@inject IStyled Styled
 
 <Heading>Motivation</Heading>
+
+<Styled @bind-Classname="@ul">
+    margin-top: 20px;
+    padding-left: 20px;
+</Styled>
+
+<Styled @bind-Classname="@li">
+    margin-top: 10px;
+    font-size: 16px;
+    color: #1B1D1D;
+    font-weight: 400;
+    line-height: 1.7;
+</Styled>
 
 <ul class="@ul">
     <li class="@li">Maintain your css inside your component instead of a seperate file</li>
@@ -20,20 +32,4 @@
 
 @code {
     private string ul, li;
-
-    protected override void OnInit()
-    {
-        ul = Styled.Css(@"
-            margin-top: 20px;
-            padding-left: 20px;
-        ");
-
-        li = Styled.Css(@"
-            margin-top: 10px;
-            font-size: 16px;
-            color: #1B1D1D;
-            font-weight: 400;
-            line-height: 1.7;
-        ");
-    }
 }

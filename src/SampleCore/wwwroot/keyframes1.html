@@ -1,6 +1,4 @@
-﻿@page "/keyframes"
-
-<Styled @bind-Classname="@bounce" IsKeyframes="true">
+﻿<Styled @bind-Classname="@bounce" IsKeyframes="true">
     from, 20%, 53%, 80%, to {
         transform: translate3d(0,0,0);
     }
@@ -22,16 +20,7 @@
     animation: vlzl-qdd 1s ease infinite;
 </Styled>
 
-<Heading>Keyframes</Heading>
-
-<Paragraph>
-    You can define animations using the <code>Keyframes</code> method from <code>IStyled</code>.
-    <code>Keyframes</code> takes in a css keyframe definition and returns a classname you can use in styles.
-</Paragraph>
-
 <div class="@example">Some bouncing text!</div>
-
-<PrettyCode CodeFile="_content/SampleCore/keyframes1.html" />
 
 @code {
     private string bounce, example;

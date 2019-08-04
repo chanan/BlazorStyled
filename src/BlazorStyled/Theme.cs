@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BlazorStyled.Internal
+namespace BlazorStyled
 {
     public class Theme
     {

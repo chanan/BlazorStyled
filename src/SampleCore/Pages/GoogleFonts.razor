@@ -1,5 +1,18 @@
 @page "/googlefonts"
-@inject IStyled Styled
+
+<StyledGoogleFont Name="Geostar" Styles="normal" />
+
+<StyledGoogleFont Name="Roboto" Styles="normal,700" />
+
+<Styled @bind-Classname="@geostar">
+    font-family: Geostar;
+</Styled>
+
+<Styled @bind-Classname="@roboto">
+    font-family: Roboto;
+    font-weight: 700;
+</Styled>
+
 
 <Heading>Google Fonts</Heading>
 
@@ -9,26 +22,17 @@
 
 <p class="@geostar">This is the Geostar font</p>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/GoogleFonts.razor" CodeFileLineNumbers="10" CodeSectionFileLineNumbers="22-33" />
+<PrettyCode CodeFile="_content/SampleCore/googleFont1.html" />
 
 <Paragraph>
     Note: <code>Styles</code> is a list of strings that can be any font style accepted by Google font API such as: "normal", "bold", "300", "400" up to "900", and italic versions such as "700i". 
     For more information see <a href="https://developers.google.com/fonts/docs/getting_started#specifying_font_families_and_styles_in_a_stylesheet_url">the Google font developer API</a>.
 </Paragraph>
 
-<p class="@roboto">This is the Roboto font</p>
+<p class="@roboto">This is the (bold) Roboto font</p>
+
+<PrettyCode CodeFile="_content/SampleCore/googleFont2.html" />
 
 @code { 
     private string geostar, roboto;
-
-    protected override void OnInit()
-    {
-        Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Geostar", Styles = new List<string> { "normal" } }});
-
-        Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Roboto", Styles = new List<string> { "normal" } }});
-
-        geostar = Styled.Css("font-family: Geostar;");
-
-        roboto = Styled.Css("font-family: Roboto;");
-    }
 }

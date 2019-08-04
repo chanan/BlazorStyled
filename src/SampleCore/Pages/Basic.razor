@@ -1,6 +1,10 @@
 ﻿@page "/basics"
 @inject IStyled Styled
 
+<Styled @bind-Classname="@example1">
+    background-color: hotpink;
+</Styled>
+
 <Heading>The Basics</Heading>
 
 <Paragraph>
@@ -13,7 +17,7 @@
 
 <div class="@example1">The background of this div is hotpink</div>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Basic.razor" CodeFileLineNumbers="14" CodeSectionFileLineNumbers="46,49-52" />
+<PrettyCode CodeFile="_content/SampleCore/basic1.html" />
 
 <Paragraph>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</Paragraph>
 
@@ -25,7 +29,7 @@
 
 <Paragraph>Note that if you keep clicking on the buttons, the CSS classes are reused.</Paragraph>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Basic.razor" CodeFileLineNumbers="20-22" CodeSectionFileLineNumbers="47,54-58" />
+<PrettyCode CodeFile="_content/SampleCore/basic2.html" />
 
 <Heading HeadingSize="HeadingSize.H3">Using predefined class names</Heading>
 
@@ -43,13 +47,7 @@
 <PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Shared/MainLayout.razor" CodeFileLineNumbers="28,29,38-43,116" />
 
 @code {
-    private string example1;
-    private string example2;
-
-    protected override void OnInit()
-    {
-        example1 = Styled.Css("background-color: hotpink;");
-    }
+    private string example1, example2;
 
     protected void click(string color)
     {

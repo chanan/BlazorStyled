@@ -24,7 +24,17 @@ namespace BlazorStyled.Internal
             _id = id;
         }
 
-        public Theme Theme { get; set; } = new Theme();
+        public Theme Theme
+        {
+            get
+            {
+                return _styleSheet.Theme;
+            }
+            set
+            {
+                _styleSheet.Theme = value;
+            }
+        }
 
         public string Css(string className, string css)
         {

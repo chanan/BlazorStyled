@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorStyled.Internal;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ namespace BlazorStyled
         public readonly ServiceProvider EmptyServiceProvider = new ServiceCollection().BuildServiceProvider();
 
         [Parameter] private RenderFragment ChildContent { get; set; }
+        [Parameter] private string Id { get; set; }
         [Parameter] private string Classname { get; set; }
         [Parameter] private MediaQueries MediaQuery { get; set; } = MediaQueries.None;
         [Parameter] private bool IsKeyframes { get; set; }
@@ -25,28 +27,41 @@ namespace BlazorStyled
 
         protected override async Task OnInitAsync()
         {
+            IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string content = RenderAsString();
+            content = ApplyTheme(styled, content);
             string classname;
             if (IsKeyframes)
             {
-                classname = StyledService.Keyframes(content);
-            } else
+                classname = styled.Keyframes(content);
+            }
+            else
             {
                 if (MediaQuery != MediaQueries.None)
                 {
                     content = WrapWithMediaQuery(content);
                 }
-                classname = StyledService.Css(content);
+                classname = styled.Css(content);
             }
-            if(ClassnameChanged.HasDelegate)
+            if (ClassnameChanged.HasDelegate)
             {
                 await ClassnameChanged.InvokeAsync(classname);
             }
         }
 
+        private string ApplyTheme(IStyled styled, string content)
+        {
+            Theme theme = styled.Theme;
+            foreach(var key in theme.Values.Keys)
+            {
+                content = content.Replace("{" + key + "}", theme.Values[key]);
+            }
+            return content;
+        }
+
         private string WrapWithMediaQuery(string content)
         {
-            var query = MediaQuery switch
+            string query = MediaQuery switch
             {
                 MediaQueries.Mobile => "@media only screen and (max-width:480px)",
                 MediaQueries.Tablet => "@media only screen and (max-width:768px)",
