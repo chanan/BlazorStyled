@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @inject IStyled Styled
+@inject ITypography Typography
 
 <StyledGoogleFont Name="Fira Mono" Styles="400" />
 
@@ -23,6 +24,9 @@
         border-radius: 0.325rem;
         margin: 0;
         padding: 0.2rem 0.325rem;
+    }
+    h1 {
+        margin-top: 0px;
     }
 </Styled>
 
@@ -120,8 +124,7 @@
 
     protected override void OnInit()
     {
-        /*var theme = new BlazorTypography.Themes.Sutro();
-        theme.IncludeNormalize = false;
-        Typography.ApplyTypography(theme);*/
+        var theme = new BlazorTypography.Themes.Sutro();
+        Typography.ApplyTypography(theme);
     }
 }

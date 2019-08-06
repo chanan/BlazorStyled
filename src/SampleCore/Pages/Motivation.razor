@@ -1,35 +1,28 @@
 ﻿@page "/motivation"
 
-<Heading>Motivation</Heading>
+<h1>Motivation</h1>
 
 <Styled @bind-Classname="@ul">
     margin-top: 20px;
     padding-left: 20px;
 </Styled>
 
-<Styled @bind-Classname="@li">
-    margin-top: 10px;
-    font-size: 16px;
-    color: #1B1D1D;
-    font-weight: 400;
-    line-height: 1.7;
-</Styled>
 
 <ul class="@ul">
-    <li class="@li">Maintain your css inside your component instead of a seperate file</li>
-    <li class="@li">Eliminate all collisions - no need to use !important</li>
-    <li class="@li">No need to worry about depoying css files - great for libraries</li>
-    <li class="@li">css are C# strings - use variables instead of solutions like sass</li>
+    <li>Maintain your css inside your component instead of a seperate file</li>
+    <li>Eliminate all collisions - no need to use !important</li>
+    <li>No need to worry about depoying css files - great for libraries</li>
+    <li>css are C# strings - use variables instead of solutions like sass</li>
 </ul>
 
-<Heading HeadingSize="HeadingSize.H3">Inspiration</Heading>
+<h3>Inspiration</h3>
 
 <ul class="@ul">
-    <li class="@li"><a href="https://emotion.sh/docs/introduction">Emotion</a></li>
-    <li class="@li"><a href="https://glamorous.rocks/">Glamorous</a></li>
-    <li class="@li"><a href="https://github.com/threepointone/glamor">Glamor</a></li>
+    <li><a href="https://emotion.sh/docs/introduction">Emotion</a></li>
+    <li><a href="https://glamorous.rocks/">Glamorous</a></li>
+    <li><a href="https://github.com/threepointone/glamor">Glamor</a></li>
 </ul>
 
 @code {
-    private string ul, li;
+    private string ul;
 }

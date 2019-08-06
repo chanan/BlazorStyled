@@ -5,21 +5,21 @@
     background-color: hotpink;
 </Styled>
 
-<Heading>The Basics</Heading>
+<h1>The Basics</h1>
 
-<Paragraph>
+<p>
     Blazor Styled allows you to define your CSS rules within your razor component. Calling <code>IStyled.Css(string css)</code> inserts the CSS rules into a dynamically
     created stylesheet in the DOM and returns the class name.
     Calling <code>IStyled.Css</code> again with the same CSS rules (order does not matter) will return the same class name.
-</Paragraph>
+</p>
 
-<Paragraph>Below is an a simple example of turning a div background hotpink:</Paragraph>
+<p>Below is an a simple example of turning a div background hotpink:</p>
 
 <div class="@example1">The background of this div is hotpink</div>
 
 <PrettyCode CodeFile="_content/SampleCore/basic1.html" />
 
-<Paragraph>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</Paragraph>
+<p>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</p>
 
 <button @onclick="@(x => click(" red"))">Make the div red</button>
 
@@ -27,22 +27,22 @@
 
 <div class="@example2">The background of this div will change color depending on the button pressed above</div>
 
-<Paragraph>Note that if you keep clicking on the buttons, the CSS classes are reused.</Paragraph>
+<p>Note that if you keep clicking on the buttons, the CSS classes are reused.</p>
 
 <PrettyCode CodeFile="_content/SampleCore/basic2.html" />
 
-<Heading HeadingSize="HeadingSize.H3">Using predefined class names</Heading>
+<h3>Using predefined class names</h3>
 
-<Paragraph>
+<p>
     Sometimes you may need to use a specific class name or html element (Selector).
     Call <code>IStyled.Css(string className, string css)</code> to define css rules with a sepecfic selector.
     For example, the code below is from <code>NavMenu.razor</code> to sample project. It sets a class for the menu on the left of the website which uses <code>NavLink</code>.
     <code>NavLink</code> in turn sets the classname <code>active</code>, therefore the code below uses the selector <code>active</code>.
-</Paragraph>
+</p>
 
 <PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Shared/NavMenu.razor" CodeFileLineNumbers="16-18" CodeSectionFileLineNumbers="67.68,75-99,100" />
 
-<Paragraph>Another usage is to set classes on html elements, for example in <code>MainLayout.razor</code> the code below sets a class on the body tag:</Paragraph>
+<p>Another usage is to set classes on html elements, for example in <code>MainLayout.razor</code> the code below sets a class on the body tag:</p>
 
 <PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Shared/MainLayout.razor" CodeFileLineNumbers="28,29,38-43,116" />
 

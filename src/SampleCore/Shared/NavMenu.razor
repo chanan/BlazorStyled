@@ -1,7 +1,45 @@
 ﻿@inject IStyled Styled
 
+    <Styled @bind-Classname="@ul">
+        display: inline-flex;
+        list-style: none;
+        padding-inline-start: 0px;
+        margin-bottom: 0.2em;
+    </Styled>
+
+    <Styled @bind-Classname="@link">
+        display: block;
+        font-size: 24px;
+        font-weight: 300;
+        color: #1B1D1D;
+        text-decoration: none;
+        margin: 0;
+        font-size: 16px;
+        padding-bottom: 6px;
+        padding-left: 0;
+        padding-right: 0;
+        &:hover {
+            color: #C865B9;;
+        }
+    </Styled>
+
+    <Styled>
+        .active {
+            color: #D36AC2;
+            font-size: 16px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+    </Styled>
+
+    <Styled @bind-Classname="@h3nav">
+        margin-top: 0px;
+        margin-bottom: 0.25em;
+    </Styled>
     <nav>
-        <h3>Getting Started</h3>
+        <h3 class="@h3nav">Getting Started</h3>
         <ul class="@ul">
             <li>
                 <NavLink class="@link" href="" Match="NavLinkMatch.All">
@@ -27,7 +65,7 @@
                 </NavLink>
             </li>
         </ul>
-        <h3>Advanced</h3>
+        <h3 class="@h3nav">Advanced</h3>
         <ul class="@ul">
             <li>
                 <NavLink class="@link" href="fonts">
@@ -47,7 +85,7 @@
                 </NavLink>
             </li>
         </ul>
-        <h3>How To</h3>
+        <h3 class="@h3nav">How To</h3>
         <ul class="@ul">
             <li>
                 <NavLink class="@link" href="polished">
@@ -61,41 +99,5 @@
     </nav>
 
 @code {
-    private string ul;
-    private string link;
-
-    protected override void OnInit()
-    {
-        ul = Styled.Css(@"
-            display: inline-flex;
-            list-style: none;
-            padding-inline-start: 0px;
-        ");
-
-        link = Styled.Css(@"
-            display: block;
-            font-size: 24px;
-            font-weight: 300;
-            color: #1B1D1D;
-            text-decoration: none;
-            margin: 0;
-            font-size: 16px;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 0;
-            padding-right: 0;
-            &:hover {
-                color: #C865B9;;
-            }
-        ");
-
-        Styled.Css(".active", @"
-            color: #D36AC2;
-            font-size: 16px;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 0;
-            padding-right: 0;
-        ");
-    }
+    private string ul, link , h3nav;
 }

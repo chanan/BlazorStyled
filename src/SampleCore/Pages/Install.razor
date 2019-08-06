@@ -1,32 +1,32 @@
 ﻿@page "/install"
 
-<Heading>Install</Heading>
+<h1>Install</h1>
 
-<Paragraph>Add a reference to BlazorStyled from Nuget:</Paragraph>
+<p>Add a reference to BlazorStyled from Nuget:</p>
 
 <div>
     <a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a>
 </div>
 
-<Heading HeadingSize="HeadingSize.H3">Usage</Heading>
+<h3>Usage</h3>
 
-<Paragraph>
+<p>
     Add BlazorStyled to <code>Startup.cs</code>. <code>isDevelopment</code> is not currently used but left in the API for backward compatibility.
-</Paragraph>
+</p>
 
 <PrettyCode CodeFile="_content/SampleCore/install1.html" HighlightLines="5,11" />
 
-<Paragraph>
+<p>
     Add a <code>style</code> tag to your <code>index.html</code>:
-</Paragraph>
+</p>
 
 <PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/Sample/wwwroot/index.html" HighlightLines="8" />
 
-<Paragraph>Add the reference to the package to your <code>_Imports.razor</code> file:</Paragraph>
+<p>Add the reference to the package to your <code>_Imports.razor</code> file:</p>
 
 <PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/_Imports.razor" ShowLineNumbers="false" CodeFileLineNumbers="9" />
 
-<Paragraph>If you want to use the API (from a "code behind" for example), then inject <code>IStyled</code> into your component. If you are using 
-    the <code>&lt;Styled /></code> component, you do not need to inject <code>IStyled</code></Paragraph>
+<p>If you want to use the API (from a "code behind" for example), then inject <code>IStyled</code> into your component. If you are using 
+    the <code>&lt;Styled /></code> component, you do not need to inject <code>IStyled</code></p>
 
 <PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Index.razor" ShowLineNumbers="false" CodeFileLineNumbers="2" />

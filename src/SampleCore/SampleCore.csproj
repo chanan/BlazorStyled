@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorPrettyCode" Version="1.0.0-preview7-05" />
-    <PackageReference Include="BlazorTypography" Version="1.0.0-preview7-05" />
+    <PackageReference Include="BlazorPrettyCode" Version="1.0.0-preview7-06" />
+    <PackageReference Include="BlazorTypography" Version="1.0.0-preview7-06" />
     <PackageReference Include="Polished" Version="1.0.0-preview-02" />
   </ItemGroup>
 
