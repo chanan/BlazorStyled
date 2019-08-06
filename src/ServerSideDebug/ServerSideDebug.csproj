@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BlazorPrettyCode\src\BlazorPrettyCode\BlazorPrettyCode.csproj" />
+    <ProjectReference Include="..\..\..\BlazorTypography\src\BlazorTypography\BlazorTypography.csproj" />
     <ProjectReference Include="..\BlazorStyled\BlazorStyled.csproj" />
-    <ProjectReference Include="..\SampleCore\SampleCore.csproj" />
   </ItemGroup>
 
 </Project>

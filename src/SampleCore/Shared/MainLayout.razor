@@ -1,117 +1,127 @@
 @inherits LayoutComponentBase
 @inject IStyled Styled
-@inject IMixins Mixins
 
-    <div class="@container">
-        <div class="@navColumn">
-            <div class="@topNav"><h1 class="@brand">BlazorStyled</h1></div>
-            <div class="@bottom">
-                <NavMenu />
-            </div>
-        </div>
-        <div class="@mainColumn">
-            <div class="@topMain">
-                <ul class="@ul">
-                    <li class="@li"><a href="https://github.com/chanan/BlazorStyled"><img src="https://img.shields.io/github/stars/chanan/BlazorStyled.svg?style=social&label=Stars" /></a></li>
-                    <li class="@li"><a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></li>
-                </ul>
-            </div>
-            <div class="@bottom">
-                @Body
-            </div>
+<StyledGoogleFont Name="Fira Mono" Styles="400" />
+
+<Styled>
+    html {
+        height: 100%;
+    }
+    body {
+        height: 100%;
+        overflow: hidden;
+        margin: 0px;
+        box-sizing: border-box;
+    }
+    p > code {
+        font-family: 'Fira Mono';
+        margin-top: 20px;
+        color: #1B1D1D;
+        font-weight: 400;
+        line-height: 1.7;
+        background-color: rgba(117,63,131,0.07);
+        border-radius: 0.325rem;
+        margin: 0;
+        padding: 0.2rem 0.325rem;
+    }
+</Styled>
+
+<Styled @bind-Classname="@container">
+    label: container;
+    width: 1024px;
+    height: 100%;
+    overflow: hidden;
+    margin: auto;
+    display: flex;
+    box-sizing: border-box;
+</Styled>
+
+<Styled @bind-Classname="@navColumn">
+    label: nav-column;
+    @column
+    flex-shrink: 0;
+</Styled>
+
+<Styled @bind-Classname="@mainColumn">
+    label: main-column;
+    @column
+    width: 876px;
+</Styled>
+
+<Styled @bind-Classname="@topNav">
+    label: top-nav;
+    flex-shrink: 0;
+    padding: 20px 20px 20px 0px;
+</Styled>
+
+<Styled @bind-Classname="@topMain">
+    label: top-main;
+    flex-shrink: 0;
+    display: inline-flex;
+    padding: 20px;
+</Styled>
+
+<Styled @bind-Classname="@bottom">
+    label: content;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+</Styled>
+
+<Styled @bind-Classname="@brand">
+    label: brand;
+    margin: 0;
+    margin-left: 16px;
+    padding: 0;
+    font-size: 24px;
+    color: #D36AC2;
+</Styled>
+
+<Styled @bind-Classname="@ul">
+    label: nav-ul;
+    display: inline-flex;
+    list-style: none;
+    margin: 0;
+</Styled>
+
+<Styled @bind-Classname="@li">
+    label: nav-li;
+    margin-right: 20px;
+</Styled>
+
+<div class="@container">
+    <div class="@navColumn">
+        <div class="@topNav"><h1 class="@brand">BlazorStyled</h1></div>
+        <div class="@bottom">
+            <NavMenu />
         </div>
     </div>
+    <div class="@mainColumn">
+        <div class="@topMain">
+            <ul class="@ul">
+                <li class="@li"><a href="https://github.com/chanan/BlazorStyled"><img src="https://img.shields.io/github/stars/chanan/BlazorStyled.svg?style=social&label=Stars" /></a></li>
+                <li class="@li"><a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></li>
+            </ul>
+        </div>
+        <div class="@bottom">
+            @Body
+        </div>
+    </div>
+</div>
 
 @code {
     private string container, navColumn, mainColumn, topNav, topMain, bottom, brand, ul, li;
 
-    protected override void OnInit()
-    {
-        Styled.Css(Mixins.Normalize());
-
-        Styled.AddGoogleFonts(new List<GoogleFont> { new GoogleFont { Name = "Fira Mono", Styles = new List<string> { "400" } } });
-
-        Styled.Css("html", @"
-            height: 100%;
-        ");
-
-        Styled.Css("body", @"
-            height: 100%;
-            overflow: hidden;
-            margin: 0px;
-            box-sizing: border-box;
-        ");
-
-        Styled.Css("p > code", @"
-            font-family: 'Fira Mono';
-            margin-top: 20px;
-            color: #1B1D1D;
-            font-weight: 400;
-            line-height: 1.7;
-            background-color: rgba(117,63,131,0.07);
-            border-radius: 0.325rem;
-            margin: 0;
-            padding: 0.2rem 0.325rem;
-        ");
-
-        container = Styled.Css(@"
-            width: 1024px;
-            height: 100%;   
-            overflow: hidden;
-            margin: auto;
-            display: flex;
-            box-sizing: border-box;
-        ");
-
-        string column = @"
+    private string column = @"
             height: 100%;
             display: flex;
             flex-direction: column;
         ";
 
-        navColumn = Styled.Css($@"
-            {column}
-            flex-shrink: 0;
-        ");
-
-        mainColumn = Styled.Css($@"
-            {column}
-            width: 876px;
-        ");
-
-        topNav = Styled.Css(@"
-            flex-shrink: 0;
-            padding: 20px 20px 20px 0px;
-        ");
-
-        topMain = Styled.Css(@"
-            flex-shrink: 0;
-            display: inline-flex;
-            padding: 20px;
-        ");
-
-        bottom = Styled.Css(@"
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-        ");
-
-        brand = Styled.Css(@"
-            margin: 0;
-            margin-left: 16px;
-            padding: 0;
-            font-size: 24px;
-            color: #D36AC2;
-        ");
-
-        ul = Styled.Css(@"
-            display: inline-flex;
-            list-style: none;
-            margin: 0;
-        ");
-
-        li = Styled.Css(@"
-            margin-right: 20px;
-        ");
+    protected override void OnInit()
+    {
+        /*var theme = new BlazorTypography.Themes.Sutro();
+        theme.IncludeNormalize = false;
+        Typography.ApplyTypography(theme);*/
     }
 }

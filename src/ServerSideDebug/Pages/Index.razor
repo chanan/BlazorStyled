@@ -1,0 +1,38 @@
+﻿@page "/"
+@inject ITypography Typography
+@inject IStyled  Styled
+
+<h1>Hello, world!</h1>
+
+<Styled @bind-Classname="@p3" MediaQuery="MediaQueries.Mobile">
+    color: red;
+</Styled>
+
+<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Pages/Basic.razor"
+            CodeFileLineNumbers="2,28"
+            CodeSectionFileLineNumbers="50-56" />
+
+
+@code { 
+    string p2, p3;
+    private int[] breakpoints = new int[] { 576, 768, 992, 1200 };
+    protected override void OnInit()
+    {
+        var theme = new BlazorTypography.Themes.Sutro();
+        theme.IncludeNormalize = false;
+        Typography.ApplyTypography(theme);
+
+        var mq = (from b in breakpoints
+                  select $"@media (min-width: {b}px)").ToArray();
+
+        p2 = Styled.Css($@"
+            color: green;
+            {mq[0]} {{
+              color: gray;
+            }}
+            {mq[1]} {{
+              color: hotpink;
+            }}
+        ");
+    }
+}

@@ -6,7 +6,7 @@ namespace BlazorStyled
     public class StyledGoogleFont : ComponentBase
     {
         [Parameter] private string Name { get; set; }
-        [Parameter] private string? Styles { get; set; }
+        [Parameter] private string Styles { get; set; }
         [Inject] private IStyled StyledService { get; set; }
 
         protected override void OnInit()

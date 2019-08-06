@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorPrettyCode" Version="1.0.0-preview7-03" />
+    <PackageReference Include="BlazorPrettyCode" Version="1.0.0-preview7-05" />
+    <PackageReference Include="BlazorTypography" Version="1.0.0-preview7-05" />
     <PackageReference Include="Polished" Version="1.0.0-preview-02" />
   </ItemGroup>
 
@@ -19,20 +20,6 @@
     <EmbeddedResource Include="wwwroot\**\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
     <EmbeddedResource Include="wwwroot\**\*.css" LogicalName="blazor:css:%(RecursiveDir)%(Filename)%(Extension)" />
     <EmbeddedResource Include="wwwroot\**" Exclude="**\*.js;**\*.css" LogicalName="blazor:file:%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Remove="wwwroot\components1.html" />
-    <Content Remove="wwwroot\components2.html" />
-    <Content Remove="wwwroot\fonts1.html" />
-    <Content Remove="wwwroot\googleFont1.html" />
-    <Content Remove="wwwroot\googleFont2.html" />
-    <Content Remove="wwwroot\labels1.html" />
-    <Content Remove="wwwroot\media1.html" />
-    <Content Remove="wwwroot\media2.html" />
-    <Content Remove="wwwroot\media3.html" />
-    <Content Remove="wwwroot\polished1.html" />
-    <Content Remove="wwwroot\theming1.html" />
   </ItemGroup>
  
 </Project>

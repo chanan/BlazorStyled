@@ -277,8 +277,10 @@ namespace BlazorStyled.Internal
             IRule current = ruleSet;
             string buffer = string.Empty;
             bool nestedClassClosed = true; //Start from true becuase the parent doesnt need to be closed
-            foreach (char ch in css)
+            int i = 0;
+            do
             {
+                char ch = css[i];
                 switch (ch)
                 {
                     case ';':
@@ -304,18 +306,39 @@ namespace BlazorStyled.Internal
                             {
                                 Selector = buffer.Trim()
                             };
+                            ruleSet.NestedRules.Add(nestedClass);
+                            buffer = string.Empty;
+                            current = nestedClass;
+                            nestedClassClosed = false;
                         }
                         else
                         {
-                            nestedClass = new MediaQuery
+
+                            if (current.RuleType == RuleType.RuleSet)
                             {
-                                Selector = buffer.Trim() + "{&"
-                            };
+                                nestedClass = new MediaQuery
+                                {
+                                    Selector = buffer.Trim() + "{&"
+                                };
+                                ruleSet.NestedRules.Add(nestedClass);
+                                buffer = string.Empty;
+                                current = nestedClass;
+                                nestedClassClosed = false;
+                            }
+                            else
+                            {
+                                nestedClass = new MediaQuery
+                                {
+                                    Selector = buffer.Trim()
+                                };
+                                ruleSet.NestedRules.Add(nestedClass);
+                                buffer = string.Empty;
+                                nestedClassClosed = false;
+                                string innerCss = GetInnerClassCss(css, i);
+                                nestedClass.NestedRules = ParseRuleSet(innerCss).NestedRules;
+                                i += innerCss.Length;
+                            }
                         }
-                        ruleSet.NestedRules.Add(nestedClass);
-                        buffer = string.Empty;
-                        current = nestedClass;
-                        nestedClassClosed = false;
                         break;
                     case '}':
                         nestedClassClosed = true;
@@ -324,7 +347,8 @@ namespace BlazorStyled.Internal
                         buffer += ch;
                         break;
                 }
-            }
+                i++;
+            } while (i < css.Length);
             if (!nestedClassClosed)
             {
                 throw StyledException.GetException(css, "A nested class is missing a '}' character", null);
@@ -335,6 +359,32 @@ namespace BlazorStyled.Internal
             }
             ruleSet.SetClassName();
             return ruleSet;
+        }
+
+        private string GetInnerClassCss(string fullCss, int startFrom)
+        {
+            var startFromCss = fullCss.Substring(startFrom);
+            int start = startFromCss.IndexOf('{') + 1;
+            startFromCss = startFromCss.Substring(start);
+            int openBraces = 0;
+            int end = -1;
+            for(int i = 0; i < startFromCss.Length; i++)
+            {
+                char ch = startFromCss[i];
+                if (ch == '{') openBraces++;
+                if(ch == '}')
+                {
+                    openBraces--;
+                    if(openBraces < 0 )
+                    {
+                        end = i;
+                        break;
+                    }
+                }
+            }
+            if (end == -1) end = startFromCss.Length;
+            var css = startFromCss.Substring(start, end - start);
+            return css;
         }
 
         private Declaration ParseDeclaration(string input)
