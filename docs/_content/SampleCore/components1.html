@@ -1,0 +1,9 @@
+﻿<MyButton OnClick="@onclick">Green Button</MyButton>
+<MyButton OnClick="@onclick" Color="hotpink">Hotpink Button</MyButton>
+
+@code {
+    private void onclick(UIMouseEventArgs e)
+    {
+        Console.WriteLine("Onclick");
+    }
+}

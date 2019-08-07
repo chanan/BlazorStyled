@@ -1,0 +1,35 @@
+﻿<Styled @bind-Classname="button">
+    font-size:16px;
+    margin:18px;
+    border:none;
+    cursor:pointer;
+    display:inline-block;
+    padding:10px 20px;
+    text-align:center;
+    transition:0.25s cubic-bezier(0.17, 0.67, 0.52, 0.97);
+    border-radius:4px;
+    color:#fff;
+    box-shadow:0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+    background-color:@Color;
+    &:hover {
+        opacity: 0.7;
+        transform:translateY(-1px);
+        box-shadow:0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+    }
+    &:focus {
+        outline:0;
+    }
+    &:active {
+        transform:translateY(1px);
+    }
+</Styled>
+
+<button class="@button" @onclick="@OnClick">@ChildContent</button>
+
+@code {
+    [Parameter] private RenderFragment ChildContent { get; set; }
+    [Parameter] private EventCallback<UIMouseEventArgs> OnClick { get; set; }
+    [Parameter] private string Color { get; set; } = "green";
+
+    private string button;
+}
