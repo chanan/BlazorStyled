@@ -1,14 +1,11 @@
-﻿@page "/server-side-install"
+﻿@page "/client-side-install"
 
-<h1>Server Side Install</h1>
+<h1>Client Side Install</h1>
 
 <h3>Install</h3>
 
-<p>Add a reference to BlazorStyled from Nuget:</p>
-
-<div>
-    <a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a>
-</div>
+<p>Add a reference to BlazorStyled from Nuget: <a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a>
+</p>
 
 <h3>Usage</h3>
 
@@ -19,10 +16,10 @@
 <PrettyCode CodeFile="_content/SampleCore/install1.html" HighlightLines="5,11" />
 
 <p>
-    Add component to the <code>head</code> of your <code>_Host.cshtml</code> file:
+    Add a <code>style</code> tag to your <code>index.html</code>:
 </p>
 
-<PrettyCode Title="_Host.cshtml" CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/ServerSideSample/Pages/_Host.cshtml" HighlightLines="12" />
+<PrettyCode CodeFile="_content/SampleCore/install2.html" HighlightLines="8" />
 
 <p>Add the reference to the package to your <code>_Imports.razor</code> file:</p>
 

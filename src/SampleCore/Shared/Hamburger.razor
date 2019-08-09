@@ -1,0 +1,126 @@
+﻿<!-- Code taken from https://codepen.io/junxu/pen/pKEuz -->
+
+<Styled @bind-Classname="@menuWrapper">
+    label: menu-wrapper;
+    border: 1px solid #ccc;
+    width:50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, .7);
+    box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
+    transition: all .3s ease-out;
+</Styled>
+
+<Styled @bind-Classname="@menuButton">
+    label: menu-button;
+    @menuButtonShared
+    &:before, &:after {
+        @menuButtonShared
+        content: " ";
+        position: absolute;
+        margin-top: -10px;
+        margin-left: 0;
+        -webkit-transform: rotateZ(0deg);
+        -webkit-transform-origin: 3px 3px;
+    }
+    &:after {
+        margin-top: 10px;
+    }
+</Styled>
+
+<Styled @bind-Classname="@menuWrapperFinal">
+    border: 1px solid #ccc;
+    width:50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, .7);
+    box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
+    transition: all .3s ease-out;
+    @@media only screen and (min-width:768px) {
+        display: none;
+    }
+</Styled>
+
+<Styled @bind-Classname="@menuButtonFinal">
+    @menuButtonShared
+    &:before, &:after {
+        @menuButtonShared
+        content: " ";
+        position: absolute;
+        margin-top: -10px;
+        margin-left: 0;
+        -webkit-transform: rotateZ(0deg);
+        -webkit-transform-origin: 3px 3px;
+    }
+    &:after {
+        margin-top: 10px;
+    }
+    @@media only screen and (min-width:768px) {
+        display: none;
+    }
+</Styled>
+
+<Styled @bind-Classname="@menuButtonOn">
+    label: menu-button-on;
+    background-color: transparent;
+    margin-left: 12px;
+    &:before {
+        -webkit-transform: rotateZ(45deg);
+        background-color: #ff0000;
+    }
+    &:after {
+        -webkit-transform: rotateZ(-45deg);
+        background-color: #ff0000;
+    }
+</Styled>
+
+<Styled @bind-Classname="@menuWrapperOn">
+    label: menu-wrapper-on;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) inset;
+</Styled>
+
+
+<div class="@menuWrapperFinal" @onclick="@InternalOnClick">
+    <p class="@menuButtonFinal"></p>
+</div>
+
+@code {
+    [Parameter] private EventCallback<UIMouseEventArgs> OnClick { get; set; }
+
+    private bool _open = false;
+    [Parameter]
+    private bool Open
+    {
+        get
+        {
+            return _open;
+        }
+        set
+        {
+            _open = value;
+            menuWrapperFinal = _open ? menuWrapper + " " + menuWrapperOn : menuWrapper;
+            menuButtonFinal = _open ? menuButton + " " + menuButtonOn : menuButton;
+        }
+    }
+    private string menuWrapperFinal, menuWrapper, menuWrapperOn, menuButtonFinal, menuButton, menuButtonOn;
+
+    private string menuButtonShared = @"
+        height: 4px;
+        width: 34px;
+        background-color: #fff;
+        margin: 23px 8px;
+        border-radius: 3px;
+        -webkit-transition: all 0.5s ease;
+    ";
+
+    private void InternalOnClick(UIMouseEventArgs e)
+    {
+        Open = !Open;
+        if(OnClick.HasDelegate)
+        {
+            OnClick.InvokeAsync(e);
+        }
+    }
+}

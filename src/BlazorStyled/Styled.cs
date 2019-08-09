@@ -65,9 +65,9 @@ namespace BlazorStyled
             {
                 MediaQueries.Mobile => "@media only screen and (max-width:480px)",
                 MediaQueries.Tablet => "@media only screen and (max-width:768px)",
-                MediaQueries.Default => "@media only screen and (max-width:768px)",
-                MediaQueries.Large => "@media only screen and (max-width:768px)",
-                MediaQueries.Larger => "@media only screen and (max-width:768px)",
+                MediaQueries.Default => "@media only screen and (max-width:980px)",
+                MediaQueries.Large => "@media only screen and (max-width:1280px)",
+                MediaQueries.Larger => "@media only screen and (max-width:1600px)",
                 _ => string.Empty,
             };
             return $"{query}{{{content}}}";

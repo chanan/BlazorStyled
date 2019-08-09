@@ -2,74 +2,95 @@
 @inject IStyled Styled
 @inject ITypography Typography
 
-<StyledGoogleFont Name="Fira Mono" Styles="400" />
+<StyledGoogleFont Name="Fira Code" Styles="400" />
 
 <Styled>
-    html {
-        height: 100%;
-    }
-    body {
-        height: 100%;
-        overflow: hidden;
-        margin: 0px;
-        box-sizing: border-box;
-    }
     p > code {
-        font-family: 'Fira Mono';
+        font-family: 'Fira Code', monospace;
         margin-top: 20px;
         color: #1B1D1D;
         font-weight: 400;
-        line-height: 1.7;
+        line-height: 1.7em;
         background-color: rgba(117,63,131,0.07);
         border-radius: 0.325rem;
         margin: 0;
         padding: 0.2rem 0.325rem;
     }
+    code {
+        line-height: 1.25em;
+    }
+    pre {
+        line-height: 1.25em;
+    }
     h1 {
+        margin-top: 0px;
+    }
+    @@media only screen and (min-width:768px) {
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0px;
+        }
+    }
+    @@media only screen and (max-width:768px) {
         margin-top: 0px;
     }
 </Styled>
 
 <Styled @bind-Classname="@container">
     label: container;
-    width: 1024px;
-    height: 100%;
     overflow: hidden;
     margin: auto;
-    display: flex;
-    box-sizing: border-box;
+    @@media only screen and (min-width:768px) {
+        width: 1024px;
+        height: 100%;
+        display: flex;
+    }
 </Styled>
 
 <Styled @bind-Classname="@navColumn">
     label: nav-column;
-    @column
-    flex-shrink: 0;
+    @@media only screen and (min-width:768px) {
+        @column
+        flex-shrink: 0;
+    }
 </Styled>
 
 <Styled @bind-Classname="@mainColumn">
     label: main-column;
-    @column
-    width: 876px;
+    @@media only screen and (min-width:768px) {
+        @column
+        width: 876px;
+    }
 </Styled>
 
 <Styled @bind-Classname="@topNav">
     label: top-nav;
-    flex-shrink: 0;
     padding: 20px 20px 20px 0px;
+    @@media only screen and (min-width:768px) {
+        flex-shrink: 0;
+    }
 </Styled>
 
 <Styled @bind-Classname="@topMain">
     label: top-main;
-    flex-shrink: 0;
-    display: inline-flex;
     padding: 20px;
+    @@media only screen and (min-width:768px) {
+        flex-shrink: 0;
+        display: inline-flex;
+    }
 </Styled>
 
 <Styled @bind-Classname="@bottom">
     label: content;
-    flex-grow: 1;
     overflow-y: auto;
     padding: 20px;
+    @@media only screen and (min-width:768px) {
+        flex-grow: 1;
+    }
 </Styled>
 
 <Styled @bind-Classname="@brand">

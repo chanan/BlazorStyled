@@ -1,0 +1,44 @@
+﻿@page "/api"
+
+<h3>API</h3>
+
+<p>
+    BlazorStyled's tag syntax is easy to use and works in most cases, but sometimes you might want to access BlazorStyled's API Directly. For example, if you are using a code behind MVVM class,
+    or creating your control fully in C#. To use BlazorStyled's API, first inject <code>IStyled</code>
+</p>
+
+<h4>AddGoogleFonts(List&lt;GoogleFont> googleFonts)</h4>
+
+<p>Adds an <code>@@import</code> to the top of your css with the google font css</p>
+
+<h4>ClearStyles()</h4>
+
+<p>Will clear all the current styles for the style sheet</p>
+
+<h4>Css(string css)</h4>
+
+<p>You can either pass a set od rule definations and get back a class name or a set of html element rules.</p>
+
+<h4>Css(string classname, string css)</h4>
+
+<p>Define css rules on a known class name.</p>
+
+<h4>Css(List&lt;string> classes, string css)</h4>
+
+<p>Define the same rules on a list of elements at once.</p>
+
+<h4>Fontface(string css)</h4>
+
+<p>Define a <code>@@fonf-face</code> section in your css</p>
+
+<h4>Keyframes(string css)</h4>
+
+<p>Define a <code>@@keyframe</code> css class for animation.</p>
+
+<h4>Theme</h4>
+
+<p>Returns the current theme object which is a <code>IDictionary&lt;string, string></code> of keys and values you want to use in your css.</p>
+
+<h4>WithId(string id)</h4>
+
+<p>Isolates the stylesheet from other sylesheets using BlazorStyled. You should set this if you are building a library for others to use.</p>

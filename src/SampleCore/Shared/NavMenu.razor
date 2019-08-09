@@ -1,103 +1,142 @@
 ﻿@inject IStyled Styled
+@inject IUriHelper UriHelper
 
-    <Styled @bind-Classname="@ul">
-        display: inline-flex;
-        list-style: none;
-        padding-inline-start: 0px;
-        margin-bottom: 0.2em;
-    </Styled>
+<Styled @bind-Classname="@ul">
+    display: inline-flex;
+    list-style: none;
+    padding-inline-start: 0px;
+    margin-bottom: 0.2em;
+</Styled>
 
-    <Styled @bind-Classname="@link">
-        display: block;
-        font-size: 24px;
-        font-weight: 300;
-        color: #1B1D1D;
-        text-decoration: none;
-        margin: 0;
+<Styled @bind-Classname="@link">
+    display: block;
+    font-size: 24px;
+    font-weight: 300;
+    color: #1B1D1D;
+    text-decoration: none;
+    margin: 0;
+    font-size: 16px;
+    padding-bottom: 6px;
+    padding-left: 0;
+    padding-right: 0;
+    &:hover {
+        color: #C865B9;;
+    }
+</Styled>
+
+<Styled>
+    .active {
+        color: #D36AC2;
         font-size: 16px;
+        padding-top: 6px;
         padding-bottom: 6px;
         padding-left: 0;
         padding-right: 0;
-        &:hover {
-            color: #C865B9;;
-        }
-    </Styled>
+    }
+</Styled>
 
-    <Styled>
-        .active {
-            color: #D36AC2;
-            font-size: 16px;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 0;
-            padding-right: 0;
-        }
-    </Styled>
+<Styled @bind-Classname="@h3nav">
+    margin-top: 0px;
+    margin-bottom: 0.25em;
+</Styled>
 
-    <Styled @bind-Classname="@h3nav">
-        margin-top: 0px;
-        margin-bottom: 0.25em;
-    </Styled>
-    <nav>
-        <h3 class="@h3nav">Getting Started</h3>
-        <ul class="@ul">
-            <li>
-                <NavLink class="@link" href="" Match="NavLinkMatch.All">
-                    Introduction
-                </NavLink>
-                <NavLink class="@link" href="motivation">
-                    Motivation
-                </NavLink>
-                <NavLink class="@link" href="install">
-                    Install
-                </NavLink>
-                <NavLink class="@link" href="serverside">
-                    Server Side Blazor
-                </NavLink>
-                <NavLink class="@link" href="basics">
-                    The Basics
-                </NavLink>
-                <NavLink class="@link" href="nested">
-                    Nested Selectors
-                </NavLink>
-                <NavLink class="@link" href="googlefonts">
-                    Google Fonts
-                </NavLink>
-            </li>
-        </ul>
-        <h3 class="@h3nav">Advanced</h3>
-        <ul class="@ul">
-            <li>
-                <NavLink class="@link" href="fonts">
-                    Font Faces
-                </NavLink>
-                <NavLink class="@link" href="media">
-                    Media Queries
-                </NavLink>
-                <NavLink class="@link" href="keyframes">
-                    Keyframes
-                </NavLink>
-                <NavLink class="@link" href="theming">
-                    Theming
-                </NavLink>
-                <NavLink class="@link" href="labels">
-                    Labels
-                </NavLink>
-            </li>
-        </ul>
-        <h3 class="@h3nav">How To</h3>
-        <ul class="@ul">
-            <li>
-                <NavLink class="@link" href="polished">
-                    Polished.net
-                </NavLink>
-                <NavLink class="@link" href="buttonexample">
-                    Reusable Components
-                </NavLink>
-            </li>
-        </ul>
-    </nav>
+<Styled @bind-Classname="@hidden">
+    display: none;
+</Styled>
+
+<Styled @bind-Classname="@nav">
+    label: nav;
+    @@media only screen and (max-width:768px) {
+        display: none;
+    }
+</Styled>
+
+<Hamburger @onclick="@OnClick" Open="@HamburgerOpen"/>
+
+<nav class="@nav">
+    <h3 class="@h3nav">Getting Started</h3>
+    <ul class="@ul">
+        <li>
+            <NavLink class="@link" href="" Match="NavLinkMatch.All">
+                Introduction
+            </NavLink>
+            <NavLink class="@link" href="motivation">
+                Motivation
+            </NavLink>
+            <NavLink class="@link" href="client-side-install">
+                Client Side Install
+            </NavLink>
+            <NavLink class="@link" href="server-side-install">
+                Server Side Install
+            </NavLink>
+            <NavLink class="@link" href="basics">
+                The Basics
+            </NavLink>
+            <NavLink class="@link" href="nested">
+                Nested Selectors
+            </NavLink>
+            <NavLink class="@link" href="googlefonts">
+                Google Fonts
+            </NavLink>
+        </li>
+    </ul>
+    <h3 class="@h3nav">Advanced</h3>
+    <ul class="@ul">
+        <li>
+            <NavLink class="@link" href="fonts">
+                Font Faces
+            </NavLink>
+            <NavLink class="@link" href="media">
+                Media Queries
+            </NavLink>
+            <NavLink class="@link" href="keyframes">
+                Keyframes
+            </NavLink>
+            <NavLink class="@link" href="theming">
+                Theming
+            </NavLink>
+            <NavLink class="@link" href="labels">
+                Labels
+            </NavLink>
+            <NavLink class="@link" href="api">
+                API
+            </NavLink>
+        </li>
+    </ul>
+    <h3 class="@h3nav">How To</h3>
+    <ul class="@ul">
+        <li>
+            <NavLink class="@link" href="polished">
+                Polished.net
+            </NavLink>
+            <NavLink class="@link" href="buttonexample">
+                Reusable Components
+            </NavLink>
+        </li>
+    </ul>
+</nav>
 
 @code {
-    private string ul, link , h3nav;
+    private string ul, link , h3nav, hidden, nav;
+    private bool collapse = true;
+    private bool HamburgerOpen;
+
+    protected override void OnInit()
+    {
+        UriHelper.OnLocationChanged += OnLocationChanged;
+    }
+
+    private void OnClick()
+    {
+        collapse = !collapse;
+        nav = collapse ? hidden : string.Empty;
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        collapse = false;
+        HamburgerOpen = false;
+        nav = hidden;
+        StateHasChanged();
+    }
 }
