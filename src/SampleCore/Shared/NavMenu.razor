@@ -41,7 +41,9 @@
 </Styled>
 
 <Styled @bind-Classname="@hidden">
-    display: none;
+    @@media only screen and (max-width:768px) {
+        display: none;
+    }
 </Styled>
 
 <Styled @bind-Classname="@nav">
