@@ -21,11 +21,11 @@
 
 <p>Because your CSS is embeded in your C# code you can you use variables inside of your CSS:</p>
 
-<button @onclick="@(x => click(" red"))">Make the div red</button>
+<button @onclick="@(x => click(" red"))">Make the paragraph red</button>
 
-<button @onclick="@(x => click(" hotpink"))">Make the div hotpink</button>
+<button @onclick="@(x => click(" hotpink"))">Make the paragraph hotpink</button>
 
-<div class="@example2">The background of this div will change color depending on the button pressed above</div>
+<p class="@example2">The background of this paragraph will change color depending on the button pressed above</p>
 
 <p>Note that if you keep clicking on the buttons, the CSS classes are reused.</p>
 
@@ -40,11 +40,11 @@
     <code>NavLink</code> in turn sets the classname <code>active</code>, therefore the code below uses the selector <code>active</code>.
 </p>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Shared/NavMenu.razor" CodeFileLineNumbers="16-18" CodeSectionFileLineNumbers="67.68,75-99,100" />
+<PrettyCode CodeFile="_content/SampleCore/basic3.html" />
 
-<p>Another usage is to set classes on html elements, for example in <code>MainLayout.razor</code> the code below sets a class on the body tag:</p>
+<p>Another usage is to set classes on html elements, for example in <code>MainLayout.razor</code> the code below sets a class on some html elements:</p>
 
-<PrettyCode CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/SampleCore/Shared/MainLayout.razor" CodeFileLineNumbers="28,29,38-43,116" />
+<PrettyCode CodeFile="_content/SampleCore/basic4.html"  />
 
 @code {
     private string example1, example2;
