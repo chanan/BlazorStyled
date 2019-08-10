@@ -28,9 +28,13 @@ namespace BlazorStyled
         protected override async Task OnInitAsync()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
+            string classname = styled.Css("display: hidden;");
+            if (ClassnameChanged.HasDelegate)
+            {
+                await ClassnameChanged.InvokeAsync(classname);
+            }
             string content = RenderAsString();
             content = ApplyTheme(styled, content);
-            string classname;
             if (IsKeyframes)
             {
                 classname = styled.Keyframes(content);
