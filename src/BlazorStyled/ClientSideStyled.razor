@@ -2,5 +2,5 @@
 
 @foreach (var cssClass in StyleSheet)
 {
-    @cssClass.ToString();
+    <CssClass @key="@cssClass.ToString()" Css="@cssClass.ToString()" />
 }

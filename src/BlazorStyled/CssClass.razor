@@ -1,0 +1,10 @@
+﻿@Css
+
+@code {
+    [Parameter] private string Css { get; set; }
+
+    protected override void OnAfterRender()
+    {
+        Console.WriteLine("render");
+    }
+}
