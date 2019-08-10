@@ -10,6 +10,9 @@
     background-color: rgba(255, 255, 255, .7);
     box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
     transition: all .3s ease-out;
+    @@media only screen and (min-width:768px) {
+        display: none;
+    }
 </Styled>
 
 <Styled @bind-Classname="@menuButton">
@@ -26,6 +29,9 @@
     }
     &:after {
         margin-top: 10px;
+    }
+    @@media only screen and (min-width:768px) {
+        display: none;
     }
 </Styled>
 
@@ -74,11 +80,17 @@
         -webkit-transform: rotateZ(-45deg);
         background-color: #ff0000;
     }
+    @@media only screen and (min-width:768px) {
+        display: none;
+    }
 </Styled>
 
 <Styled @bind-Classname="@menuWrapperOn">
     label: menu-wrapper-on;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) inset;
+    @@media only screen and (min-width:768px) {
+        display: none;
+    }
 </Styled>
 
 
