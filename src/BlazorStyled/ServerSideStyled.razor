@@ -8,6 +8,6 @@
 <style>
     @foreach (var cssClass in StyleSheet.GetRulesWithoutImport())
     {
-        <CssClass @key="@cssClass.ToString()" Css="@cssClass.ToString()" />
+        <CssClass @key="@cssClass.Hash" Css="@cssClass.ToString()" />
     }
 </style>

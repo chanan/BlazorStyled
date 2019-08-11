@@ -74,11 +74,11 @@ namespace BlazorStyled.Stylesheets
             //TODO: Only merge new classes/rules
             if (existingRule.RuleType != RuleType.Keyframe)
             {
-                existingRule.Declarations.AddRange(rule.Declarations);
+                existingRule.AddDeclarations(rule.Declarations.ToList());
             }
             if (existingRule.RuleType != RuleType.FontFace && existingRule.RuleType != RuleType.PredefinedRuleSet)
             {
-                existingRule.NestedRules.AddRange(rule.NestedRules);
+                existingRule.AddNestedRules(rule.NestedRules.ToList());
             }
         }
 
@@ -90,7 +90,7 @@ namespace BlazorStyled.Stylesheets
         {
             List<string> list = (from classes in _classes.Values
                                  from cssClass in classes.Values
-                                 select _hash.GetHashCode(cssClass)).ToList();
+                                 select cssClass.Hash).ToList();
             return string.Join("", list);
         }
 
@@ -137,7 +137,7 @@ namespace BlazorStyled.Stylesheets
             foreach (IRule rule in rules)
             {
                 ImportUri import = (ImportUri)rule;
-                list.Add(import.Declarations[0].Value);
+                list.Add(import.Declarations.First().Value);
             }
             return list.AsEnumerable();
         }

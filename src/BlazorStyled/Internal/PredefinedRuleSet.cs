@@ -4,13 +4,9 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    internal class PredefinedRuleSet : IRule
+    internal class PredefinedRuleSet : BaseRule
     {
-        public string Selector { get; set; }
-        public string Label { get; set; }
-        public List<Declaration> Declarations { get; set; } = new List<Declaration>();
-        public RuleType RuleType => RuleType.PredefinedRuleSet;
-        public List<IRule> NestedRules { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public override RuleType RuleType => RuleType.PredefinedRuleSet;
 
         public override string ToString()
         {

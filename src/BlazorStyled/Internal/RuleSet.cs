@@ -1,17 +1,11 @@
 ﻿using BlazorStyled.Stylesheets;
-using System.Collections.Generic;
 using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    internal class RuleSet : IRule
+    internal class RuleSet : BaseRule
     {
-        public string Selector { get; set; }
-        public string Label { get; set; }
-        public List<Declaration> Declarations { get; set; } = new List<Declaration>();
-        public RuleType RuleType => RuleType.RuleSet;
-        public List<IRule> NestedRules { get; set; } = new List<IRule>();
-        private readonly Hash _hash = new Hash();
+        public override RuleType RuleType => RuleType.RuleSet;
 
         public override string ToString()
         {
@@ -25,9 +19,9 @@ namespace BlazorStyled.Internal
             return sb.ToString();
         }
 
-        public void SetClassName()
+        public override void SetClassname()
         {
-            _hash.SetHashCode(this, Label);
+            _hashService.SetHashCode(this, Label);
         }
     }
 }

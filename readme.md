@@ -26,26 +26,24 @@ View the detailed [docs](https://blazorstyled.io) at https://blazorstyled.io.
 ## Short Example
 
 ```
+<Styled @bind-Classname="@hover">
+    label: hover-example;
+    padding: 32px;
+    background-color: hotpink;
+    font-size: 24px;
+    border-radius: 4px;
+    &:hover {
+        color: @color;
+    }
+</Styled>
+
 <div class="@hover">
     Hover to change color.
 </div>
 
-@functions {
+@code {
     private string hover;
     private string color = "white";
-
-    protected override void OnInit()
-    {
-        hover = Styled.Css($@"
-            padding: 32px;
-            background-color: hotpink;
-            font-size: 24px;
-            border-radius: 4px;
-            &:hover {{
-                color: {color};
-            }}
-        ");
-    }
 }
 ```
 

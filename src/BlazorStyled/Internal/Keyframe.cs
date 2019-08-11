@@ -5,15 +5,9 @@ using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    internal class Keyframe : IRule
+    internal class Keyframe : BaseRule
     {
-        public string Selector { get; set; }
-        public string Label { get; set; }
-        public List<Declaration> Declarations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public RuleType RuleType => RuleType.Keyframe;
-        public List<IRule> NestedRules { get; set; } = new List<IRule>();
-        private readonly Hash _hash = new Hash();
-
+        public override RuleType RuleType => RuleType.Keyframe;
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -26,9 +20,9 @@ namespace BlazorStyled.Internal
             return sb.ToString();
         }
 
-        public void SetClassName()
+        public virtual void SetClassName()
         {
-            _hash.SetHashCode(this, null);
+            Selector = Hash;
         }
     }
 }

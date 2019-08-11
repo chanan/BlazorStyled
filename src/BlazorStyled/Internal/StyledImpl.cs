@@ -82,7 +82,7 @@ namespace BlazorStyled.Internal
             {
                 css = css.RemoveDuplicateSpaces();
                 RuleSet ruleSet = ParseRuleSet(css);
-                if (ruleSet.Declarations.Count > 0)
+                if (ruleSet.Declarations.Count() > 0)
                 {
                     _styleSheet.AddClass(ruleSet, _id);
                 }
@@ -180,7 +180,7 @@ namespace BlazorStyled.Internal
             int first = css.IndexOf('{') + 1;
             int last = css.LastIndexOf('}');
             string parsed = css.Substring(first, last - first).Trim();
-            mediaQuery.NestedRules = ParseRuleSet(parsed).NestedRules;
+            mediaQuery.AddNestedRules(ParseRuleSet(parsed).NestedRules.ToList());
             return mediaQuery;
         }
 
@@ -198,7 +198,7 @@ namespace BlazorStyled.Internal
                         Declaration declaration = ParseDeclaration(buffer.Trim());
                         if (declaration != null)
                         {
-                            current.Declarations.Add(declaration);
+                            current.AddDeclaration(declaration);
                         }
                         buffer = string.Empty;
                         break;
@@ -208,7 +208,7 @@ namespace BlazorStyled.Internal
                         {
                             Selector = buffer.Trim()
                         };
-                        keyframe.NestedRules.Add(nestedClass);
+                        keyframe.AddNestedRule(nestedClass);
                         buffer = string.Empty;
                         current = nestedClass;
                         nestedClassClosed = false;
@@ -235,10 +235,8 @@ namespace BlazorStyled.Internal
 
         private FontFace ParseFontFace(string css)
         {
-            FontFace fontface = new FontFace
-            {
-                Declarations = ParseDeclarations(css)
-            };
+            FontFace fontface = new FontFace();
+            fontface.AddDeclarations(ParseDeclarations(css));
             fontface.SetClassName();
             return fontface;
         }
@@ -246,7 +244,7 @@ namespace BlazorStyled.Internal
         private PredefinedRuleSet ParsePredefinedRuleSet(string className, string css)
         {
             PredefinedRuleSet predefinedRuleSet = new PredefinedRuleSet { Selector = className.Trim() };
-            predefinedRuleSet.Declarations = ParseDeclarations(css);
+            predefinedRuleSet.AddDeclarations(ParseDeclarations(css));
             return predefinedRuleSet;
         }
 
@@ -293,7 +291,7 @@ namespace BlazorStyled.Internal
                             }
                             else
                             {
-                                current.Declarations.Add(declaration);
+                                current.AddDeclaration(declaration);
                             }
                         }
                         buffer = string.Empty;
@@ -306,7 +304,7 @@ namespace BlazorStyled.Internal
                             {
                                 Selector = buffer.Trim()
                             };
-                            ruleSet.NestedRules.Add(nestedClass);
+                            ruleSet.AddNestedRule(nestedClass);
                             buffer = string.Empty;
                             current = nestedClass;
                             nestedClassClosed = false;
@@ -320,7 +318,7 @@ namespace BlazorStyled.Internal
                                 {
                                     Selector = buffer.Trim() + "{&"
                                 };
-                                ruleSet.NestedRules.Add(nestedClass);
+                                ruleSet.AddNestedRule(nestedClass);
                                 buffer = string.Empty;
                                 current = nestedClass;
                                 nestedClassClosed = false;
@@ -331,11 +329,11 @@ namespace BlazorStyled.Internal
                                 {
                                     Selector = buffer.Trim()
                                 };
-                                ruleSet.NestedRules.Add(nestedClass);
+                                ruleSet.AddNestedRule(nestedClass);
                                 buffer = string.Empty;
                                 nestedClassClosed = false;
                                 string innerCss = GetInnerClassCss(css, i);
-                                nestedClass.NestedRules = ParseRuleSet(innerCss).NestedRules;
+                                nestedClass.AddNestedRules(ParseRuleSet(innerCss).NestedRules.ToList());
                                 i += innerCss.Length;
                             }
                         }
@@ -357,7 +355,7 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(buffer, "This is usually caused by a missing ';' character at the end of a declaration", null);
             }
-            ruleSet.SetClassName();
+            ruleSet.SetClassname();
             return ruleSet;
         }
 

@@ -1,21 +1,18 @@
 ﻿using BlazorStyled.Stylesheets;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BlazorStyled.Internal
 {
-    internal class MediaQuery : IRule
+    internal class MediaQuery : BaseRule
     {
-        public string Selector { get; set; }
-        public string Label { get; set; }
-        public List<Declaration> Declarations { get; set; } = new List<Declaration>();
-        public RuleType RuleType => RuleType.MediaQuery;
-        public List<IRule> NestedRules { get; set; } = new List<IRule>();
+        public override RuleType RuleType => RuleType.MediaQuery;
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            if (Declarations.Count > 0)
+            if (Declarations.Count() > 0)
             {
                 sb.Append(Selector);
                 sb.Append('{');

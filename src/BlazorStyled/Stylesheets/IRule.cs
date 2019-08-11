@@ -6,8 +6,15 @@ namespace BlazorStyled.Stylesheets
     {
         string Selector { get; set; }
         string Label { get; set; }
-        List<Declaration> Declarations { get; set; }
+        string Hash { get; }
+        IEnumerable<Declaration> Declarations { get; }
         RuleType RuleType { get; }
-        List<IRule> NestedRules { get; set; }
+        IEnumerable<IRule> NestedRules { get; }
+        void SetHash();
+        void AddDeclaration(Declaration declaration);
+        void AddNestedRule(IRule rule);
+        void AddDeclarations(IList<Declaration> declarations);
+        void AddNestedRules(IList<IRule> rules);
+        void SetClassname();
     }
 }
