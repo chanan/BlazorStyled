@@ -27,7 +27,6 @@ namespace BlazorStyled
         protected override async Task OnInitAsync()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
-            string classname = null;
             //TODO: below does not work well
             /*string classname = styled.Css("visibility: hidden;");
             if (ClassnameChanged.HasDelegate)
@@ -36,27 +35,37 @@ namespace BlazorStyled
             }*/
             string content = RenderAsString();
             content = ApplyTheme(styled, content);
+            string classname;
             if (IsKeyframes)
             {
                 classname = styled.Keyframes(content);
+                await NotifyChanged(classname);
+            }
+            else if(MediaQuery != MediaQueries.None)
+            {
+                if (ClassnameChanged.HasDelegate)
+                {
+                    //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
+                    //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
+                    content = WrapWithMediaQuery(content);
+                    classname = styled.Css(content);
+                    await NotifyChanged(classname);
+                }
+            }
+            else if(Classname != null)
+            {
+                //html elements
+                styled.Css(Classname, content);
             }
             else
             {
-                if (MediaQuery != MediaQueries.None)
-                {
-                    if (ClassnameChanged.HasDelegate)
-                    {
-                        //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
-                        //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
-                        content = WrapWithMediaQuery(content);
-                        classname = styled.Css(content);
-                    }
-                }
-                else
-                {
-                    classname = styled.Css(content);
-                }
+                classname = styled.Css(content);
+                await NotifyChanged(classname);
             }
+        }
+
+        private async Task NotifyChanged(string classname)
+        {
             if (classname != null && ClassnameChanged.HasDelegate)
             {
                 await ClassnameChanged.InvokeAsync(classname);
