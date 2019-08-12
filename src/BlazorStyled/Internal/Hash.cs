@@ -36,7 +36,15 @@ namespace BlazorStyled.Internal
                     {
                         hashs.Add(rule.GetHashCode());
                     }
+                    if (nestedRuleSet.RuleType == RuleType.MediaQuery || nestedRuleSet.RuleType == RuleType.PredefinedRuleSet)
+                    {
+                        hashs.Add(nestedRuleSet.Selector.GetHashCode());
+                    }
                 }
+            }
+            if(ruleset.RuleType == RuleType.MediaQuery || ruleset.RuleType == RuleType.PredefinedRuleSet)
+            {
+                hashs.Add(ruleset.Selector.GetHashCode());
             }
             hashs.Sort();
             uint hash = 0;

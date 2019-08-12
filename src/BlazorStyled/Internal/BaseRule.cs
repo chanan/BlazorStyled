@@ -1,7 +1,6 @@
 ﻿using BlazorStyled.Stylesheets;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorStyled.Internal
 {
@@ -19,7 +18,7 @@ namespace BlazorStyled.Internal
         {
             get
             {
-                if(_hash == null)
+                if (_hash == null)
                 {
                     SetHash();
                 }
@@ -49,7 +48,7 @@ namespace BlazorStyled.Internal
         {
             _hash = _hashService.GetHashCode(this, Label);
         }
-        
+
         public void AddDeclarations(IList<Declaration> declarations)
         {
             _declarations.AddRange(declarations);

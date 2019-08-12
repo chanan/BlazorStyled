@@ -1,6 +1,4 @@
 ﻿using BlazorStyled.Stylesheets;
-using System;
-using System.Collections.Generic;
 
 namespace BlazorStyled.Internal
 {

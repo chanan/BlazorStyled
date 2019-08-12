@@ -1,8 +1,9 @@
 ﻿<Styled @bind-Classname="@p1">
     font-size: 30px;
-    @@media (min-width: 480px) {
-        font-size: 50px;
-    }
+</Styled>
+
+<Styled Classname="@p1" MediaQuery="MediaQueries.LargerThanMobile">
+    font-size: 50px;
 </Styled>
 
 <p class="@p1">Some text!</p>

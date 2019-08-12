@@ -40,20 +40,15 @@
     margin-bottom: 0.25em;
 </Styled>
 
-<Styled @bind-Classname="@hidden">
-    @@media only screen and (max-width:768px) {
-        display: none;
-    }
+<Styled @bind-Classname="@nav" MediaQuery="MediaQueries.Tablet">
+    display: none;
 </Styled>
 
-<Styled @bind-Classname="@nav">
-    label: nav;
-    @@media only screen and (max-width:768px) {
-        display: none;
-    }
+<Styled @bind-Classname="@hiddenOnSmall" MediaQuery="MediaQueries.Tablet">
+    display: none;
 </Styled>
 
-<Hamburger @onclick="@OnClick" Open="@HamburgerOpen"/>
+<Hamburger @onclick="@OnClick" @ref="@hamburger"/>
 
 <nav class="@nav">
     <h3 class="@h3nav">Getting Started</h3>
@@ -119,9 +114,9 @@
 </nav>
 
 @code {
-    private string ul, link , h3nav, hidden, nav;
-    private bool collapse = true;
-    private bool HamburgerOpen;
+    private string ul, link , h3nav, hiddenOnSmall, nav;
+    private bool _open = false;
+    private Hamburger hamburger;
 
     protected override void OnInit()
     {
@@ -130,15 +125,15 @@
 
     private void OnClick()
     {
-        collapse = !collapse;
-        nav = collapse ? hidden : string.Empty;
+        _open = !_open;
+        nav = _open ? string.Empty : hiddenOnSmall;
     }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)
     {
-        collapse = false;
-        HamburgerOpen = false;
-        nav = hidden;
+        _open = false;
+        hamburger.Navigated();
+        nav = hiddenOnSmall;
         StateHasChanged();
     }
 }

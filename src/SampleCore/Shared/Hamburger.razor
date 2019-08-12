@@ -10,10 +10,12 @@
     background-color: rgba(255, 255, 255, .7);
     box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
     transition: all .3s ease-out;
-    @@media only screen and (min-width:768px) {
-        display: none;
-    }
 </Styled>
+
+<Styled Classname="@menuWrapper" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
+</Styled>
+
 
 <Styled @bind-Classname="@menuButton">
     label: menu-button;
@@ -30,9 +32,10 @@
     &:after {
         margin-top: 10px;
     }
-    @@media only screen and (min-width:768px) {
-        display: none;
-    }
+</Styled>
+
+<Styled Classname="@menuButton" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
 </Styled>
 
 <Styled @bind-Classname="@menuWrapperFinal">
@@ -44,9 +47,10 @@
     background-color: rgba(255, 255, 255, .7);
     box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
     transition: all .3s ease-out;
-    @@media only screen and (min-width:768px) {
-        display: none;
-    }
+</Styled>
+
+<Styled Classname="@menuWrapperFinal" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
 </Styled>
 
 <Styled @bind-Classname="@menuButtonFinal">
@@ -63,9 +67,10 @@
     &:after {
         margin-top: 10px;
     }
-    @@media only screen and (min-width:768px) {
-        display: none;
-    }
+</Styled>
+
+<Styled Classname="@menuButtonFinal" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
 </Styled>
 
 <Styled @bind-Classname="@menuButtonOn">
@@ -80,17 +85,19 @@
         -webkit-transform: rotateZ(-45deg);
         background-color: #ff0000;
     }
-    @@media only screen and (min-width:768px) {
-        display: none;
-    }
+</Styled>
+
+<Styled Classname="@menuButtonOn" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
 </Styled>
 
 <Styled @bind-Classname="@menuWrapperOn">
     label: menu-wrapper-on;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) inset;
-    @@media only screen and (min-width:768px) {
-        display: none;
-    }
+</Styled>
+
+<Styled Classname="@menuWrapperOn" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
 </Styled>
 
 
@@ -102,20 +109,7 @@
     [Parameter] private EventCallback<UIMouseEventArgs> OnClick { get; set; }
 
     private bool _open = false;
-    [Parameter]
-    private bool Open
-    {
-        get
-        {
-            return _open;
-        }
-        set
-        {
-            _open = value;
-            menuWrapperFinal = _open ? menuWrapper + " " + menuWrapperOn : menuWrapper;
-            menuButtonFinal = _open ? menuButton + " " + menuButtonOn : menuButton;
-        }
-    }
+
     private string menuWrapperFinal, menuWrapper, menuWrapperOn, menuButtonFinal, menuButton, menuButtonOn;
 
     private string menuButtonShared = @"
@@ -129,10 +123,23 @@
 
     private void InternalOnClick(UIMouseEventArgs e)
     {
-        Open = !Open;
+        _open = !_open;
+        SetMenuStyles();
         if(OnClick.HasDelegate)
         {
             OnClick.InvokeAsync(e);
         }
+    }
+
+    public void Navigated()
+    {
+        _open = false;
+        SetMenuStyles();
+    }
+
+    private void SetMenuStyles()
+    {
+        menuWrapperFinal = _open ? menuWrapper + " " + menuWrapperOn : menuWrapper;
+        menuButtonFinal = _open ? menuButton + " " + menuButtonOn : menuButton;
     }
 }

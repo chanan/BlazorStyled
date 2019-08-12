@@ -343,3 +343,6 @@ healthchecksdb
 !/docs/*
 !/docs/_framework/*
 !/docs/_framework/_bin/*
+
+# Exclude TestStyles.css
+TestStyles.css

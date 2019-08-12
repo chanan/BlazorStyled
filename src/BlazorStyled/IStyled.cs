@@ -1,5 +1,4 @@
-﻿using BlazorStyled.Internal;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BlazorStyled
 {

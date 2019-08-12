@@ -7,6 +7,8 @@
         Tablet,
         Default,
         Large,
-        Larger
+        Larger,
+        LargerThanMobile,
+        LargerThanTablet
     }
 }

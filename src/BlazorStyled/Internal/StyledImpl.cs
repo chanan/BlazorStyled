@@ -26,14 +26,8 @@ namespace BlazorStyled.Internal
 
         public Theme Theme
         {
-            get
-            {
-                return _styleSheet.Theme;
-            }
-            set
-            {
-                _styleSheet.Theme = value;
-            }
+            get => _styleSheet.Theme;
+            set => _styleSheet.Theme = value;
         }
 
         public string Css(string className, string css)
@@ -361,27 +355,35 @@ namespace BlazorStyled.Internal
 
         private string GetInnerClassCss(string fullCss, int startFrom)
         {
-            var startFromCss = fullCss.Substring(startFrom);
+            string startFromCss = fullCss.Substring(startFrom);
             int start = startFromCss.IndexOf('{') + 1;
             startFromCss = startFromCss.Substring(start);
             int openBraces = 0;
             int end = -1;
-            for(int i = 0; i < startFromCss.Length; i++)
+            for (int i = 0; i < startFromCss.Length; i++)
             {
                 char ch = startFromCss[i];
-                if (ch == '{') openBraces++;
-                if(ch == '}')
+                if (ch == '{')
+                {
+                    openBraces++;
+                }
+
+                if (ch == '}')
                 {
                     openBraces--;
-                    if(openBraces < 0 )
+                    if (openBraces < 0)
                     {
                         end = i;
                         break;
                     }
                 }
             }
-            if (end == -1) end = startFromCss.Length;
-            var css = startFromCss.Substring(start, end - start);
+            if (end == -1)
+            {
+                end = startFromCss.Length;
+            }
+
+            string css = startFromCss.Substring(start, end - start);
             return css;
         }
 

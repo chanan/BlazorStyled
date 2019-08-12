@@ -1,5 +1,4 @@
-﻿using BlazorStyled.Internal;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,11 +27,13 @@ namespace BlazorStyled
         protected override async Task OnInitAsync()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
-            string classname = styled.Css("display: hidden;");
+            string classname = null;
+            //TODO: Check if the below works or can be improved
+            /*string classname = styled.Css("visibility: hidden;");
             if (ClassnameChanged.HasDelegate)
             {
                 await ClassnameChanged.InvokeAsync(classname);
-            }
+            }*/
             string content = RenderAsString();
             content = ApplyTheme(styled, content);
             if (IsKeyframes)
@@ -43,20 +44,49 @@ namespace BlazorStyled
             {
                 if (MediaQuery != MediaQueries.None)
                 {
-                    content = WrapWithMediaQuery(content);
+                    if (ClassnameChanged.HasDelegate)
+                    {
+                        //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
+                        //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
+                        content = WrapWithMediaQuery(content);
+                        classname = styled.Css(content);
+                    }
                 }
-                classname = styled.Css(content);
+                else
+                {
+                    classname = styled.Css(content);
+                }
             }
-            if (ClassnameChanged.HasDelegate)
+            if (classname != null && ClassnameChanged.HasDelegate)
             {
                 await ClassnameChanged.InvokeAsync(classname);
+            }
+        }
+
+        protected override void OnParametersSet()
+        {
+            IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
+            if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
+            {
+                //Media query support for classes where an existing Classname already exists
+                string content = RenderAsString();
+                content = ApplyTheme(styled, content);
+                content = WrapWithMediaQuery(Classname, content);
+                styled.Css(GetMediaQuery(), content);
+            }
+            if (Classname == null && MediaQuery != MediaQueries.None)
+            {
+                //Media queries for html elements
+                string content = RenderAsString();
+                content = ApplyTheme(styled, content);
+                styled.Css(GetMediaQuery(), content);
             }
         }
 
         private string ApplyTheme(IStyled styled, string content)
         {
             Theme theme = styled.Theme;
-            foreach(var key in theme.Values.Keys)
+            foreach (string key in theme.Values.Keys)
             {
                 content = content.Replace("{" + key + "}", theme.Values[key]);
             }
@@ -65,16 +95,28 @@ namespace BlazorStyled
 
         private string WrapWithMediaQuery(string content)
         {
-            string query = MediaQuery switch
+            string query = GetMediaQuery();
+            return $"{query}{{{content}}}";
+        }
+
+        private string GetMediaQuery()
+        {
+            return MediaQuery switch
             {
                 MediaQueries.Mobile => "@media only screen and (max-width:480px)",
                 MediaQueries.Tablet => "@media only screen and (max-width:768px)",
                 MediaQueries.Default => "@media only screen and (max-width:980px)",
                 MediaQueries.Large => "@media only screen and (max-width:1280px)",
                 MediaQueries.Larger => "@media only screen and (max-width:1600px)",
+                MediaQueries.LargerThanMobile => "@media only screen and (min-width:480px)",
+                MediaQueries.LargerThanTablet => "@media only screen and (min-width:768px)",
                 _ => string.Empty,
             };
-            return $"{query}{{{content}}}";
+        }
+
+        private string WrapWithMediaQuery(string classname, string content)
+        {
+            return $".{classname}{{{content}}}";
         }
 
         private string RenderAsString()

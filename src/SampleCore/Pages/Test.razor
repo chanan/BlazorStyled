@@ -1,25 +1,19 @@
 @page "/test"
-@inject IStyled Styled
 
-@code { 
-    protected override void OnInit()
-    {
-        Styled.Css(" @media only screen and (max-width:480px)", @"
-            ul,ol {
-                margin-left: 0.5em;
-            }
-        ");
+<Styled @bind-Classname="@myDiv">
+  color:red;
+</Styled>
 
-        Styled.Css(" @media only screen and (max-width:480px)", @"
-            blockquote {
-                padding-left: 0.5em;
-            }
-        ");
+<Styled Classname="@myDiv" MediaQuery="MediaQueries.Mobile">
+    color:blue;
+</Styled>
 
-        Styled.Css(" @media only screen and (max-width:480px)", @"
-            h5,h6 {
-                text-transform: uppercase;
-            }
-        ");
-    }
+<div>@myDiv</div>
+
+<div class="@myDiv">
+    blue and red div based on screen size
+</div>
+
+@code {
+    private string myDiv;
 }

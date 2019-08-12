@@ -3,7 +3,7 @@
 
 <Styled @bind-Classname="@p1">
     font-size: 30px;
-    @@media (min-width: 420px) {
+    @@media (min-width: 480px) {
         font-size: 50px;
     }
 </Styled>
@@ -18,8 +18,13 @@
     you can put your css directly in the css block.</p>
 
 <p class="@p1">Some text!</p>
-
 <PrettyCode CodeFile="_content/SampleCore/media1.html" />
+
+<h3>Alternate Syntax</h3>
+
+<p>Depending on your preffered style, the above can also be achieved with:</p>
+
+<PrettyCode CodeFile="_content/SampleCore/media4.html" />
 
 <h3>Predefined Media Queries</h3>
 

@@ -38,20 +38,26 @@ namespace BlazorStyled.Stylesheets
             }
             else
             {
-                if (!classes.ContainsKey(rule.Selector))
+                if (!classes.ContainsKey(rule.Hash))
                 {
-                    classes.Add(rule.Selector, rule);
+                    classes.Add(rule.Hash, rule);
                 }
-                else
+                /*else
                 {
                     //For non class rules such as html elements check to see if they are the same before adding
-                    IRule existingRule = classes[rule.Selector];
-                    if (_hash.GetHashCode(existingRule) != _hash.GetHashCode(rule))
+                    if(rule.RuleType != RuleType.MediaQuery)
                     {
-                        MergeClasses(existingRule, rule);
+                        IRule existingRule = classes[rule.Selector];
+                        if (_hash.GetHashCode(existingRule) != _hash.GetHashCode(rule))
+                        {
+                            MergeClasses(existingRule, rule);
+                        }
                     }
-
-                }
+                    else
+                    {
+                        IRule existingRule = classes[rule.Selector];
+                    }
+                }*/
             }
             foreach (IObserver<StyleSheet> observer in _observers)
             {
@@ -69,7 +75,7 @@ namespace BlazorStyled.Stylesheets
             return _classes[key];
         }
 
-        private void MergeClasses(IRule existingRule, IRule rule)
+        /*private void MergeClasses(IRule existingRule, IRule rule)
         {
             //TODO: Only merge new classes/rules
             if (existingRule.RuleType != RuleType.Keyframe)
@@ -80,7 +86,7 @@ namespace BlazorStyled.Stylesheets
             {
                 existingRule.AddNestedRules(rule.NestedRules.ToList());
             }
-        }
+        }*/
 
         public int Count => _classes.Count;
 
@@ -123,7 +129,7 @@ namespace BlazorStyled.Stylesheets
                                    where rule.RuleType != RuleType.Import
                                    select rule;
 
-            return q.AsEnumerable();
+            return q.ToList().AsEnumerable();
         }
 
         public IEnumerable<string> GetImportRules()
