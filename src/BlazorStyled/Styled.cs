@@ -28,7 +28,7 @@ namespace BlazorStyled
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string classname = null;
-            //TODO: Check if the below works or can be improved
+            //TODO: below does not work well
             /*string classname = styled.Css("visibility: hidden;");
             if (ClassnameChanged.HasDelegate)
             {

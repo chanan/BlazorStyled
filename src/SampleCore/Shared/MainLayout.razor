@@ -27,26 +27,13 @@
     }
 </Styled>
 
-<Styled MediaQuery="MediaQueries.LargerThanTablet">
-     html {
-        height: 100%;
-    }
-    body {
-        height: 100%;
-        overflow: hidden;
-        margin: 0px;
-    }
-</Styled>
-
 <Styled @bind-Classname="@container">
     label: container;
-    overflow: hidden;
     margin: auto;
 </Styled>
 
 <Styled Classname="@container" MediaQuery="MediaQueries.LargerThanTablet">
     width: 1024px;
-    height: 100%;
     display: flex;
 </Styled>
 
@@ -54,12 +41,15 @@
     label: nav-column;
     @column
     flex-shrink: 0;
+    position: fixed;
+    width: 225px;
 </Styled>
 
 <Styled @bind-Classname="@mainColumn" MediaQuery="MediaQueries.LargerThanTablet">
     label: main-column;
     @column
     width: 876px;
+    margin-left: 225px;
 </Styled>
 
 <Styled @bind-Classname="@topNav">
@@ -74,21 +64,27 @@
 <Styled @bind-Classname="@topMain">
     label: top-main;
     padding: 20px;
+    background-color: white;
 </Styled>
 
 <Styled Classname="@topMain" MediaQuery="MediaQueries.LargerThanTablet">
     flex-shrink: 0;
     display: inline-flex;
+    position: fixed;
+    width: 100%;
 </Styled>
 
 <Styled @bind-Classname="@bottom">
     label: content;
-    overflow-y: auto;
     padding: 20px;
 </Styled>
 
 <Styled Classname="@bottom" MediaQuery="MediaQueries.LargerThanTablet">
     flex-grow: 1;
+</Styled>
+
+<Styled @bind-Classname="@main" MediaQuery="MediaQueries.LargerThanTablet">
+    margin-top: 90px;
 </Styled>
 
 <Styled @bind-Classname="@brand">
@@ -126,14 +122,14 @@
                 <li class="@li"><a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></li>
             </ul>
         </div>
-        <div class="@bottom">
+        <div class="@bottom @main">
             @Body
         </div>
     </div>
 </div>
 
 @code {
-    private string container, navColumn, mainColumn, topNav, topMain, bottom, brand, ul, li;
+    private string container, navColumn, mainColumn, topNav, topMain, bottom, brand, ul, li, main;
 
     private string column = @"
             height: 100%;
