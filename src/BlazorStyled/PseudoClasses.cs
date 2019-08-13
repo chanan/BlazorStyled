@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BlazorStyled
+﻿namespace BlazorStyled
 {
     //TODO: Address lang, nth-child, and nth-last-child
     public enum PseudoClasses

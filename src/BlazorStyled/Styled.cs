@@ -29,7 +29,11 @@ namespace BlazorStyled
 
         protected override async Task OnParametersSetAsync()
         {
-            if (_previousClassname != null) return; //Prevent rentry
+            if (_previousClassname != null)
+            {
+                return; //Prevent rentry
+            }
+
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string content = RenderAsString();
             content = ApplyTheme(styled, content);
@@ -61,7 +65,7 @@ namespace BlazorStyled
                 //Media queries for html elements
                 styled.Css(GetMediaQuery(), content);
             }
-            else if(Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
+            else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
             {
                 content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
                 styled.Css(content);
@@ -134,7 +138,11 @@ namespace BlazorStyled
         private string WrapWithMediaQuery(string classname, string content)
         {
             //If classname includes a dash it is a classname, otherwise it is html elements
-            if(classname.IndexOf('-') != -1) return $".{classname}{{{content}}}";
+            if (classname.IndexOf('-') != -1)
+            {
+                return $".{classname}{{{content}}}";
+            }
+
             return $"{classname}{{{content}}}";
         }
 

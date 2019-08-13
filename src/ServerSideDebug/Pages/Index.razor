@@ -1,17 +1,21 @@
 ﻿@page "/"
 
-<Styled @bind-Classname="@p" MediaQuery="MediaQueries.LargerThanTablet">
+<Styled @bind-Classname="@navColumn" MediaQuery="MediaQueries.LargerThanTablet">
     label: nav-column;
+    flex-shrink: 0;
+    position: fixed;
     width: 225px;
-    background-color: green;
 </Styled>
 
-<h1>Hello, world!</h1>
+<Styled @bind-Classname="@mainColumn" MediaQuery="MediaQueries.LargerThanTablet">
+    width: 876px;
+    margin-left: 225px;
+</Styled>
 
-<div>@p</div>
+<div class="@navColumn">@navColumn</div>
 
-<p class="@p">Welcome to your new app.</p>
+<div class="@mainColumn">@mainColumn</div>
 
 @code {
-    private string p;
+    private string navColumn, mainColumn;
 }

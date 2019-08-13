@@ -21,7 +21,15 @@ namespace BlazorStyled.Internal
 
         public override void SetClassname()
         {
+            SetHash();
             Selector = Hash;
+            foreach (IRule nestedRuleSet in NestedRules)
+            {
+                if (nestedRuleSet.Label != null)
+                {
+                    Selector = Selector + '-' + nestedRuleSet.Label;
+                }
+            }
             foreach (IRule nestedRuleSet in NestedRules)
             {
                 nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + Selector);

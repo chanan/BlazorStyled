@@ -26,11 +26,11 @@ namespace BlazorStyled.Internal
                     }
                     if (nestedRuleSet.RuleType == RuleType.MediaQuery || nestedRuleSet.RuleType == RuleType.PredefinedRuleSet)
                     {
-                        hashs.Add(nestedRuleSet.Selector.GetHashCode());
+                        hashs.Add(nestedRuleSet.Hash.GetHashCode());
                     }
                 }
             }
-            if(ruleset.RuleType == RuleType.MediaQuery || ruleset.RuleType == RuleType.PredefinedRuleSet)
+            if (ruleset.RuleType == RuleType.MediaQuery || ruleset.RuleType == RuleType.PredefinedRuleSet)
             {
                 hashs.Add(ruleset.Selector.GetHashCode());
             }
