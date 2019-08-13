@@ -28,6 +28,7 @@ namespace BlazorStyled
         Optional,
         OutOfRange,
         ReadOnly,
+        ReadWrite,
         Required,
         Target,
         Valid,

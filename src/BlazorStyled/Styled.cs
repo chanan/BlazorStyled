@@ -114,11 +114,35 @@ namespace BlazorStyled
 
         private string ApplyPseudoClass(string classname)
         {
-            if(PseudoClass != PseudoClasses.None)
+            return PseudoClass switch
             {
-                return $"{classname}:{GetPseudoClass()}";
-            }
-            return classname;
+                PseudoClasses.Active => $"{classname}:active",
+                PseudoClasses.Checked => $"{classname}:checked",
+                PseudoClasses.Disabled => $"{classname}:disabled",
+                PseudoClasses.Empty => $"{classname}:empty",
+                PseudoClasses.Enabled => $"{classname}:enabled",
+                PseudoClasses.FirstChild => $"{classname}:first-child",
+                PseudoClasses.FirstOfType => $"{classname}:first-of-type",
+                PseudoClasses.Focus => $"{classname}:focus",
+                PseudoClasses.Hover => $"{classname}:hover",
+                PseudoClasses.InRange => $"{classname}:in-range",
+                PseudoClasses.Invalid => $"{classname}:invalid",
+                PseudoClasses.LastChild => $"{classname}:last-child",
+                PseudoClasses.LastOfType => $"{classname}:last-of-type",
+                PseudoClasses.Link => $"{classname}:link",
+                PseudoClasses.Not => $":not{classname}",
+                PseudoClasses.OnlyChild => $"{classname}:only-child",
+                PseudoClasses.OnlyOfType => $"{classname}:only-of-type",
+                PseudoClasses.Optional => $"{classname}:optional",
+                PseudoClasses.OutOfRange => $"{classname}:out-of-range",
+                PseudoClasses.ReadOnly => $"{classname}:read-only",
+                PseudoClasses.ReadWrite => $"{classname}:read-write",
+                PseudoClasses.Required => $"{classname}:required",
+                PseudoClasses.Target => $"{classname}:target",
+                PseudoClasses.Valid => $"{classname}:valid",
+                PseudoClasses.Visited => $"{classname}:visited",
+                _ => classname
+            };
         }
 
         private string WrapWithMediaQuery(string content)
@@ -146,15 +170,6 @@ namespace BlazorStyled
                 MediaQueries.LargerThanMobile => "@media only screen and (min-width:480px)",
                 MediaQueries.LargerThanTablet => "@media only screen and (min-width:768px)",
                 _ => string.Empty,
-            };
-        }
-
-        private string GetPseudoClass()
-        {
-            return PseudoClass switch
-            {
-                PseudoClasses.Hover => "hover",
-                _ => string.Empty
             };
         }
 
