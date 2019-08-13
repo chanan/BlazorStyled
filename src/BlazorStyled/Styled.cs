@@ -15,6 +15,8 @@ namespace BlazorStyled
         private static readonly Func<string, string> Encoder = (t) => t;
         public readonly ServiceProvider EmptyServiceProvider = new ServiceCollection().BuildServiceProvider();
 
+        private string _previousClassname;
+
         [Parameter] private RenderFragment ChildContent { get; set; }
         [Parameter] private string Id { get; set; }
         [Parameter] private string Classname { get; set; }
@@ -25,79 +27,57 @@ namespace BlazorStyled
 
         [Inject] private IStyled StyledService { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnParametersSetAsync()
         {
+            if (_previousClassname != null) return; //Prevent rentry
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
-            //TODO: below does not work well
-            /*string classname = styled.Css("visibility: hidden;");
-            if (ClassnameChanged.HasDelegate)
-            {
-                await ClassnameChanged.InvokeAsync(classname);
-            }*/
             string content = RenderAsString();
             content = ApplyTheme(styled, content);
-            string classname;
+            string classname = null;
             if (IsKeyframes)
             {
                 classname = styled.Keyframes(content);
-                await NotifyChanged(classname);
             }
-            else if(MediaQuery != MediaQueries.None)
-            {
-                if (ClassnameChanged.HasDelegate)
-                {
-                    //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
-                    //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
-                    content = WrapWithMediaQuery(content);
-                    classname = styled.Css(content);
-                    await NotifyChanged(classname);
-                }
-            }
-            else if(Classname != null)
+            else if (Classname != null && MediaQuery == MediaQueries.None)
             {
                 //html elements
                 styled.Css(ApplyPseudoClass(Classname), content);
             }
-            else
+            else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
             {
-                //TODO: psudeo
+                //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
+                //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
+                content = WrapWithMediaQuery(content);
                 classname = styled.Css(content);
-                await NotifyChanged(classname);
             }
-        }
-
-        protected override void OnParametersSet()
-        {
-            IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
-            //Media Queries
-            if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
+            else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
             {
                 //Media query support for classes where an existing Classname already exists
-                string content = RenderAsString();
-                content = ApplyTheme(styled, content);
                 content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
                 styled.Css(GetMediaQuery(), content);
             }
             else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None)
             {
                 //Media queries for html elements
-                string content = RenderAsString();
-                content = ApplyTheme(styled, content);
                 styled.Css(GetMediaQuery(), content);
             }
             else if(Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
             {
-                string content = RenderAsString();
-                content = ApplyTheme(styled, content);
                 content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
                 styled.Css(content);
             }
+            else
+            {
+                classname = styled.Css(content);
+            }
+            await NotifyChanged(classname);
         }
 
         private async Task NotifyChanged(string classname)
         {
-            if (classname != null && ClassnameChanged.HasDelegate)
+            if (classname != null && ClassnameChanged.HasDelegate && _previousClassname == null)
             {
+                _previousClassname = classname;
                 await ClassnameChanged.InvokeAsync(classname);
             }
         }

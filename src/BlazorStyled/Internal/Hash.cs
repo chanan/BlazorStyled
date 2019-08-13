@@ -6,18 +6,6 @@ namespace BlazorStyled.Internal
 {
     internal class Hash
     {
-        public void SetHashCode(IRule ruleset, string label = null)
-        {
-            ruleset.Selector = GetHashCode(ruleset, label);
-            if (ruleset.RuleType != RuleType.FontFace)
-            {
-                foreach (IRule nestedRuleSet in ruleset.NestedRules)
-                {
-                    nestedRuleSet.Selector = nestedRuleSet.Selector.Replace("&", "." + ruleset.Selector);
-                }
-            }
-        }
-
         public string GetHashCode(IRule ruleset, string label = null)
         {
             List<int> hashs = new List<int>();
