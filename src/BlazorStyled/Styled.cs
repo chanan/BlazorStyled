@@ -20,6 +20,7 @@ namespace BlazorStyled
         [Parameter] private string Classname { get; set; }
         [Parameter] private MediaQueries MediaQuery { get; set; } = MediaQueries.None;
         [Parameter] private bool IsKeyframes { get; set; }
+        [Parameter] private PseudoClasses PseudoClass { get; set; } = PseudoClasses.None;
         [Parameter] private EventCallback<string> ClassnameChanged { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
@@ -55,10 +56,11 @@ namespace BlazorStyled
             else if(Classname != null)
             {
                 //html elements
-                styled.Css(Classname, content);
+                styled.Css(ApplyPseudoClass(Classname), content);
             }
             else
             {
+                //TODO: psudeo
                 classname = styled.Css(content);
                 await NotifyChanged(classname);
             }
@@ -67,20 +69,28 @@ namespace BlazorStyled
         protected override void OnParametersSet()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
+            //Media Queries
             if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
             {
                 //Media query support for classes where an existing Classname already exists
                 string content = RenderAsString();
                 content = ApplyTheme(styled, content);
-                content = WrapWithMediaQuery(Classname, content);
+                content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
                 styled.Css(GetMediaQuery(), content);
             }
-            if (Classname == null && MediaQuery != MediaQueries.None)
+            else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None)
             {
                 //Media queries for html elements
                 string content = RenderAsString();
                 content = ApplyTheme(styled, content);
                 styled.Css(GetMediaQuery(), content);
+            }
+            else if(Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
+            {
+                string content = RenderAsString();
+                content = ApplyTheme(styled, content);
+                content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
+                styled.Css(content);
             }
         }
 
@@ -100,6 +110,15 @@ namespace BlazorStyled
                 content = content.Replace("{" + key + "}", theme.Values[key]);
             }
             return content;
+        }
+
+        private string ApplyPseudoClass(string classname)
+        {
+            if(PseudoClass != PseudoClasses.None)
+            {
+                return $"{classname}:{GetPseudoClass()}";
+            }
+            return classname;
         }
 
         private string WrapWithMediaQuery(string content)
@@ -127,6 +146,15 @@ namespace BlazorStyled
                 MediaQueries.LargerThanMobile => "@media only screen and (min-width:480px)",
                 MediaQueries.LargerThanTablet => "@media only screen and (min-width:768px)",
                 _ => string.Empty,
+            };
+        }
+
+        private string GetPseudoClass()
+        {
+            return PseudoClass switch
+            {
+                PseudoClasses.Hover => "hover",
+                _ => string.Empty
             };
         }
 
