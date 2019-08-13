@@ -26,6 +26,7 @@
     <Content Remove="wwwroot\basic3.html" />
     <Content Remove="wwwroot\basic4.html" />
     <Content Remove="wwwroot\media4.html" />
+    <Content Remove="wwwroot\nested3.html" />
   </ItemGroup>
   
 </Project>

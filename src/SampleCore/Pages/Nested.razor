@@ -3,15 +3,15 @@
 <Styled @bind-Classname="@nested">
     color: turquoise;
     & a {
-        border-bottom: 1px solid currentColor;
-        cursor:pointer;
+    border-bottom: 1px solid currentColor;
+    cursor:pointer;
     }
 </Styled>
 
 <Styled @bind-Classname="@paragraph">
     color: turquoise;
     header & {
-        color: green;
+    color: green;
     }
 </Styled>
 
@@ -21,7 +21,7 @@
     font-size: 24px;
     border-radius: 4px;
     &:hover {
-        color: @color;
+    color: @color;
     }
 </Styled>
 
@@ -44,7 +44,7 @@
     This is turquoise since it's not inside a header.
 </p>
 
-<PrettyCode CodeFile="_content/SampleCore/basic2.html" />
+<PrettyCode CodeFile="_content/SampleCore/nested2.html" />
 
 <h3>CSS pseudo classes</h3>
 
@@ -54,7 +54,14 @@
     Hover to change color.
 </div>
 
+<PrettyCode CodeFile="_content/SampleCore/nested3.html" />
+
+<h3>Alternate Syntax</h3>
+
+<p>Depending on your preffered style, the above can also be achieved with:</p>
+
 <PrettyCode CodeFile="_content/SampleCore/index1.html" />
+
 
 @code {
     private string nested, paragraph, hover;

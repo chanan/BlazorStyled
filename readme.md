@@ -32,9 +32,10 @@ View the detailed [docs](https://blazorstyled.io) at https://blazorstyled.io.
     background-color: hotpink;
     font-size: 24px;
     border-radius: 4px;
-    &:hover {
-        color: @color;
-    }
+</Styled>
+
+<Styled Classname="@hover" PseudoClass="PseudoClasses.Hover">
+    color: @color;
 </Styled>
 
 <div class="@hover">
