@@ -64,14 +64,6 @@ namespace BlazorStyled
             }
         }
 
-        private async Task NotifyChanged(string classname)
-        {
-            if (classname != null && ClassnameChanged.HasDelegate)
-            {
-                await ClassnameChanged.InvokeAsync(classname);
-            }
-        }
-
         protected override void OnParametersSet()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
@@ -92,6 +84,14 @@ namespace BlazorStyled
             }
         }
 
+        private async Task NotifyChanged(string classname)
+        {
+            if (classname != null && ClassnameChanged.HasDelegate)
+            {
+                await ClassnameChanged.InvokeAsync(classname);
+            }
+        }
+
         private string ApplyTheme(IStyled styled, string content)
         {
             Theme theme = styled.Theme;
@@ -108,6 +108,13 @@ namespace BlazorStyled
             return $"{query}{{{content}}}";
         }
 
+        private string WrapWithMediaQuery(string classname, string content)
+        {
+            //If classname includes a dash it is a classname, otherwise it is html elements
+            if(classname.IndexOf('-') != -1) return $".{classname}{{{content}}}";
+            return $"{classname}{{{content}}}";
+        }
+
         private string GetMediaQuery()
         {
             return MediaQuery switch
@@ -121,11 +128,6 @@ namespace BlazorStyled
                 MediaQueries.LargerThanTablet => "@media only screen and (min-width:768px)",
                 _ => string.Empty,
             };
-        }
-
-        private string WrapWithMediaQuery(string classname, string content)
-        {
-            return $".{classname}{{{content}}}";
         }
 
         private string RenderAsString()
