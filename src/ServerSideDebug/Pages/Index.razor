@@ -1,21 +1,12 @@
 ﻿@page "/"
 
-<Styled @bind-Classname="@navColumn" MediaQuery="MediaQueries.LargerThanTablet">
-    label: nav-column;
-    flex-shrink: 0;
-    position: fixed;
-    width: 225px;
+<Styled @bind-Classname="@p">
+    color: @color;
 </Styled>
 
-<Styled @bind-Classname="@mainColumn" MediaQuery="MediaQueries.LargerThanTablet">
-    width: 876px;
-    margin-left: 225px;
-</Styled>
-
-<div class="@navColumn">@navColumn</div>
-
-<div class="@mainColumn">@mainColumn</div>
+<p class="@p">@p</p>
 
 @code {
-    private string navColumn, mainColumn;
+    private string p;
+    private string color = "red";
 }

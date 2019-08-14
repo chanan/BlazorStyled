@@ -5,11 +5,11 @@ namespace BlazorStyled
 {
     public class StyledGoogleFont : ComponentBase
     {
-        [Parameter] private string Name { get; set; }
-        [Parameter] private string Styles { get; set; }
+        [Parameter] public string Name { get; set; }
+        [Parameter] public string Styles { get; set; }
         [Inject] private IStyled StyledService { get; set; }
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
             List<GoogleFont> googleFonts = new List<GoogleFont>
             {

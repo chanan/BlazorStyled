@@ -12,7 +12,7 @@ namespace BlazorStyled
 
         private IDisposable _unsubscriber;
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
             _unsubscriber = StyleSheet.Subscribe(this);
         }
@@ -39,7 +39,7 @@ namespace BlazorStyled
             if (_hashCode != newHashCode)
             {
                 _shouldRender = true;
-                Invoke(StateHasChanged);
+                InvokeAsync(StateHasChanged);
                 _hashCode = newHashCode;
             }
             else

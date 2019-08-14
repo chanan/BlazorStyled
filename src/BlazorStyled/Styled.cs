@@ -2,28 +2,30 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 namespace BlazorStyled
 {
     public class Styled : ComponentBase
     {
-        private static readonly IDispatcher Dispatcher = Renderer.CreateDefaultDispatcher();
-        private static readonly Func<string, string> Encoder = (t) => t;
-        public readonly ServiceProvider EmptyServiceProvider = new ServiceCollection().BuildServiceProvider();
+        //private static readonly Func<string, string> _encoder = (t) => t;
+        protected readonly Func<string, string> _encoder = (string t) => t;
+        public readonly ServiceProvider _emptyServiceProvider = new ServiceCollection().BuildServiceProvider();
 
         private string _previousClassname;
 
-        [Parameter] private RenderFragment ChildContent { get; set; }
-        [Parameter] private string Id { get; set; }
-        [Parameter] private string Classname { get; set; }
-        [Parameter] private MediaQueries MediaQuery { get; set; } = MediaQueries.None;
-        [Parameter] private bool IsKeyframes { get; set; }
-        [Parameter] private PseudoClasses PseudoClass { get; set; } = PseudoClasses.None;
-        [Parameter] private EventCallback<string> ClassnameChanged { get; set; }
+        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] public string Id { get; set; }
+        [Parameter] public string Classname { get; set; }
+        [Parameter] public MediaQueries MediaQuery { get; set; } = MediaQueries.None;
+        [Parameter] public bool IsKeyframes { get; set; }
+        [Parameter] public PseudoClasses PseudoClass { get; set; } = PseudoClasses.None;
+        [Parameter] public EventCallback<string> ClassnameChanged { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
 
@@ -166,20 +168,39 @@ namespace BlazorStyled
             string result = string.Empty;
             try
             {
-                ParameterCollection paramCollection = ParameterCollection.FromDictionary(new Dictionary<string, object>() { { "ChildContent", ChildContent } });
-                using HtmlRenderer htmlRenderer = new HtmlRenderer(EmptyServiceProvider, Encoder, Dispatcher);
-                RenderTreeBuilder builder = new RenderTreeBuilder(htmlRenderer);
-                builder.AddContent(0, ChildContent);
-                IEnumerable<string> frames = from f in builder.GetFrames().Array
-                                             where f.FrameType == RenderTreeFrameType.Markup || f.FrameType == RenderTreeFrameType.Text
-                                             select f.MarkupContent;
-                result = string.Join("", frames.ToList());
+                ParameterView paramView = ParameterView.FromDictionary(new Dictionary<string, object>() { { "ChildContent", ChildContent } });
+                using HtmlRenderer htmlRenderer = new HtmlRenderer(_emptyServiceProvider, NullLoggerFactory.Instance, _encoder);
+                IEnumerable<string> tokens = GetResult(htmlRenderer.Dispatcher.InvokeAsync(() => htmlRenderer.RenderComponentAsync<TestComponent>(paramView)));
+                result = string.Join("", tokens.ToArray());
             }
             catch
             {
                 //ignored dont crash if can't get result
             }
             return result;
+        }
+
+        private IEnumerable<string> GetResult(Task<ComponentRenderedText> task)
+        {
+            if (task.IsCompleted && task.Status == TaskStatus.RanToCompletion && !task.IsFaulted && !task.IsCanceled)
+            {
+                return task.Result.Tokens;
+            }
+            else
+            {
+                ExceptionDispatchInfo.Capture(task.Exception).Throw();
+                throw new InvalidOperationException("We will never hit this line");
+            }
+        }
+
+        private class TestComponent : ComponentBase
+        {
+            [Parameter] public RenderFragment ChildContent { get; set; }
+
+            protected override void BuildRenderTree(RenderTreeBuilder builder)
+            {
+                builder.AddContent(0, ChildContent);
+            }
         }
     }
 }

@@ -6,27 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorPrettyCode" Version="1.0.0-preview7-06" />
-    <PackageReference Include="BlazorTypography" Version="1.0.0-preview7-06" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0-preview8.19405.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0-preview8.19405.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Polished" Version="1.0.0-preview-02" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BlazorPrettyCode\src\BlazorPrettyCode\BlazorPrettyCode.csproj" />
+    <ProjectReference Include="..\..\..\BlazorTypography\src\BlazorTypography\BlazorTypography.csproj" />
     <ProjectReference Include="..\BlazorStyled\BlazorStyled.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <!-- .js/.css files will be referenced via <script>/<link> tags; other content files will just be included in the app's 'dist' directory without any tags referencing them -->
-    <EmbeddedResource Include="wwwroot\**\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
-    <EmbeddedResource Include="wwwroot\**\*.css" LogicalName="blazor:css:%(RecursiveDir)%(Filename)%(Extension)" />
-    <EmbeddedResource Include="wwwroot\**" Exclude="**\*.js;**\*.css" LogicalName="blazor:file:%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Remove="wwwroot\basic3.html" />
-    <Content Remove="wwwroot\basic4.html" />
-    <Content Remove="wwwroot\media4.html" />
-    <Content Remove="wwwroot\nested3.html" />
-  </ItemGroup>
+
   
 </Project>

@@ -106,7 +106,7 @@
 </div>
 
 @code {
-    [Parameter] private EventCallback<UIMouseEventArgs> OnClick { get; set; }
+    [Parameter] public EventCallback<UIMouseEventArgs> OnClick { get; set; }
 
     private bool _open = false;
 
