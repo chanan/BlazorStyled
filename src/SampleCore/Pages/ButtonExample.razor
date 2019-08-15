@@ -1,0 +1,23 @@
+﻿@page "/buttonexample"
+
+<h1>Creating Reusable Components</h1>
+
+<p>The example below is taken from <a href="https://glamorous.rocks/examples/#button">Glamorous Community</a>. The highlighted lines show how variables can be used in the css.</p>
+
+<MyButton OnClick="@onclick">Green Button</MyButton>
+<MyButton OnClick="@onclick" Color="hotpink">Hotpink Button</MyButton>
+
+<p>The button is used like so:</p>
+
+<PrettyCode CodeFile="_content/SampleCore/components1.html" HighlightLines="13,22" />
+
+<p>Below is the source for the button:</p>
+
+<PrettyCode CodeFile="_content/SampleCore/components2.html" />
+
+@code {
+    private void onclick(UIMouseEventArgs e)
+    {
+        Console.WriteLine("Onclick");
+    }
+}

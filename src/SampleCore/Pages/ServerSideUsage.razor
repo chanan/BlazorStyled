@@ -16,13 +16,18 @@
     Add BlazorStyled to <code>Startup.cs</code>. <code>isDevelopment</code> is not currently used but left in the API for backward compatibility.
 </p>
 
-<PrettyCode CodeFile="_content/SampleCore/install1.html" HighlightLines="5,11" Title="Startup.cs" />
+<p>
+    <strong>Notte:</strong> Aspnetcore 3.0 preivew8 modified the <code>Startup.cs</code> slightly. Please make sure that your <code>Startup.cs</code >line 29
+    is as below.
+</p>
+
+<PrettyCode CodeFile="_content/SampleCore/install5.html" HighlightLines="7,29" Title="Startup.cs" />
 
 <p>
     Add component to the <code>head</code> of your <code>_Host.cshtml</code> file:
 </p>
 
-<PrettyCode Title="_Host.cshtml" CodeFile="https://raw.githubusercontent.com/chanan/BlazorStyled/master/src/ServerSideSample/Pages/_Host.cshtml" HighlightLines="12" />
+<PrettyCode Title="_Host.cshtml" CodeFile="_content/SampleCore/install6.html" HighlightLines="12" />
 
 <p>Add the reference to the package to your <code>_Imports.razor</code> file:</p>
 

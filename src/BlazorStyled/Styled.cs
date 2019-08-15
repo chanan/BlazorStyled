@@ -163,7 +163,7 @@ namespace BlazorStyled
             };
         }
 
-       private string RenderAsString()
+        private string RenderAsString()
         {
             string result = string.Empty;
             try

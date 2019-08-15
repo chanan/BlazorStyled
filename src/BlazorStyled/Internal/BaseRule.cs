@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BlazorStyled.Internal
 {
-    internal abstract class BaseRule : IRule
+    internal abstract class BaseRule : IRule, IEqualityComparer<IRule>, IEquatable<IRule>
     {
         protected readonly Hash _hashService = new Hash();
         private readonly List<Declaration> _declarations = new List<Declaration>();
@@ -64,6 +64,32 @@ namespace BlazorStyled.Internal
         public virtual void SetClassname()
         {
             //ignored
+        }
+
+        public bool Equals(IRule x, IRule y)
+        {
+            Console.WriteLine("Equals");
+            if (object.ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y == null)
+            {
+                return false;
+            }
+
+            return x.Hash == y.Hash;
+        }
+
+        public int GetHashCode(IRule obj)
+        {
+            return Hash.GetHashCode();
+        }
+
+        public bool Equals(IRule other)
+        {
+            return Equals(this, other);
         }
     }
 }

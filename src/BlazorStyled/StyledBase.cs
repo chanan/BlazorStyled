@@ -7,6 +7,7 @@ namespace BlazorStyled
     public class StyledBase : ComponentBase, IObserver<IStyleSheet>, IDisposable
     {
         [Inject] protected IStyleSheet StyleSheet { get; private set; }
+        protected IStyleSheet CurrentStylesheet { get; private set; }
         private string _hashCode = null;
         private bool _shouldRender = true;
 
@@ -35,9 +36,10 @@ namespace BlazorStyled
         public void OnNext(IStyleSheet value)
         {
             //Only call state has changed if the stylesheet really changed
-            string newHashCode = StyleSheet.GetHashCodes();
+            string newHashCode = value.GetHashCodes();
             if (_hashCode != newHashCode)
             {
+                CurrentStylesheet = value;
                 _shouldRender = true;
                 InvokeAsync(StateHasChanged);
                 _hashCode = newHashCode;

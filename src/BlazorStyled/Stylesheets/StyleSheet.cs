@@ -29,35 +29,9 @@ namespace BlazorStyled.Stylesheets
         public void AddClass(IRule rule, string id)
         {
             IDictionary<string, IRule> classes = GetClassesForId(id);
-            if (rule.Selector.StartsWith("."))
+            if (!classes.ContainsKey(rule.Hash))
             {
-                if (!classes.ContainsKey(rule.Selector))
-                {
-                    classes.Add(rule.Selector, rule);
-                }
-            }
-            else
-            {
-                if (!classes.ContainsKey(rule.Hash))
-                {
-                    classes.Add(rule.Hash, rule);
-                }
-                /*else
-                {
-                    //For non class rules such as html elements check to see if they are the same before adding
-                    if(rule.RuleType != RuleType.MediaQuery)
-                    {
-                        IRule existingRule = classes[rule.Selector];
-                        if (_hash.GetHashCode(existingRule) != _hash.GetHashCode(rule))
-                        {
-                            MergeClasses(existingRule, rule);
-                        }
-                    }
-                    else
-                    {
-                        IRule existingRule = classes[rule.Selector];
-                    }
-                }*/
+                classes.Add(rule.Hash, rule);
             }
             foreach (IObserver<StyleSheet> observer in _observers)
             {
@@ -74,19 +48,6 @@ namespace BlazorStyled.Stylesheets
             }
             return _classes[key];
         }
-
-        /*private void MergeClasses(IRule existingRule, IRule rule)
-        {
-            //TODO: Only merge new classes/rules
-            if (existingRule.RuleType != RuleType.Keyframe)
-            {
-                existingRule.AddDeclarations(rule.Declarations.ToList());
-            }
-            if (existingRule.RuleType != RuleType.FontFace && existingRule.RuleType != RuleType.PredefinedRuleSet)
-            {
-                existingRule.AddNestedRules(rule.NestedRules.ToList());
-            }
-        }*/
 
         public int Count => _classes.Count;
 
@@ -114,7 +75,7 @@ namespace BlazorStyled.Stylesheets
                                       select rule).ToList();
             list.AddRange(imports);
             list.AddRange(notImports);
-            return list.GetEnumerator();
+            return list.Distinct(new RuleComparer()).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -129,7 +90,7 @@ namespace BlazorStyled.Stylesheets
                                    where rule.RuleType != RuleType.Import
                                    select rule;
 
-            return q.ToList().AsEnumerable();
+            return q.ToList().Distinct(new RuleComparer()).AsEnumerable();
         }
 
         public IEnumerable<string> GetImportRules()
@@ -143,7 +104,10 @@ namespace BlazorStyled.Stylesheets
             foreach (IRule rule in rules)
             {
                 ImportUri import = (ImportUri)rule;
-                list.Add(import.Declarations.First().Value);
+                if (!list.Contains(import.Declarations.First().Value))
+                {
+                    list.Add(import.Declarations.First().Value);
+                }
             }
             return list.AsEnumerable();
         }
@@ -175,6 +139,30 @@ namespace BlazorStyled.Stylesheets
             {
                 _observers.Remove(_observer);
             }
+        }
+    }
+
+    internal class RuleComparer : IEqualityComparer<IRule>
+    {
+        public bool Equals(IRule x, IRule y)
+        {
+            Console.WriteLine("Equals");
+            if (object.ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y == null)
+            {
+                return false;
+            }
+
+            return x.Hash == y.Hash;
+        }
+
+        public int GetHashCode(IRule obj)
+        {
+            return obj.Hash.GetHashCode();
         }
     }
 }

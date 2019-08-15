@@ -10,6 +10,7 @@ namespace BlazorStyled.Internal
         {
             _uri = uri;
             AddDeclaration(new Declaration { Property = "@import", Value = uri });
+            SetHash();
             Selector = Hash;
         }
 
