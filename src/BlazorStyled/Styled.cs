@@ -13,8 +13,7 @@ namespace BlazorStyled
 {
     public class Styled : ComponentBase
     {
-        //private static readonly Func<string, string> _encoder = (t) => t;
-        protected readonly Func<string, string> _encoder = (string t) => t;
+        private readonly Func<string, string> _encoder = (string t) => t;
         public readonly ServiceProvider _emptyServiceProvider = new ServiceCollection().BuildServiceProvider();
 
         private string _previousClassname;
@@ -163,7 +162,7 @@ namespace BlazorStyled
             };
         }
 
-        private string RenderAsString()
+       private string RenderAsString()
         {
             string result = string.Empty;
             try

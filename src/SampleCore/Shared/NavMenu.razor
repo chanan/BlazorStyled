@@ -48,7 +48,7 @@
     display: none;
 </Styled>
 
-<Hamburger @onclick="@OnClick" @ref="@hamburger"/>
+<Hamburger OnClick="@MyOnClick" @ref="hamburger" @ref:suppressField/>
 
 <nav class="@nav">
     <h3 class="@h3nav">Getting Started</h3>
@@ -123,7 +123,7 @@
         UriHelper.OnLocationChanged += OnLocationChanged;
     }
 
-    private void OnClick()
+    private void MyOnClick(UIMouseEventArgs e)
     {
         _open = !_open;
         nav = _open ? string.Empty : hiddenOnSmall;
