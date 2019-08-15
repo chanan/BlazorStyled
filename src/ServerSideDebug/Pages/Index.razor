@@ -1,12 +1,22 @@
 ﻿@page "/"
 
-<Styled @bind-Classname="@p">
+<Styled @bind-Classname="@hover">
+    label: hover-example;
+    padding: 32px;
+    background-color: hotpink;
+    font-size: 24px;
+    border-radius: 4px;
+</Styled>
+
+<Styled Classname="@hover" PseudoClass="PseudoClasses.Hover">
     color: @color;
 </Styled>
 
-<p class="@p">@p</p>
+<div class="@hover">
+    Hover to change color.
+</div>
 
 @code {
-    private string p;
-    private string color = "red";
+    private string hover;
+    private string color = "white";
 }
