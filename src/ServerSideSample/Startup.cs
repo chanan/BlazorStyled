@@ -1,3 +1,4 @@
+using BlazorStyled;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +43,10 @@ namespace ServerSideSample
                 });
             }
 
+            //AddBlazorStyled is needed for BlazorStyled to work
+            services.AddBlazorStyled();
+
+            //The following is only used by the sample sites and is not required for BlazorStyled to work
             services.AddServicesForSampleSites();
         }
 
