@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorStyled.Stylesheets;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorStyled
@@ -25,62 +27,129 @@ namespace BlazorStyled
         [Parameter] public bool IsKeyframes { get; set; }
         [Parameter] public PseudoClasses PseudoClass { get; set; } = PseudoClasses.None;
         [Parameter] public EventCallback<string> ClassnameChanged { get; set; }
+        [Parameter(CaptureUnmatchedValues = true)]
+        public IReadOnlyDictionary<string, object> ComposeAttributes { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
+        [Inject] private IStyleSheet StyleSheet { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
-            if (_previousClassname != null)
-            {
-                return; //Prevent rentry
-            }
-
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
-            string content = RenderAsString();
-            content = ApplyTheme(styled, content);
             string classname = null;
-            if (IsKeyframes)
+            if (ComposeAttributes == null)
             {
-                classname = styled.Keyframes(content);
-            }
-            else if (Classname != null && MediaQuery == MediaQueries.None)
-            {
-                //html elements
-                styled.Css(ApplyPseudoClass(Classname), content);
-            }
-            else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
-            {
-                //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
-                //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
-                content = WrapWithMediaQuery(content);
-                classname = styled.Css(content);
-            }
-            else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
-            {
-                //Media query support for classes where an existing Classname already exists
-                content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
-                styled.Css(GetMediaQuery(), content);
-            }
-            else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None)
-            {
-                //Media queries for html elements
-                styled.Css(GetMediaQuery(), content);
-            }
-            else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
-            {
-                content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
-                styled.Css(content);
+                string content = RenderAsString();
+                content = ApplyTheme(styled, content);
+                if (IsKeyframes)
+                {
+                    classname = styled.Keyframes(content);
+                }
+                else if (Classname != null && MediaQuery == MediaQueries.None &&_previousClassname == null)
+                {
+                    //html elements
+                    styled.Css(ApplyPseudoClass(Classname), content);
+                }
+                else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
+                {
+                    //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
+                    //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
+                    content = WrapWithMediaQuery(content);
+                    classname = styled.Css(content);
+                }
+                else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
+                {
+                    //Media query support for classes where an existing Classname already exists
+                    content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
+                    styled.Css(GetMediaQuery(), content);
+                }
+                else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None)
+                {
+                    //Media queries for html elements
+                    styled.Css(GetMediaQuery(), content);
+                }
+                else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
+                {
+                    content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
+                    styled.Css(content);
+                }
+                else
+                {
+                    classname = styled.Css(content);
+                }
+                await NotifyChanged(classname);
             }
             else
             {
-                classname = styled.Css(content);
+                if(ClassnameChanged.HasDelegate)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    IList<string> labels = new List<string>();
+                    IList<string> composeClasses = GetComposeClasses();
+                    foreach(string cls in composeClasses)
+                    {
+                        string selector = ComposeAttributes[cls].ToString();
+                        IRule rule = StyleSheet.GetRule(Id, selector);
+                        if(rule != null)
+                        {
+                            foreach(var decleration in rule.Declarations)
+                            {
+                                sb.Append(decleration.ToString());
+                            }
+                            if(rule.Label != null)
+                            {
+                                labels.Add(rule.Label);
+                            }
+                        }
+                    }
+                    if(sb.Length != 0)
+                    {
+                        string css = sb.ToString();
+                        if(labels.Count != 0)
+                        {
+                            string labelStr = string.Join("-", labels);
+                            css = $"{css}label:{labelStr};";
+                        }
+                        classname = styled.Css(css);
+                        await NotifyChanged(classname);
+                    }    
+                }
             }
-            await NotifyChanged(classname);
+        }
+
+        private IList<string> GetComposeClasses()
+        {
+            IList<string> ret = new List<string>();
+            foreach(var key in ComposeAttributes.Keys)
+            {
+                if(key.ToLower().StartsWith("compose") && !key.ToLower().EndsWith("if"))
+                {
+                    if (ComposeAttributes[key] != null)
+                    {
+                        bool allowedToUse = true;
+                        foreach (var innerKey in ComposeAttributes.Keys)
+                        {
+                            if(innerKey.ToLower() == $"{key}If".ToLower())
+                            {
+                                if(bool.TryParse(ComposeAttributes[innerKey].ToString(), out bool result) && !result)
+                                {
+                                    allowedToUse = false;
+                                }
+                            }
+                        }
+                        if(allowedToUse)
+                        {
+                            ret.Add(key);
+                        }
+                    }
+                }
+            }
+            return ret;
         }
 
         private async Task NotifyChanged(string classname)
         {
-            if (classname != null && ClassnameChanged.HasDelegate && _previousClassname == null)
+            if (classname != null && ClassnameChanged.HasDelegate && _previousClassname != classname)
             {
                 _previousClassname = classname;
                 await ClassnameChanged.InvokeAsync(classname);

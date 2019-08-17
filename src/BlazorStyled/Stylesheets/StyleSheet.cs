@@ -120,6 +120,12 @@ namespace BlazorStyled.Stylesheets
             }
             return new Unsubscriber<IStyleSheet>(_observers, observer);
         }
+
+        public IRule GetRule(string id, string selector)
+        {
+            IDictionary<string, IRule> classes = GetClassesForId(id);
+            return classes[selector];
+        }
     }
 
     internal class Unsubscriber<IStyleSheet> : IDisposable

@@ -1,119 +1,30 @@
 ﻿@page "/"
 
-<Styled @bind-Classname="@menuWrapper">
-    label: menu-wrapper;
-    border: 1px solid #ccc;
-    width:50px;
-    height: 50px;
-    cursor: pointer;
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, .7);
-    box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
-    transition: all .3s ease-out;
+<Styled @bind-Classname="@grey">
+    label: grey;
+    background-color: grey;
 </Styled>
 
-<Styled Classname="@menuWrapper" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
+<Styled @bind-Classname="@bigFont">
+    label: big-font;
+    font-size: 50px;
 </Styled>
 
+<Styled @bind-Classname="@div" Compose1="@grey" Compose2="@bigFont" Compose2If="@_showBig" />
 
-<Styled @bind-Classname="@menuButton">
-    label: menu-button;
-    @menuButtonShared
-    &:before, &:after {
-    @menuButtonShared
-    content: " ";
-    position: absolute;
-    margin-top: -10px;
-    margin-left: 0;
-    -webkit-transform: rotateZ(0deg);
-    -webkit-transform-origin: 3px 3px;
-    }
-    &:after {
-    margin-top: 10px;
-    }
-</Styled>
-
-<Styled Classname="@menuButton" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuWrapperFinal">
-    border: 1px solid #ccc;
-    width:50px;
-    height: 50px;
-    cursor: pointer;
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, .7);
-    box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
-    transition: all .3s ease-out;
-</Styled>
-
-<Styled Classname="@menuWrapperFinal" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuButtonFinal">
-    @menuButtonShared
-    &:before, &:after {
-    @menuButtonShared
-    content: " ";
-    position: absolute;
-    margin-top: -10px;
-    margin-left: 0;
-    -webkit-transform: rotateZ(0deg);
-    -webkit-transform-origin: 3px 3px;
-    }
-    &:after {
-    margin-top: 10px;
-    }
-</Styled>
-
-<Styled Classname="@menuButtonFinal" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuButtonOn">
-    label: menu-button-on;
-    background-color: transparent;
-    margin-left: 12px;
-    &:before {
-    -webkit-transform: rotateZ(45deg);
-    background-color: #ff0000;
-    }
-    &:after {
-    -webkit-transform: rotateZ(-45deg);
-    background-color: #ff0000;
-    }
-</Styled>
-
-<Styled Classname="@menuButtonOn" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuWrapperOn">
-    label: menu-wrapper-on;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) inset;
-</Styled>
-
-<Styled Classname="@menuWrapperOn" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-
-<div class="@menuWrapperFinal">
-    <p class="@menuButtonFinal"></p>
+<div class="@div">
+    This is a test
 </div>
 
-@code {
-    private string menuWrapperFinal, menuWrapper, menuWrapperOn, menuButtonFinal, menuButton, menuButtonOn;
+<button @onclick="@onclick">Toggle Font Size</button>
 
-    private string menuButtonShared = @"
-        height: 4px;
-        width: 34px;
-        background-color: #fff;
-        margin: 23px 8px;
-        border-radius: 3px;
-        -webkit-transition: all 0.5s ease;
-    ";
+
+@code {
+    private string div, grey, bigFont;
+    private bool _showBig = false;
+
+    private void onclick()
+    {
+        _showBig = !_showBig;
+    }
 }
