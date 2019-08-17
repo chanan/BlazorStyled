@@ -12,6 +12,14 @@
 
 <Styled @bind-Classname="@div" Compose1="@grey" Compose2="@bigFont" Compose2If="@_showBig" />
 
+<Styled Classname="@div" PseudoClass="PseudoClasses.Hover">
+    color: red;
+</Styled>
+
+<Styled Classname="@div" MediaQuery="MediaQueries.Mobile">
+    background-color: hotpink;
+</Styled>
+
 <div class="@div">
     This is a test
 </div>

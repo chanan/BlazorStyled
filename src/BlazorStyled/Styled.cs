@@ -57,25 +57,28 @@ namespace BlazorStyled
                     content = WrapWithMediaQuery(content);
                     classname = styled.Css(content);
                 }
-                else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate)
+                else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate && _previousClassname == null)
                 {
                     //Media query support for classes where an existing Classname already exists
                     content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
                     styled.Css(GetMediaQuery(), content);
                 }
-                else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None)
+                else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None && _previousClassname == null)
                 {
                     //Media queries for html elements
                     styled.Css(GetMediaQuery(), content);
                 }
-                else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None)
+                else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
                     styled.Css(content);
                 }
                 else
                 {
-                    classname = styled.Css(content);
+                    if(_previousClassname == null)
+                    {
+                        classname = styled.Css(content);
+                    }
                 }
                 await NotifyChanged(classname);
             }
