@@ -95,7 +95,7 @@ namespace BlazorStyled.Internal
 
         public int GetHashCode(IRule obj)
         {
-            return Hash.GetHashCode();
+            return Hash.GetStableHashCode();
         }
 
         public bool Equals(IRule other)

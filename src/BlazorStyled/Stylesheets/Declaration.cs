@@ -1,4 +1,6 @@
-﻿namespace BlazorStyled.Stylesheets
+﻿using BlazorStyled.Internal;
+
+namespace BlazorStyled.Stylesheets
 {
     public class Declaration
     {
@@ -12,7 +14,7 @@
 
         public override int GetHashCode()
         {
-            return ToString().GetHashCode();
+            return ToString().GetStableHashCode();
         }
     }
 }
