@@ -159,7 +159,6 @@ namespace BlazorStyled.Stylesheets
     {
         public bool Equals(IRule x, IRule y)
         {
-            Console.WriteLine("Equals");
             if (object.ReferenceEquals(x, y))
             {
                 return true;
