@@ -5,6 +5,7 @@ namespace BlazorStyled.Stylesheets
     public interface IRule
     {
         string Selector { get; set; }
+        string ParentSelector { get; set; }
         string Label { get; set; }
         string Hash { get; }
         IEnumerable<Declaration> Declarations { get; }

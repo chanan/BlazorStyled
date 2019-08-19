@@ -92,16 +92,28 @@ namespace BlazorStyled
                     foreach(string cls in composeClasses)
                     {
                         string selector = ComposeAttributes[cls].ToString();
-                        IRule rule = StyleSheet.GetRule(Id, selector);
-                        if(rule != null)
+                        IList<IRule> rules = StyleSheet.GetRules(Id, selector);
+                        if(rules != null)
                         {
-                            foreach(var decleration in rule.Declarations)
+                            foreach(var rule in rules)
                             {
-                                sb.Append(decleration.ToString());
-                            }
-                            if(rule.Label != null)
-                            {
-                                labels.Add(rule.Label);
+                                if (rule.Selector != selector)
+                                {
+                                    string pseudo = rule.Selector.Replace("." + selector, "");
+                                    sb.Append('&').Append(pseudo).Append('{');
+                                }
+                                foreach (var decleration in rule.Declarations)
+                                {
+                                    sb.Append(decleration.ToString());
+                                }
+                                if (rule.Label != null)
+                                {
+                                    labels.Add(rule.Label);
+                                }
+                                if (rule.Selector != selector)
+                                {
+                                    sb.Append('}');
+                                }
                             }
                         }
                     }
@@ -111,7 +123,7 @@ namespace BlazorStyled
                         if(labels.Count != 0)
                         {
                             string labelStr = string.Join("-", labels);
-                            css = $"{css}label:{labelStr};";
+                            css = $"label:{labelStr};{css}";
                         }
                         classname = styled.Css(css);
                         await NotifyChanged(classname);
@@ -175,11 +187,15 @@ namespace BlazorStyled
             return PseudoClass switch
             {
                 PseudoClasses.Active => $"{cls}:active",
+                PseudoClasses.After => $"{cls}::after",
+                PseudoClasses.Before => $"{cls}::before",
                 PseudoClasses.Checked => $"{cls}:checked",
                 PseudoClasses.Disabled => $"{cls}:disabled",
                 PseudoClasses.Empty => $"{cls}:empty",
                 PseudoClasses.Enabled => $"{cls}:enabled",
                 PseudoClasses.FirstChild => $"{cls}:first-child",
+                PseudoClasses.FirstLetter => $"{cls}::first-letter",
+                PseudoClasses.FirstLine => $"{cls}::first-line",
                 PseudoClasses.FirstOfType => $"{cls}:first-of-type",
                 PseudoClasses.Focus => $"{cls}:focus",
                 PseudoClasses.Hover => $"{cls}:hover",
@@ -196,6 +212,7 @@ namespace BlazorStyled
                 PseudoClasses.ReadOnly => $"{cls}:read-only",
                 PseudoClasses.ReadWrite => $"{cls}:read-write",
                 PseudoClasses.Required => $"{cls}:required",
+                PseudoClasses.Selection => $"{cls}::selection",
                 PseudoClasses.Target => $"{cls}:target",
                 PseudoClasses.Valid => $"{cls}:valid",
                 PseudoClasses.Visited => $"{cls}:visited",

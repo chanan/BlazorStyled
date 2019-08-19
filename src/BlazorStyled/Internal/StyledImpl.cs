@@ -262,11 +262,12 @@ namespace BlazorStyled.Internal
 
         private RuleSet ParseRuleSet(string css)
         {
-            RuleSet ruleSet = new RuleSet
+            RuleSet root = new RuleSet
             {
                 Label = _id != DEFAULT ? _id : null
             };
-            IRule current = ruleSet;
+            IRule current = root;
+            IRule previous = root;
             string buffer = string.Empty;
             bool nestedClassClosed = true; //Start from true becuase the parent doesnt need to be closed
             int i = 0;
@@ -298,42 +299,43 @@ namespace BlazorStyled.Internal
                             {
                                 Selector = buffer.Trim()
                             };
-                            ruleSet.AddNestedRule(nestedClass);
+                            root.AddNestedRule(nestedClass);
                             buffer = string.Empty;
+                            previous = current;
                             current = nestedClass;
                             nestedClassClosed = false;
                         }
                         else
                         {
+                            nestedClassClosed = false;
+                            string innerCss = GetInnerClassCss(css, i);
+                            RuleSet mediaQueryClasses = ParseRuleSet(innerCss);
 
-                            if (current.RuleType == RuleType.RuleSet)
+                            bool isClassMediaQuery = mediaQueryClasses.Declarations.Count() > 0;
+                            string selector = isClassMediaQuery ? buffer.Trim() + "{&" : buffer.Trim();
+                            nestedClass = new MediaQuery
                             {
-                                nestedClass = new MediaQuery
-                                {
-                                    Selector = buffer.Trim() + "{&"
-                                };
-                                ruleSet.AddNestedRule(nestedClass);
-                                buffer = string.Empty;
-                                current = nestedClass;
-                                nestedClassClosed = false;
+                                Selector = selector
+                            };
+                            root.AddNestedRule(nestedClass);
+                            if(isClassMediaQuery)
+                            {
+                                nestedClass.AddDeclarations(mediaQueryClasses.Declarations.ToList());
                             }
                             else
                             {
-                                nestedClass = new MediaQuery
-                                {
-                                    Selector = buffer.Trim()
-                                };
-                                ruleSet.AddNestedRule(nestedClass);
-                                buffer = string.Empty;
-                                nestedClassClosed = false;
-                                string innerCss = GetInnerClassCss(css, i);
-                                nestedClass.AddNestedRules(ParseRuleSet(innerCss).NestedRules.ToList());
-                                i += innerCss.Length;
+                                nestedClass.AddNestedRules(mediaQueryClasses.NestedRules.ToList());
                             }
+                            i += innerCss.Length;
+                            previous = root;
+                            buffer = string.Empty;
                         }
                         break;
                     case '}':
                         nestedClassClosed = true;
+                        current = previous;
+                        previous = root;
+                        buffer = string.Empty;
                         break;
                     default:
                         buffer += ch;
@@ -349,8 +351,8 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(buffer, "This is usually caused by a missing ';' character at the end of a declaration", null);
             }
-            ruleSet.SetClassname();
-            return ruleSet;
+            root.SetClassname();
+            return root;
         }
 
         private string GetInnerClassCss(string fullCss, int startFrom)

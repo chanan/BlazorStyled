@@ -10,8 +10,20 @@ namespace BlazorStyled.Internal
         private readonly List<Declaration> _declarations = new List<Declaration>();
         private readonly List<IRule> _rules = new List<IRule>();
         private string _hash;
-
-        public string Selector { get; set; }
+        private string _selector;
+        public string Selector
+        {
+            get
+            {
+                return _selector;
+            }
+            set
+            {
+                _selector = value;
+                SetHash();
+            }
+        }
+        public string ParentSelector { get; set; }
         public string Label { get; set; }
 
         public string Hash

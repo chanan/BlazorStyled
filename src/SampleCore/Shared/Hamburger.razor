@@ -1,4 +1,4 @@
-﻿<!-- Code taken from https://codepen.io/junxu/pen/pKEuz -->
+﻿<!-- CSS taken from https://codepen.io/junxu/pen/pKEuz -->
 
 <Styled @bind-Classname="@menuWrapper">
     label: menu-wrapper;
@@ -16,81 +16,6 @@
     display: none;
 </Styled>
 
-
-<Styled @bind-Classname="@menuButton">
-    label: menu-button;
-    @menuButtonShared
-    &:before, &:after {
-        @menuButtonShared
-        content: " ";
-        position: absolute;
-        margin-top: -10px;
-        margin-left: 0;
-        -webkit-transform: rotateZ(0deg);
-        -webkit-transform-origin: 3px 3px;
-    }
-    &:after {
-        margin-top: 10px;
-    }
-</Styled>
-
-<Styled Classname="@menuButton" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuWrapperFinal">
-    border: 1px solid #ccc;
-    width:50px;
-    height: 50px;
-    cursor: pointer;
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, .7);
-    box-shadow: 0 0 0 25px rgba(0, 0, 0, .5) inset;
-    transition: all .3s ease-out;
-</Styled>
-
-<Styled Classname="@menuWrapperFinal" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuButtonFinal">
-    @menuButtonShared
-    &:before, &:after {
-        @menuButtonShared
-        content: " ";
-        position: absolute;
-        margin-top: -10px;
-        margin-left: 0;
-        -webkit-transform: rotateZ(0deg);
-        -webkit-transform-origin: 3px 3px;
-    }
-    &:after {
-        margin-top: 10px;
-    }
-</Styled>
-
-<Styled Classname="@menuButtonFinal" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
-<Styled @bind-Classname="@menuButtonOn">
-    label: menu-button-on;
-    background-color: transparent;
-    margin-left: 12px;
-    &:before {
-        -webkit-transform: rotateZ(45deg);
-        background-color: #ff0000;
-    }
-    &:after {
-        -webkit-transform: rotateZ(-45deg);
-        background-color: #ff0000;
-    }
-</Styled>
-
-<Styled Classname="@menuButtonOn" MediaQuery="MediaQueries.LargerThanTablet">
-    display: none;
-</Styled>
-
 <Styled @bind-Classname="@menuWrapperOn">
     label: menu-wrapper-on;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) inset;
@@ -100,6 +25,58 @@
     display: none;
 </Styled>
 
+<Styled @bind-Classname="@menuButton">
+    label: menu-button;
+    @menuButtonShared
+</Styled>
+
+<Styled Classname="@menuButton" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
+</Styled>
+
+<Styled Classname="@menuButton" PseudoClass="PseudoClasses.Before">
+    @menuButtonShared
+    content: " ";
+    position: absolute;
+    margin-top: -10px;
+    margin-left: 0;
+    -webkit-transform: rotateZ(0deg);
+    -webkit-transform-origin: 3px 3px;
+</Styled>
+
+<Styled Classname="@menuButton" PseudoClass="PseudoClasses.After">
+    @menuButtonShared
+    content: " ";
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 0;
+    -webkit-transform: rotateZ(0deg);
+    -webkit-transform-origin: 3px 3px;
+</Styled>
+
+<Styled @bind-Classname="@menuButtonOn">
+    label: menu-button-on;
+    background-color: transparent;
+    margin-left: 12px;
+</Styled>
+
+<Styled Classname="@menuButtonOn" MediaQuery="MediaQueries.LargerThanTablet">
+    display: none;
+</Styled>
+
+<Styled Classname="@menuButtonOn" PseudoClass="PseudoClasses.Before">
+    -webkit-transform: rotateZ(45deg);
+    background-color: #ff0000;
+</Styled>
+
+<Styled Classname="@menuButtonOn" PseudoClass="PseudoClasses.After">
+    -webkit-transform: rotateZ(-45deg);
+    background-color: #ff0000;
+</Styled>
+
+<Styled @bind-Classname="@menuWrapperFinal" Compose1="@menuWrapper" Compose2="@menuWrapperOn" Compose2If="@_open" />
+
+<Styled @bind-Classname="@menuButtonFinal" Compose1="@menuButton" Compose2="@menuButtonOn" Compose2If="@_open" />
 
 <div class="@menuWrapperFinal" @onclick="@InternalOnClick">
     <p class="@menuButtonFinal"></p>
@@ -124,8 +101,7 @@
     private void InternalOnClick(UIMouseEventArgs e)
     {
         _open = !_open;
-        SetMenuStyles();
-        if(OnClick.HasDelegate)
+        if (OnClick.HasDelegate)
         {
             OnClick.InvokeAsync(e);
         }
@@ -134,12 +110,5 @@
     public void Navigated()
     {
         _open = false;
-        SetMenuStyles();
-    }
-
-    private void SetMenuStyles()
-    {
-        menuWrapperFinal = _open ? menuWrapper + " " + menuWrapperOn : menuWrapper;
-        menuButtonFinal = _open ? menuButton + " " + menuButtonOn : menuButton;
     }
 }

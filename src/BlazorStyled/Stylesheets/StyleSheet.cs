@@ -121,10 +121,17 @@ namespace BlazorStyled.Stylesheets
             return new Unsubscriber<IStyleSheet>(_observers, observer);
         }
 
-        public IRule GetRule(string id, string selector)
+        public IList<IRule> GetRules(string id, string selector)
         {
+            List<IRule> ret = new List<IRule>();
             IDictionary<string, IRule> classes = GetClassesForId(id);
-            return classes[selector];
+            ret.Add(classes[selector]);
+            string classname = "." + selector;
+            var q = from r in classes.Values
+                    where r.Selector.StartsWith(classname) && r.Selector != classname
+                    select r;
+            ret.AddRange(q.ToList());
+            return ret;
         }
     }
 

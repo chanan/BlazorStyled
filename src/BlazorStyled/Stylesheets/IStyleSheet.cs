@@ -11,7 +11,7 @@ namespace BlazorStyled.Stylesheets
         IEnumerator<IRule> GetEnumerator();
         string GetHashCodes();
         IEnumerable<string> GetImportRules();
-        IRule GetRule(string id, string selector);
+        IList<IRule> GetRules(string id, string selector);
         IEnumerable<IRule> GetRulesWithoutImport();
         IDisposable Subscribe(IObserver<IStyleSheet> observer);
         Theme Theme { get; set; }

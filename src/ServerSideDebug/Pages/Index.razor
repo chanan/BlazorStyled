@@ -1,38 +1,40 @@
 ﻿@page "/"
+@inject IStyled Styled
 
-<Styled @bind-Classname="@grey">
-    label: grey;
-    background-color: grey;
-</Styled>
+<h1>Test</h1>
 
-<Styled @bind-Classname="@bigFont">
-    label: big-font;
-    font-size: 50px;
-</Styled>
+<h5>Hello</h5>
 
-<Styled @bind-Classname="@div" Compose1="@grey" Compose2="@bigFont" Compose2If="@_showBig" />
+<h6>World</h6>
 
-<Styled Classname="@div" PseudoClass="PseudoClasses.Hover">
-    color: red;
-</Styled>
+<blockquote>Qutoe</blockquote>
 
-<Styled Classname="@div" MediaQuery="MediaQueries.Mobile">
-    background-color: hotpink;
-</Styled>
-
-<div class="@div">
-    This is a test
-</div>
-
-<button @onclick="@onclick">Toggle Font Size</button>
-
+<div class="@div">My Div</div>
 
 @code {
-    private string div, grey, bigFont;
-    private bool _showBig = false;
+    private string div;
 
-    private void onclick()
+    protected override void OnInitialized()
     {
-        _showBig = !_showBig;
+        Styled.Css("@media only screen and (max-width:480px)", @"
+            h1 {
+                font-size: 2rem;
+                line-height: 2.67rem;
+            }
+        ");
+
+        Styled.Css("@media only screen and (max-width:768px)", @"
+            h1 {
+                font-size: 4rem;
+                line-height: 4.67rem;
+            }
+        ");
+
+        div = Styled.Css(@"
+            color: red;
+            @media only screen and (max-width:480px) {
+                color: green;
+            }
+        ");
     }
 }

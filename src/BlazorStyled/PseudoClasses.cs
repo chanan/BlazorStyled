@@ -5,11 +5,15 @@
     {
         None,
         Active,
+        After,
+        Before,
         Checked,
         Disabled,
         Empty,
         Enabled,
         FirstChild,
+        FirstLetter,
+        FirstLine,
         FirstOfType,
         Focus,
         Hover,
@@ -26,6 +30,7 @@
         ReadOnly,
         ReadWrite,
         Required,
+        Selection,
         Target,
         Valid,
         Visited
