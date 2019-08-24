@@ -1,0 +1,19 @@
+﻿@page "/alternate-server-side-install"
+
+<h1>Alternate Server Side Install</h1>
+
+<p>In some cases, the steps described in <a href="/server-side-install">Server Side Install</a> will not for your project. For example, Sync Fusion Blazor controls will not work
+    with the setup described in those directions. In that case, there is an alternate way to setup BlazorStyled.</p>
+
+<p>First add BlazorStyled to the <code>Startup.cs</code>, but as opposed to the regular install, leave code in Configure method as is:</p>
+
+<PrettyCode CodeFile="_content/SampleCore/altInstall1.html" HighlightLines="7" Title="Startup.cs" />
+
+<p>In this install do not change your <code>_Host.cshtml</code>. Instead add <code>&lt;ServerSideStyled /></code> to your <code>MainLayout.razor</code>. For example:</p>
+
+<PrettyCode CodeFile="_content/SampleCore/altInstall2.html" HighlightLines="2" Title="MainLayout.razor" />
+
+<h3>Disadvantage of Alternate Install</h3>
+
+<p>The disadvantage of using this insatall is that the styles insterted by BlazorStyled will come after any other style sheets (if any). 
+    With the regular install style, you can control the location of the style tag in relation to other stylesheets.</p>

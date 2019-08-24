@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSideDebug", "src\Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostedSample.Server", "src\HostedSample\HostedSample.Server.csproj", "{88B6A5F8-8D0A-4135-8D9E-F39098DF53D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorStyled.Tests", "src\BlazorStyled.Tests\BlazorStyled.Tests.csproj", "{2CF399EB-09DE-4323-A6EA-289DBE1554B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStyled.Tests", "src\BlazorStyled.Tests\BlazorStyled.Tests.csproj", "{2CF399EB-09DE-4323-A6EA-289DBE1554B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
