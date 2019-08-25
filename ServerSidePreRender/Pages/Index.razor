@@ -1,0 +1,13 @@
+﻿@page "/"
+
+<Styled @bind-Classname="@p">
+    color: red;
+</Styled>
+
+<h1>Hello, world!</h1>
+
+<p class="@p">Welcome to your new app.</p>
+
+@code {
+    private string p;
+}
