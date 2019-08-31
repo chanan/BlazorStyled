@@ -52,7 +52,15 @@ namespace BlazorStyled
 
         public void Dispose()
         {
-            _unsubscriber.Dispose();
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                _unsubscriber.Dispose();
+            }
         }
     }
 }
