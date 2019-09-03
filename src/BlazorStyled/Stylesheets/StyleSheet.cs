@@ -19,34 +19,47 @@ namespace BlazorStyled.Stylesheets
             if (_classes.ContainsKey(key))
             {
                 _classes[key].Clear();
-                foreach (IObserver<IStyleSheet> observer in _observers)
-                {
-                    observer.OnNext(this);
-                }
+                NotifyObservers();
             }
         }
 
         public void AddClass(IRule rule, string id)
         {
             IDictionary<string, IRule> classes = GetClassesForId(id);
-            if (!classes.ContainsKey(rule.Hash))
+            bool notify = false;
+            if (rule.Selector.Contains("-"))
             {
-                classes.Add(rule.Hash, rule);
+                if (!classes.ContainsKey(rule.Hash))
+                {
+                    classes.Add(rule.Hash, rule);
+                    notify = true;
+                }
             }
-            foreach (IObserver<StyleSheet> observer in _observers)
+            else
             {
-                observer.OnNext(this);
+                //merge html elements
+                notify = true;
+                if (TryGetHtmlElementClass(classes, rule.Selector, out PredefinedRuleSet existing))
+                {
+                    MergeHtmlElements(existing, rule);
+                }
+                else
+                {
+                    classes.Add(rule.Hash, rule);
+                }
+            }
+            if (notify)
+            {
+                NotifyObservers();
             }
         }
 
-        private IDictionary<string, IRule> GetClassesForId(string id)
+        private void MergeHtmlElements(PredefinedRuleSet existing, IRule rule)
         {
-            string key = id ?? DEFAULT;
-            if (!_classes.ContainsKey(key))
+            foreach (Declaration newDecelearion in rule.Declarations)
             {
-                _classes.Add(key, new Dictionary<string, IRule>());
+                existing.MergeDeceleration(newDecelearion);
             }
-            return _classes[key];
         }
 
         public int Count => _classes.Count;
@@ -127,11 +140,67 @@ namespace BlazorStyled.Stylesheets
             IDictionary<string, IRule> classes = GetClassesForId(id);
             ret.Add(classes[selector]);
             string classname = "." + selector;
-            var q = from r in classes.Values
-                    where r.Selector.StartsWith(classname) && r.Selector != classname
-                    select r;
+            IEnumerable<IRule> q = from r in classes.Values
+                                   where r.Selector.StartsWith(classname) && r.Selector != classname
+                                   select r;
             ret.AddRange(q.ToList());
             return ret;
+        }
+
+        public void SetThemeValue(string name, string value)
+        {
+            if (Theme.Values.ContainsKey(name))
+            {
+                Theme.Values[name] = value;
+            }
+            else
+            {
+                Theme.Values.Add(name, value);
+            }
+            NotifyObservers();
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> GetThemeValues()
+        {
+            return Theme.Values.ToList().AsEnumerable();
+        }
+
+        public int GetThemeHashCode()
+        {
+            int result = 0;
+            foreach (KeyValuePair<string, string> kvp in GetThemeValues())
+            {
+                result += kvp.Key.GetStableHashCode();
+                result += kvp.Value.GetStableHashCode();
+            }
+            return result;
+        }
+
+        private void NotifyObservers()
+        {
+            foreach (IObserver<IStyleSheet> observer in _observers)
+            {
+                observer.OnNext(this);
+            }
+        }
+
+        private bool TryGetHtmlElementClass(IDictionary<string, IRule> classes, string selector, out PredefinedRuleSet existing)
+        {
+            IEnumerable<IRule> q = from r in classes.Values
+                                   where r.RuleType == RuleType.PredefinedRuleSet && r.Selector == selector
+                                   select r;
+            existing = (PredefinedRuleSet)q.SingleOrDefault();
+            return existing != null;
+        }
+
+        private IDictionary<string, IRule> GetClassesForId(string id)
+        {
+            string key = id ?? DEFAULT;
+            if (!_classes.ContainsKey(key))
+            {
+                _classes.Add(key, new Dictionary<string, IRule>());
+            }
+            return _classes[key];
         }
     }
 

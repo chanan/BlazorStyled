@@ -1,19 +1,5 @@
 @page "/test"
 
-<Styled @bind-Classname="@myDiv">
-  color:red;
-</Styled>
+<Toggle />
 
-<Styled Classname="@myDiv" MediaQuery="MediaQueries.Mobile">
-    color:blue;
-</Styled>
-
-<div>@myDiv</div>
-
-<div class="@myDiv">
-    blue and red div based on screen size
-</div>
-
-@code {
-    private string myDiv;
-}
+<p>This is a test</p>

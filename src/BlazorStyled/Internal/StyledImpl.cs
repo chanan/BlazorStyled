@@ -318,7 +318,7 @@ namespace BlazorStyled.Internal
                                 Selector = selector
                             };
                             root.AddNestedRule(nestedClass);
-                            if(isClassMediaQuery)
+                            if (isClassMediaQuery)
                             {
                                 nestedClass.AddDeclarations(mediaQueryClasses.Declarations.ToList());
                             }
@@ -406,6 +406,11 @@ namespace BlazorStyled.Internal
             {
                 throw StyledException.GetException(input, "This is likely cause by a missing ':' character", e);
             }
+        }
+
+        public void SetThemeValue(string name, string value)
+        {
+            _styleSheet.SetThemeValue(name, value);
         }
 
         private readonly List<string> _elements = new List<string>

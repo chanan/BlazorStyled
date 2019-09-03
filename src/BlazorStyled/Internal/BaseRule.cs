@@ -13,10 +13,7 @@ namespace BlazorStyled.Internal
         private string _selector;
         public string Selector
         {
-            get
-            {
-                return _selector;
-            }
+            get => _selector;
             set
             {
                 _selector = value;

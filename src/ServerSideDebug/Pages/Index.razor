@@ -1,40 +1,12 @@
 ﻿@page "/"
 @inject IStyled Styled
 
-<h1>Test</h1>
-
-<h5>Hello</h5>
-
-<h6>World</h6>
-
-<blockquote>Qutoe</blockquote>
-
-<div class="@div">My Div</div>
+<Toggle />
 
 @code {
-    private string div;
-
     protected override void OnInitialized()
     {
-        Styled.Css("@media only screen and (max-width:480px)", @"
-            h1 {
-                font-size: 2rem;
-                line-height: 2.67rem;
-            }
-        ");
-
-        Styled.Css("@media only screen and (max-width:768px)", @"
-            h1 {
-                font-size: 4rem;
-                line-height: 4.67rem;
-            }
-        ");
-
-        div = Styled.Css(@"
-            color: red;
-            @media only screen and (max-width:480px) {
-                color: green;
-            }
-        ");
+        Styled.SetThemeValue("colors.background-color", "#f0f0f0");
+        Styled.SetThemeValue("colors.text-color", "#994cc3");
     }
 }

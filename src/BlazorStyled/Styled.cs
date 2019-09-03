@@ -13,12 +13,14 @@ using System.Threading.Tasks;
 
 namespace BlazorStyled
 {
-    public class Styled : ComponentBase
+    public class Styled : ComponentBase, IObserver<IStyleSheet>, IDisposable
     {
+        private readonly ServiceProvider _emptyServiceProvider = new ServiceCollection().BuildServiceProvider();
         private readonly Func<string, string> _encoder = (string t) => t;
-        public readonly ServiceProvider _emptyServiceProvider = new ServiceCollection().BuildServiceProvider();
-
         private string _previousClassname;
+        private IDisposable _unsubscriber;
+        private int _themeHash;
+        private bool _containsThemeValues = false;
 
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public string Id { get; set; }
@@ -27,25 +29,35 @@ namespace BlazorStyled
         [Parameter] public bool IsKeyframes { get; set; }
         [Parameter] public PseudoClasses PseudoClass { get; set; } = PseudoClasses.None;
         [Parameter] public EventCallback<string> ClassnameChanged { get; set; }
-        [Parameter(CaptureUnmatchedValues = true)]
-        public IReadOnlyDictionary<string, object> ComposeAttributes { get; set; }
+        [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> ComposeAttributes { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
         [Inject] private IStyleSheet StyleSheet { get; set; }
 
+        protected override void OnInitialized()
+        {
+            _unsubscriber = StyleSheet.Subscribe(this);
+            _themeHash = StyleSheet.GetThemeHashCode();
+        }
+
         protected override async Task OnParametersSetAsync()
+        {
+            await ProcessParameters();
+        }
+
+        private async Task ProcessParameters()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string classname = null;
             if (ComposeAttributes == null)
             {
                 string content = RenderAsString();
-                content = ApplyTheme(styled, content);
+                content = ApplyTheme(content);
                 if (IsKeyframes)
                 {
                     classname = styled.Keyframes(content);
                 }
-                else if (Classname != null && MediaQuery == MediaQueries.None &&_previousClassname == null)
+                else if (Classname != null && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     //html elements
                     styled.Css(ApplyPseudoClass(Classname), content);
@@ -75,34 +87,35 @@ namespace BlazorStyled
                 }
                 else
                 {
-                    if(_previousClassname == null)
+                    classname = styled.Css(content);
+                    /*if (_previousClassname == null)
                     {
                         classname = styled.Css(content);
-                    }
+                    }*/
                 }
                 await NotifyChanged(classname);
             }
             else
             {
-                if(ClassnameChanged.HasDelegate)
+                if (ClassnameChanged.HasDelegate)
                 {
                     StringBuilder sb = new StringBuilder();
                     IList<string> labels = new List<string>();
                     IList<string> composeClasses = GetComposeClasses();
-                    foreach(string cls in composeClasses)
+                    foreach (string cls in composeClasses)
                     {
                         string selector = ComposeAttributes[cls].ToString();
                         IList<IRule> rules = StyleSheet.GetRules(Id, selector);
-                        if(rules != null)
+                        if (rules != null)
                         {
-                            foreach(var rule in rules)
+                            foreach (IRule rule in rules)
                             {
                                 if (rule.Selector != selector)
                                 {
                                     string pseudo = rule.Selector.Replace("." + selector, "");
                                     sb.Append('&').Append(pseudo).Append('{');
                                 }
-                                foreach (var decleration in rule.Declarations)
+                                foreach (Declaration decleration in rule.Declarations)
                                 {
                                     sb.Append(decleration.ToString());
                                 }
@@ -117,17 +130,17 @@ namespace BlazorStyled
                             }
                         }
                     }
-                    if(sb.Length != 0)
+                    if (sb.Length != 0)
                     {
                         string css = sb.ToString();
-                        if(labels.Count != 0)
+                        if (labels.Count != 0)
                         {
                             string labelStr = string.Join("-", labels);
                             css = $"label:{labelStr};{css}";
                         }
                         classname = styled.Css(css);
                         await NotifyChanged(classname);
-                    }    
+                    }
                 }
             }
         }
@@ -135,24 +148,24 @@ namespace BlazorStyled
         private IList<string> GetComposeClasses()
         {
             IList<string> ret = new List<string>();
-            foreach(var key in ComposeAttributes.Keys)
+            foreach (string key in ComposeAttributes.Keys)
             {
-                if(key.ToLower().StartsWith("compose") && !key.ToLower().EndsWith("if"))
+                if (key.ToLower().StartsWith("compose") && !key.ToLower().EndsWith("if"))
                 {
                     if (ComposeAttributes[key] != null)
                     {
                         bool allowedToUse = true;
-                        foreach (var innerKey in ComposeAttributes.Keys)
+                        foreach (string innerKey in ComposeAttributes.Keys)
                         {
-                            if(innerKey.ToLower() == $"{key}If".ToLower())
+                            if (innerKey.ToLower() == $"{key}If".ToLower())
                             {
-                                if(bool.TryParse(ComposeAttributes[innerKey].ToString(), out bool result) && !result)
+                                if (bool.TryParse(ComposeAttributes[innerKey].ToString(), out bool result) && !result)
                                 {
                                     allowedToUse = false;
                                 }
                             }
                         }
-                        if(allowedToUse)
+                        if (allowedToUse)
                         {
                             ret.Add(key);
                         }
@@ -171,12 +184,15 @@ namespace BlazorStyled
             }
         }
 
-        private string ApplyTheme(IStyled styled, string content)
+        private string ApplyTheme(string content)
         {
-            Theme theme = styled.Theme;
-            foreach (string key in theme.Values.Keys)
+            foreach (KeyValuePair<string, string> kvp in StyleSheet.GetThemeValues())
             {
-                content = content.Replace("{" + key + "}", theme.Values[key]);
+                if (content.Contains("{" + kvp.Key + "}"))
+                {
+                    content = content.Replace("{" + kvp.Key + "}", kvp.Value);
+                    _containsThemeValues = true;
+                }
             }
             return content;
         }
@@ -259,7 +275,7 @@ namespace BlazorStyled
             {
                 ParameterView paramView = ParameterView.FromDictionary(new Dictionary<string, object>() { { "ChildContent", ChildContent } });
                 using HtmlRenderer htmlRenderer = new HtmlRenderer(_emptyServiceProvider, NullLoggerFactory.Instance, _encoder);
-                IEnumerable<string> tokens = GetResult(htmlRenderer.Dispatcher.InvokeAsync(() => htmlRenderer.RenderComponentAsync<TestComponent>(paramView)));
+                IEnumerable<string> tokens = GetResult(htmlRenderer.Dispatcher.InvokeAsync(() => htmlRenderer.RenderComponentAsync<TempComponent>(paramView)));
                 result = string.Join("", tokens.ToArray());
             }
             catch
@@ -282,7 +298,40 @@ namespace BlazorStyled
             }
         }
 
-        private class TestComponent : ComponentBase
+        public void OnCompleted()
+        {
+            _unsubscriber.Dispose();
+        }
+
+        public void OnError(Exception error)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnNext(IStyleSheet value)
+        {
+            if (_containsThemeValues && _themeHash != value.GetThemeHashCode())
+            {
+                _themeHash = value.GetThemeHashCode();
+                InvokeAsync(() => ProcessParameters()).ContinueWith((_) => InvokeAsync(() => StateHasChanged()));
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _emptyServiceProvider.Dispose();
+                _unsubscriber.Dispose();
+            }
+        }
+
+        private class TempComponent : ComponentBase
         {
             [Parameter] public RenderFragment ChildContent { get; set; }
 

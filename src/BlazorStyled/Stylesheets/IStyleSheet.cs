@@ -15,5 +15,8 @@ namespace BlazorStyled.Stylesheets
         IEnumerable<IRule> GetRulesWithoutImport();
         IDisposable Subscribe(IObserver<IStyleSheet> observer);
         Theme Theme { get; set; }
+        void SetThemeValue(string name, string value);
+        IEnumerable<KeyValuePair<string, string>> GetThemeValues();
+        int GetThemeHashCode();
     }
 }

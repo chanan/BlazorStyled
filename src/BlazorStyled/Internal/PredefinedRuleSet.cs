@@ -19,5 +19,23 @@ namespace BlazorStyled.Internal
             sb.Append('}');
             return sb.ToString();
         }
+
+        public void MergeDeceleration(Declaration declaration)
+        {
+            bool found = false;
+            foreach (Declaration exsiting in Declarations)
+            {
+                if (exsiting.Property.Trim().ToLower() == declaration.Property.Trim().ToLower())
+                {
+                    found = true;
+                    exsiting.Value = declaration.Value;
+                    SetHash();
+                }
+            }
+            if (!found)
+            {
+                AddDeclaration(declaration);
+            }
+        }
     }
 }
