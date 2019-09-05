@@ -1,5 +1,5 @@
 ﻿@inject IStyled Styled
-@inject IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 
 <Styled @bind-Classname="@ul">
     display: inline-flex;
@@ -48,7 +48,7 @@
     display: none;
 </Styled>
 
-<Hamburger OnClick="@MyOnClick" @ref="hamburger" @ref:suppressField/>
+<Hamburger OnClick="@MyOnClick" @ref="hamburger" />
 
 <nav class="@nav">
     <h3 class="@h3nav">Getting Started</h3>
@@ -126,16 +126,16 @@
 
     protected override void OnInitialized()
     {
-        UriHelper.OnLocationChanged += OnLocationChanged;
+        NavigationManager.LocationChanged += LocationChanged;
     }
 
-    private void MyOnClick(UIMouseEventArgs e)
+    private void MyOnClick(MouseEventArgs e)
     {
         _open = !_open;
         nav = _open ? string.Empty : hiddenOnSmall;
     }
 
-    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    private void LocationChanged(object sender, LocationChangedEventArgs e)
     {
         _open = false;
         hamburger.Navigated();

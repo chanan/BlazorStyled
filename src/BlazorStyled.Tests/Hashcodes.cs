@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BlazorStyled.Internal;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlazorStyled.Tests
 {
@@ -12,7 +12,7 @@ namespace BlazorStyled.Tests
             RuleSet ruleSet = new RuleSet();
             ruleSet.AddDeclaration(new Stylesheets.Declaration { Property = "color", Value = "red" });
             Hash hash = new Hash();
-            var hashcode = hash.GetHashCode(ruleSet);
+            string hashcode = hash.GetHashCode(ruleSet);
             Assert.AreEqual("dqma-qdh", hashcode);
         }
     }

@@ -83,7 +83,7 @@
 </div>
 
 @code {
-    [Parameter] public EventCallback<UIMouseEventArgs> OnClick { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     private bool _open = false;
 
@@ -98,7 +98,7 @@
         -webkit-transition: all 0.5s ease;
     ";
 
-    private void InternalOnClick(UIMouseEventArgs e)
+    private void InternalOnClick(MouseEventArgs e)
     {
         _open = !_open;
         if (OnClick.HasDelegate)

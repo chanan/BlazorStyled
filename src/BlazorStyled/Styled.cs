@@ -1,7 +1,7 @@
-﻿using BlazorStyled.Stylesheets;
+﻿using BlazorStyled.Internal;
+using BlazorStyled.Stylesheets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
