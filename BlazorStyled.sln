@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStyled.Tests", "src\B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSidePreRender", "src\ServerSidePreRender\ServerSidePreRender.csproj", "{DB9C91DC-E3FF-428D-A074-461ADD1CB0BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorStyled.SnapshotTests", "src\BlazorStyled.SnapshotTests\BlazorStyled.SnapshotTests.csproj", "{3FC54E85-9211-4DCB-98DC-4BCF723B9116}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{DB9C91DC-E3FF-428D-A074-461ADD1CB0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB9C91DC-E3FF-428D-A074-461ADD1CB0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB9C91DC-E3FF-428D-A074-461ADD1CB0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC54E85-9211-4DCB-98DC-4BCF723B9116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC54E85-9211-4DCB-98DC-4BCF723B9116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC54E85-9211-4DCB-98DC-4BCF723B9116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC54E85-9211-4DCB-98DC-4BCF723B9116}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
