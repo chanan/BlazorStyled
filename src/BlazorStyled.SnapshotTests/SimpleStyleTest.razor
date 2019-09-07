@@ -8,6 +8,15 @@
         </Styled>
     </TestSetup>
     <ExpectedHtml>
-        <div class="alert fade show" role="alert"></div>
+<style>
+        p{color:red;}
+</style>
     </ExpectedHtml>
 </Fact>
+
+@code {
+    protected override void AddServices(IServiceCollection services)
+    {
+        services.AddBlazorStyled();
+    }
+}

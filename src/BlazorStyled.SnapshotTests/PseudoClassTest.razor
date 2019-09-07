@@ -1,0 +1,45 @@
+﻿<Fact DisplayName="pseudo class">
+    <TestSetup>
+        <ServerSideStyled />
+        <Styled @bind-Classname="@hover">
+            label: hover-example;
+            padding: 32px;
+            background-color: hotpink;
+            font-size: 24px;
+            border-radius: 4px;
+        </Styled>
+        <Styled Classname="@hover" PseudoClass="PseudoClasses.Hover">
+            color: @color;
+        </Styled>
+    </TestSetup>
+    <ExpectedHtml>
+ <style>
+        rcdh-ilk-hover-example{label:hover-example;padding:32px;background-color:hotpink;font-size:24px;border-radius:4px;}
+        .rcdh-ilk-hover-example:hover{color:white;}
+</style>
+    </ExpectedHtml>
+</Fact>
+
+@code {
+    /*
+     * Issues
+     * ======
+     * 
+     * 1. first class missing period
+     * 2. label is not removed
+     * 
+     * it should look like so:
+     * 
+     * .rcdh-ilk-hover-example{padding:32px;background-color:hotpink;font-size:24px;border-radius:4px;}
+     * .rcdh-ilk-hover-example:hover{color:white;}
+     * 
+     */
+
+    private string hover = "rcdh-ilk-hover-example"; //Binding isn't working, so hard coding selector hash
+    private string color = "white";
+
+    protected override void AddServices(IServiceCollection services)
+    {
+        services.AddBlazorStyled();
+    }
+}

@@ -1,0 +1,37 @@
+﻿@* Still doesnt work *@
+
+<Fact Id=@nameof(A_Custom_Test)>
+        <TestSetup>
+    <ServerSideStyled />
+    <StyledGoogleFont Name="Geostar" Styles="normal" />
+    <Styled @bind-Classname="@geostar">
+        font-family: Geostar;
+    </Styled>
+    <p class="@geostar">Test</p>
+        </TestSetup>
+    <HtmlSnippet>
+            <link href="//fonts.googleapis.com/css?family=Geostar:normal&amp;display=swap" rel="stylesheet"/>
+
+     <style>
+            .uxgt-xsg{font-family:Geostar;}
+    </style>
+
+
+    </HtmlSnippet>
+</Fact>
+
+@code {
+    private string geostar;
+
+    protected override void AddServices(IServiceCollection services)
+    {
+        services.AddBlazorStyled();
+    }
+
+    [Fact]
+    public void A_Custom_Test()
+    {
+        var result = RenderResults.Single(x => x.Id == (nameof(A_Custom_Test)));
+        Console.WriteLine("Result: " + result);
+    }
+}

@@ -1,0 +1,22 @@
+﻿<Fact DisplayName="red class">
+    <TestSetup>
+        <ServerSideStyled />
+        <Styled @bind-Classname="@p">
+            color: red;
+        </Styled>
+    </TestSetup>
+    <ExpectedHtml>
+<style>
+    .dqma-qdh{color:red;}
+</style>
+    </ExpectedHtml>
+</Fact>
+
+@code {
+    private string p;
+
+    protected override void AddServices(IServiceCollection services)
+    {
+        services.AddBlazorStyled();
+    }
+}

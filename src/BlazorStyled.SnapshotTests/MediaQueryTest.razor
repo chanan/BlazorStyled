@@ -1,0 +1,25 @@
+﻿<Fact DisplayName="nested class">
+    <TestSetup>
+        <ServerSideStyled />
+        <Styled @bind-Classname="@p" MediaQuery="MediaQueries.Mobile">
+            color: red;
+        </Styled>
+
+        <p class="@p">This paragraph will be red on a mobile phone</p>
+    </TestSetup>
+    <ExpectedHtml>
+ <style>
+        @@media only screen and (max-width:480px){.wpng-cch{color:red;}}
+</style>
+  <p>This paragraph will be red on a mobile phone</p>
+    </ExpectedHtml>
+</Fact>
+
+@code {
+    private string p;
+
+    protected override void AddServices(IServiceCollection services)
+    {
+        services.AddBlazorStyled();
+    }
+}

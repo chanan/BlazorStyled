@@ -1,0 +1,27 @@
+﻿<Fact DisplayName="nested class">
+    <TestSetup>
+        <ServerSideStyled />
+        <Styled @bind-Classname="@nested">
+            color: turquoise;
+            & a  {
+                border-bottom: 1px solid currentColor;
+                cursor:pointer;
+            }
+        </Styled>
+    </TestSetup>
+    <ExpectedHtml>
+<style>
+        .cfeo-rnc{color:turquoise;}
+        .cfeo-rnc a{border-bottom:1px solid currentColor;cursor:pointer;}
+</style>
+    </ExpectedHtml>
+</Fact>
+
+@code {
+    private string nested;
+
+    protected override void AddServices(IServiceCollection services)
+    {
+        services.AddBlazorStyled();
+    }
+}
