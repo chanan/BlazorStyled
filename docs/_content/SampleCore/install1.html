@@ -8,6 +8,6 @@
     public void Configure(IComponentsApplicationBuilder app)
     {
         app.AddComponent<App>("app");
-        app.AddClientSideStyled();
+        app.AddComponent<ClientSideStyled>("#styled");
     }
 }

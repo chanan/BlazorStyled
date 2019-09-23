@@ -19,7 +19,9 @@ namespace Sample
         public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
-            app.AddClientSideStyled();
+            //Can't use this anymore as wasm is still in preview, but server is not
+            //app.AddClientSideStyled();
+            app.AddComponent<ClientSideStyled>("#styled");
         }
     }
 }
