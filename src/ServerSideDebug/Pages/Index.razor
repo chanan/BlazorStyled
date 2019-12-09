@@ -1,12 +1,9 @@
 ﻿@page "/"
-@inject IStyled Styled
 
-<Toggle />
+<Styled Classname=".rlG.PFl"> 
+    display: -ms-grid; 
+    display: grid; 
+    flex-shrink: 0; 
+</Styled>
 
-@code {
-    protected override void OnInitialized()
-    {
-        Styled.SetThemeValue("colors.background-color", "#f0f0f0");
-        Styled.SetThemeValue("colors.text-color", "#994cc3");
-    }
-}
+<p>Test</p>
