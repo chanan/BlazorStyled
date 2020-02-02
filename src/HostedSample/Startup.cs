@@ -32,14 +32,14 @@ namespace HostedSample.Server
             }
 
             app.UseStaticFiles();
-            app.UseClientSideBlazorFiles<Sample.Startup>();
+            app.UseClientSideBlazorFiles<Sample.Program>();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapFallbackToClientSideBlazor<Sample.Startup>("index.html");
+                endpoints.MapFallbackToClientSideBlazor<Sample.Program>("index.html");
             });
         }
     }

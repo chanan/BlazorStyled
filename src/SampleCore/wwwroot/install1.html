@@ -1,13 +1,15 @@
-﻿public class Startup
+﻿public class Program
 {
-    public void ConfigureServices(IServiceCollection services)
+    public static async Task Main(string[] args)
     {
-        serviceCollection.AddBlazorStyled();
-    }
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-    public void Configure(IComponentsApplicationBuilder app)
-    {
-        app.AddComponent<App>("app");
-        app.AddComponent<ClientSideStyled>("#styled");
+        builder.Services.AddBlazorStyled();
+
+        builder.RootComponents.Add<App>("app");
+
+        builder.RootComponents.Add<ClientSideStyled>("#styled");
+
+        await builder.Build().RunAsync();
     }
 }
