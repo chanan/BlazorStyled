@@ -1,0 +1,15 @@
+﻿public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+        builder.Services.AddBlazorStyled();
+
+        builder.RootComponents.Add<App>("app");
+
+        builder.RootComponents.Add<ClientSideStyled>("#styled");
+
+        await builder.Build().RunAsync();
+    }
+}
