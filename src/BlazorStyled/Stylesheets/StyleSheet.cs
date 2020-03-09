@@ -23,7 +23,11 @@ namespace BlazorStyled.Stylesheets
 
         public async ValueTask<bool> BecomeScriptTag()
         {
-            if (ScriptRendered) return false;
+            if (ScriptRendered)
+            {
+                return false;
+            }
+
             bool hasBecome = false;
             await _scriptRenderedSemaphore.WaitAsync();
             try
@@ -169,11 +173,14 @@ namespace BlazorStyled.Stylesheets
         {
             StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
             string oldValue = styleSheetMetadata.Theme.AddOrUpdate(name, value);
-            if(oldValue != null)
+            if (oldValue != null)
             {
-                NotifyRuleObservers(new RuleContext { 
-                    Event = RuleContextEvent.ThemeValueChanged, Stylesheet = styleSheetMetadata, 
-                    ThemeEntry = new KeyValuePair<string, string>(name, value), OldThemeValue = oldValue 
+                NotifyRuleObservers(new RuleContext
+                {
+                    Event = RuleContextEvent.ThemeValueChanged,
+                    Stylesheet = styleSheetMetadata,
+                    ThemeEntry = new KeyValuePair<string, string>(name, value),
+                    OldThemeValue = oldValue
                 });
             }
         }
@@ -191,7 +198,7 @@ namespace BlazorStyled.Stylesheets
                 _storage.Enqueue(ruleContext);
             }
             if (_ruleObservers.Count != 0)
-            { 
+            {
                 foreach (IObserver<RuleContext> observer in _ruleObservers)
                 {
                     if (_storage.Count != 0)
@@ -228,7 +235,7 @@ namespace BlazorStyled.Stylesheets
             }
             IDictionary<string, IRule> elementRules = elements[rule.Selector];
             string key = rule.ToString().GetStableHashCodeString();
-            if(!elementRules.ContainsKey(key))
+            if (!elementRules.ContainsKey(key))
             {
                 elementRules.Add(key, rule);
             }
@@ -244,15 +251,15 @@ namespace BlazorStyled.Stylesheets
             return _stylesheets[key];
         }
 
-    public IDisposable Subscribe(IObserver<RuleContext> observer)
-    {
-        if (!_ruleObservers.Contains(observer))
+        public IDisposable Subscribe(IObserver<RuleContext> observer)
         {
-            _ruleObservers.Add(observer);
+            if (!_ruleObservers.Contains(observer))
+            {
+                _ruleObservers.Add(observer);
+            }
+            return new RuleUnsubscriber<RuleContext>(_ruleObservers, observer);
         }
-        return new RuleUnsubscriber<RuleContext>(_ruleObservers, observer);
     }
-  }
 
     internal class RuleUnsubscriber<RuleContext> : IDisposable
     {

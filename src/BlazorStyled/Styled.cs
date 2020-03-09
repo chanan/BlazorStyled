@@ -38,11 +38,11 @@ namespace BlazorStyled
             await ProcessParameters();
         }
 
-        protected async override void BuildRenderTree(RenderTreeBuilder builder)
+        protected override async void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if(!StyleSheet.ScriptRendered)
+            if (!StyleSheet.ScriptRendered)
             {
-                if(await StyleSheet.BecomeScriptTag())
+                if (await StyleSheet.BecomeScriptTag())
                 {
                     builder.OpenComponent<Scripts>(1);
                     builder.CloseComponent();
@@ -92,10 +92,6 @@ namespace BlazorStyled
                 else
                 {
                     classname = styled.Css(content);
-                    /*if (_previousClassname == null)
-                    {
-                        classname = styled.Css(content);
-                    }*/
                 }
                 await NotifyChanged(classname);
             }
@@ -104,45 +100,15 @@ namespace BlazorStyled
                 if (ClassnameChanged.HasDelegate)
                 {
                     StringBuilder sb = new StringBuilder();
-                    IList<string> labels = new List<string>();
                     IList<string> composeClasses = GetComposeClasses();
                     foreach (string cls in composeClasses)
                     {
                         string selector = ComposeAttributes[cls].ToString();
-                        IList<IRule> rules = StyleSheet.GetRules(Id, selector);
-                        if (rules != null)
-                        {
-                            foreach (IRule rule in rules)
-                            {
-                                if (rule.Selector != selector)
-                                {
-                                    string pseudo = rule.Selector.Replace("." + selector, "");
-                                    sb.Append('&').Append(pseudo).Append('{');
-                                }
-                                foreach (Declaration decleration in rule.Declarations)
-                                {
-                                    sb.Append(decleration.ToString());
-                                }
-                                if (rule.Label != null)
-                                {
-                                    labels.Add(rule.Label);
-                                }
-                                if (rule.Selector != selector)
-                                {
-                                    sb.Append('}');
-                                }
-                            }
-                        }
+                        sb.Append(selector).Append(" ");
                     }
                     if (sb.Length != 0)
                     {
-                        string css = sb.ToString();
-                        if (labels.Count != 0)
-                        {
-                            string labelStr = string.Join("-", labels);
-                            css = $"label:{labelStr};{css}";
-                        }
-                        classname = styled.Css(css);
+                        classname = sb.ToString().Trim();
                         await NotifyChanged(classname);
                     }
                 }

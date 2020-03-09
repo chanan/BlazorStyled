@@ -12,8 +12,8 @@ namespace BlazorStyled.Internal
             if (!Values.ContainsKey(key))
             {
                 Values.Add(key, value);
-            } 
-            else if(Values[key] != value)
+            }
+            else if (Values[key] != value)
             {
                 oldValue = Values[key];
                 Values[key] = value;

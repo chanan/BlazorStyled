@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Blazor.Hosting;
+﻿using BlazorStyled;
+using Microsoft.AspNetCore.Blazor.Hosting;
 using SampleCore;
 using System.Threading.Tasks;
-using BlazorStyled;
 
 namespace Sample
 {
@@ -9,7 +9,7 @@ namespace Sample
     {
         public static async Task Main(string[] args)
         {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
             //Configure Services
 
