@@ -35,10 +35,14 @@
 
 <p>Define a <code>@@keyframe</code> css class for animation.</p>
 
-<h4>Theme</h4>
-
-<p>Returns the current theme object which is a <code>IDictionary&lt;string, string></code> of keys and values you want to use in your css.</p>
-
 <h4>WithId(string id)</h4>
 
 <p>Isolates the stylesheet from other sylesheets using BlazorStyled. You should set this if you are building a library for others to use.</p>
+
+<h4>SetThemeValue(string name, string value)</h4>
+
+<p>Adds or updates a theme value</p>
+        
+<h4>IEnumerable&lt;KeyValuePair&lt;string, string>> GetThemeValues()</h4>
+
+<p>Returns all the theme values</p>
