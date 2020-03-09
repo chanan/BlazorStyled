@@ -1,20 +1,18 @@
 ﻿@page "/composition"
 
-<Styled @bind-Classname="@grey">
-    label: white;
-    background-color: white;
-</Styled>
-
 <Styled @bind-Classname="@bigFont">
     label: big-font;
     font-size: 32px;
 </Styled>
 
-<Styled @bind-Classname="@div" Compose1="@grey" Compose2="@bigFont" Compose2If="@_showBig" />
+<Styled @bind-Classname="@div" ComposeBigFont="@bigFont" ComposeBigFontIf="@_showBig">
+    label: white;
+    background-color: white;
+</Styled>
 
 <h1>Class Composition</h1>
 
-<p><code>&lt;Styled /></code> allows you to compose multipile classes into one class. Let's begin with an example:</p>
+<p><code>&lt;Styled /></code> allows you to compose multipile classes into one element. Let's begin with an example:</p>
 
 <div class="@div">
     Some text
@@ -22,16 +20,17 @@
 
 <button @onclick="@onclick">Toggle Font Size</button>
 
-<PrettyCode CodeFile="_content/SampleCore/compose1.html" HighlightLines="11" />
+<PrettyCode CodeFile="_content/SampleCore/compose1.html" HighlightLines="6-9" />
 
 <p>The highlighted line shows how to compone css classes. First, define the classes you plan to use. This is done in lines 1-9. Compose them together using the attribute
-    <code>Compose[any string here]</code>. You may compose any number of classes together.</p>
+    <code>Compose[any string here]</code>. In this example <code>ComposeBigFont</code> on line 6. You may compose any number of classes together.</p>
 
 <h3>Conditional Class Composition</h3>
 
 <p>In the example above, the class for <code>@@bigFont</code> only gets applied when the button is clicked. 
-    Adding a <code>bool</code> attribute named <code>Compose[same string here]If</code>, will apply a class only when the value is true. In this example,
-    that is done with when <code>Compose2If="@@_showBig"</code> the corresponding class: <code>Compose2="@@bigFont"</code> gets applied.
+    Adding a <code>bool</code> attribute named <code>Compose[same string here]If</code>
+    will apply the class only when the value is true. In this example,
+    that is done with when <code>ComposeBigFontIf="@@_showBig"</code>, then the corresponding class: <code>ComposeBigFont="@@bigFont"</code> gets applied.
     </p>
 
 @code {

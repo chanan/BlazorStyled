@@ -54,9 +54,10 @@ namespace BlazorStyled
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string classname = null;
-            if (ComposeAttributes == null)
-            {
-                string content = RenderAsString();
+            
+            string content = RenderAsString();
+            if(content != null && content.Length > 0)
+            { 
                 if (IsKeyframes)
                 {
                     classname = styled.Keyframes(content);
@@ -93,24 +94,28 @@ namespace BlazorStyled
                 {
                     classname = styled.Css(content);
                 }
-                await NotifyChanged(classname);
-            }
-            else
-            {
-                if (ClassnameChanged.HasDelegate)
+                if(ComposeAttributes == null || !ClassnameChanged.HasDelegate)
                 {
-                    StringBuilder sb = new StringBuilder();
-                    IList<string> composeClasses = GetComposeClasses();
-                    foreach (string cls in composeClasses)
-                    {
-                        string selector = ComposeAttributes[cls].ToString();
-                        sb.Append(selector).Append(" ");
-                    }
-                    if (sb.Length != 0)
-                    {
-                        classname = sb.ToString().Trim();
-                        await NotifyChanged(classname);
-                    }
+                    await NotifyChanged(classname);
+                }
+            }
+            if (ComposeAttributes != null &&  ClassnameChanged.HasDelegate)
+            {
+                StringBuilder sb = new StringBuilder();
+                if(classname != null)
+                {
+                    sb.Append(classname).Append(" ");
+                }
+                IList<string> composeClasses = GetComposeClasses();
+                foreach (string cls in composeClasses)
+                {
+                    string selector = ComposeAttributes[cls].ToString();
+                    sb.Append(selector).Append(" ");
+                }
+                if (sb.Length != 0)
+                {
+                    classname = sb.ToString().Trim();
+                    await NotifyChanged(classname);
                 }
             }
         }
