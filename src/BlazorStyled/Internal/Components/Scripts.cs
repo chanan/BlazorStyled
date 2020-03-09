@@ -1,10 +1,10 @@
+using BlazorStyled.Stylesheets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
-using BlazorStyled.Stylesheets;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorStyled.Internal.Components
 {
@@ -14,9 +14,9 @@ namespace BlazorStyled.Internal.Components
         private bool _init = false;
 
         //Injection
-        [Inject] IJSRuntime JSRuntime { get; set; }
-        [Inject] IStyleSheet StyleSheet { get; set; }
-        [Inject] IConfig Config { get; set; }
+        [Inject] private IJSRuntime JSRuntime { get; set; }
+        [Inject] private IStyleSheet StyleSheet { get; set; }
+        [Inject] private IConfig Config { get; set; }
 
         //Commands
         private async Task InsertRule(RuleContext ruleContext)
@@ -34,7 +34,7 @@ namespace BlazorStyled.Internal.Components
                                                               where rule.Value.ToString().IndexOf(key) != -1
                                                               select new KeyValuePair<string, IRule>(elementRuleList.Key, rule.Value)).ToList();
 
-            foreach(KeyValuePair<string, IRule> kvp in elementRules)
+            foreach (KeyValuePair<string, IRule> kvp in elementRules)
             {
                 string oldRule = ApplyTheme(ruleContext.Stylesheet.Theme, kvp.Value.ToString(), ruleContext.ThemeEntry.Key, ruleContext.OldThemeValue);
                 string rule = ApplyTheme(ruleContext.Stylesheet.Theme, kvp.Value.ToString());
@@ -43,8 +43,8 @@ namespace BlazorStyled.Internal.Components
 
             //Classes
             List<KeyValuePair<string, IRule>> classRules = (from rule in ruleContext.Stylesheet.Classes
-                                                           where rule.Value.ToString().IndexOf(key) != -1
-                                                           select new KeyValuePair<string, IRule>(rule.Key, rule.Value)).ToList();
+                                                            where rule.Value.ToString().IndexOf(key) != -1
+                                                            select new KeyValuePair<string, IRule>(rule.Key, rule.Value)).ToList();
 
             foreach (KeyValuePair<string, IRule> kvp in classRules)
             {
@@ -78,12 +78,12 @@ namespace BlazorStyled.Internal.Components
 
         public async void OnNext(RuleContext ruleContext)
         {
-            if(!_init)
+            if (!_init)
             {
                 await JSRuntime.InvokeVoidAsync("eval", _script);
                 _init = true;
             }
-            switch(ruleContext.Event)
+            switch (ruleContext.Event)
             {
                 case RuleContextEvent.AddClass:
                     await InsertRule(ruleContext);
@@ -101,7 +101,7 @@ namespace BlazorStyled.Internal.Components
 
         private string ApplyTheme(Theme theme, string content)
         {
-            foreach (var kvp in theme.GetTheme())
+            foreach (KeyValuePair<string, string> kvp in theme.GetTheme())
             {
                 if (content.Contains("[" + kvp.Key + "]"))
                 {
@@ -113,7 +113,7 @@ namespace BlazorStyled.Internal.Components
 
         private string ApplyTheme(Theme theme, string content, string overideKey, string overrideValue)
         {
-            foreach (var kvp in theme.GetTheme())
+            foreach (KeyValuePair<string, string> kvp in theme.GetTheme())
             {
                 string value = kvp.Key == overideKey ? overrideValue : kvp.Value;
                 if (content.Contains("[" + kvp.Key + "]"))
@@ -148,6 +148,6 @@ namespace BlazorStyled.Internal.Components
         }
 
         //Script
-        private readonly string _script = "function initDebug(n){var t,i;if(this.debug={},n)for(t in console)typeof console[t]=='function'&&(this.debug[t]=console[t].bind(window.console));else for(i in console)typeof console[i]=='function'&&(this.debug[i]=function(){});return this.debug}function getOrCreateSheet(n,t,i){const f=document.getElementById(n);if(f)return f;const r=document.createElement('style'),e=document.createAttribute('id');e.value=n;r.setAttributeNode(e);const o=document.createAttribute('data-blazorstyled-stylesheet-name');o.value=t;r.setAttributeNode(o);const u=document.head;return u.firstChild?u.insertBefore(r,u.firstChild):u.appendChild(r),i.log('Inserted stylesheet: ',r),r}function writeRule(n,t,i){n.innerText||(n.innerText=t);n.innerText=t.startsWith('@import')?t+n.innerText:n.innerText+t;i.log('Written: ',t)}function insertRule(n,t,i){const r=t.startsWith('@import')?0:n.cssRules.length;n.insertRule(t,r);i.log('Inserted at '+r+': ',t)}function updateWrittenRule(n,t,i,r){n.innerText||(n.innerText=i);n.innerText=n.innerText.replace(t,i);r.log('Updated old rule: '+t+' to new rule: '+i)}function updatedInsertedRule(n,t,i,r){const e=getOrCreateSheet('temp','temp',initDebug(!1));e.sheet.insertRule(t);const o=e.sheet.cssRules[0].cssText;document.head.removeChild(e);let u=-1;for(var f=0;f<n.cssRules.length;f++)n.cssRules[f].cssText===o&&(u=f);u!==-1&&(n.deleteRule(u),n.insertRule(i,u),r.log('Updated old rule at '+u+': '+t+' to new rule: '+i))}window.BlazorStyled={insertRule:function(n,t,i,r,u){const f=initDebug(u),e=getOrCreateSheet(n,t,f);if(r)writeRule(e,i,f);else try{i.indexOf(':-moz')!==-1&&'MozBoxSizing'in document.body.style?insertRule(e.sheet,i,f):i.indexOf(':-moz')===-1?insertRule(e.sheet,i,f):f.warn('Mozilla rule not inserted: ',i)}catch(o){f.error('Failed to insert: ',i);f.error(o)}},updateRule:function(n,t,i,r,u,f,e){const o=initDebug(e),s=getOrCreateSheet(n,t,o);if(f)updateWrittenRule(s,r,u,o);else try{updatedInsertedRule(s.sheet,r,u,o)}catch(h){o.error('Failed to update: ',u);o.error(h)}},clearStyles:function(n,t,i){const u=initDebug(i),r=document.getElementById(n);r&&(document.head.removeChild(r),u.log('Cleared stylesheet: ',t))}};";
+        private readonly string _script = "function initDebug(n){var t,i;if(this.debug={},n)for(t in console)typeof console[t]=='function'&&(this.debug[t]=console[t].bind(window.console));else for(i in console)typeof console[i]=='function'&&(this.debug[i]=function(){});return this.debug}function getOrCreateSheet(n,t,i){const f=document.getElementById(n);if(f)return f;const r=document.createElement('style'),e=document.createAttribute('id');e.value=n;r.setAttributeNode(e);const o=document.createAttribute('data-blazorstyled-stylesheet-name');o.value=t;r.setAttributeNode(o);const u=document.head;return u.firstChild?t==='Default'?u.appendChild(r):u.insertBefore(r,u.firstChild):u.appendChild(r),i.log('Inserted stylesheet: ',r),r}function writeRule(n,t,i){n.innerText||(n.innerText=t);n.innerText=t.startsWith('@import')?t+n.innerText:n.innerText+t;i.log('Written: ',t)}function insertRule(n,t,i){const r=t.startsWith('@import')?0:n.cssRules.length;n.insertRule(t,r);i.log('Inserted at '+r+': ',t)}function updateWrittenRule(n,t,i,r){n.innerText||(n.innerText=i);n.innerText=n.innerText.replace(t,i);r.log('Updated old rule: '+t+' to new rule: '+i)}function updatedInsertedRule(n,t,i,r){const e=getOrCreateSheet('temp','temp',initDebug(!1));e.sheet.insertRule(t);const o=e.sheet.cssRules[0].cssText;document.head.removeChild(e);let u=-1;for(var f=0;f<n.cssRules.length;f++)n.cssRules[f].cssText===o&&(u=f);u!==-1&&(n.deleteRule(u),n.insertRule(i,u),r.log('Updated old rule at '+u+': '+t+' to new rule: '+i))}window.BlazorStyled={insertRule:function(n,t,i,r,u){const f=initDebug(u),e=getOrCreateSheet(n,t,f);if(r)writeRule(e,i,f);else try{i.indexOf(':-moz')!==-1&&'MozBoxSizing'in document.body.style?insertRule(e.sheet,i,f):i.indexOf(':-moz')===-1?insertRule(e.sheet,i,f):f.warn('Mozilla rule not inserted: ',i)}catch(o){f.error('Failed to insert: ',i);f.error(o)}},updateRule:function(n,t,i,r,u,f,e){const o=initDebug(e),s=getOrCreateSheet(n,t,o);if(f)updateWrittenRule(s,r,u,o);else try{updatedInsertedRule(s.sheet,r,u,o)}catch(h){o.error('Failed to update: ',u);o.error(h)}},clearStyles:function(n,t,i){const u=initDebug(i),r=document.getElementById(n);r&&(document.head.removeChild(r),u.log('Cleared stylesheet: ',t))}};";
     }
 }

@@ -74,7 +74,11 @@ function getOrCreateSheet(stylesheetId, stylesheetName, logger) {
     styleEl.setAttributeNode(dataName);
     const head = document.head;
     if (head.firstChild) {
-        head.insertBefore(styleEl, head.firstChild);
+        if (stylesheetName === "Default") {
+            head.appendChild(styleEl);
+        } else {
+            head.insertBefore(styleEl, head.firstChild);
+        }
     } else {
         head.appendChild(styleEl);
     }
