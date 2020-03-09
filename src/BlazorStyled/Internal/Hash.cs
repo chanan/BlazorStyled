@@ -44,30 +44,7 @@ namespace BlazorStyled.Internal
                     hash += (uint)code;
                 }
             }
-            return label == null ? ConvertToBase64Arithmetic(hash) : ConvertToBase64Arithmetic(hash) + "-" + label;
-        }
-
-        private string ConvertToBase64Arithmetic(uint i)
-        {
-            const string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            uint length = (uint)alphabet.Length;
-            StringBuilder sb = new StringBuilder();
-            int pos = 0;
-            do
-            {
-                sb.Append(alphabet[(int)(i % length)]);
-                i /= length;
-                pos++;
-                if (pos == 4)
-                {
-                    pos = 0;
-                    if (i != 0)
-                    {
-                        sb.Append('-');
-                    }
-                }
-            } while (i != 0);
-            return sb.ToString();
+            return label == null ? hash.ConvertToBase64Arithmetic() : hash.ConvertToBase64Arithmetic() + "-" + label;
         }
     }
 }

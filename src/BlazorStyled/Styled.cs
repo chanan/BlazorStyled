@@ -1,4 +1,5 @@
 ﻿using BlazorStyled.Internal;
+using BlazorStyled.Internal.Components;
 using BlazorStyled.Stylesheets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -13,14 +14,11 @@ using System.Threading.Tasks;
 
 namespace BlazorStyled
 {
-    public class Styled : ComponentBase, IObserver<IStyleSheet>, IDisposable
+    public class Styled : ComponentBase, IDisposable
     {
         private readonly ServiceProvider _emptyServiceProvider = new ServiceCollection().BuildServiceProvider();
         private readonly Func<string, string> _encoder = (string t) => t;
         private string _previousClassname;
-        private IDisposable _unsubscriber;
-        private int _themeHash;
-        private bool _containsThemeValues = false;
 
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public string Id { get; set; }
@@ -34,15 +32,22 @@ namespace BlazorStyled
         [Inject] private IStyled StyledService { get; set; }
         [Inject] private IStyleSheet StyleSheet { get; set; }
 
-        protected override void OnInitialized()
-        {
-            _unsubscriber = StyleSheet.Subscribe(this);
-            _themeHash = StyleSheet.GetThemeHashCode();
-        }
 
         protected override async Task OnParametersSetAsync()
         {
             await ProcessParameters();
+        }
+
+        protected async override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            if(!StyleSheet.ScriptRendered)
+            {
+                if(await StyleSheet.BecomeScriptTag())
+                {
+                    builder.OpenComponent<Scripts>(1);
+                    builder.CloseComponent();
+                }
+            }
         }
 
         private async Task ProcessParameters()
@@ -52,7 +57,6 @@ namespace BlazorStyled
             if (ComposeAttributes == null)
             {
                 string content = RenderAsString();
-                content = ApplyTheme(content);
                 if (IsKeyframes)
                 {
                     classname = styled.Keyframes(content);
@@ -184,19 +188,6 @@ namespace BlazorStyled
             }
         }
 
-        private string ApplyTheme(string content)
-        {
-            foreach (KeyValuePair<string, string> kvp in StyleSheet.GetThemeValues())
-            {
-                if (content.Contains("{" + kvp.Key + "}"))
-                {
-                    content = content.Replace("{" + kvp.Key + "}", kvp.Value);
-                    _containsThemeValues = true;
-                }
-            }
-            return content;
-        }
-
         private string ApplyPseudoClass(string classname)
         {
             string cls = classname.IndexOf("-") != -1 ? "." + classname : classname;
@@ -298,25 +289,6 @@ namespace BlazorStyled
             }
         }
 
-        public void OnCompleted()
-        {
-            _unsubscriber.Dispose();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(IStyleSheet value)
-        {
-            if (_containsThemeValues && _themeHash != value.GetThemeHashCode())
-            {
-                _themeHash = value.GetThemeHashCode();
-                InvokeAsync(() => ProcessParameters()).ContinueWith((_) => InvokeAsync(() => StateHasChanged()));
-            }
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -327,7 +299,6 @@ namespace BlazorStyled
             if (disposing)
             {
                 _emptyServiceProvider.Dispose();
-                _unsubscriber.Dispose();
             }
         }
 

@@ -2,19 +2,24 @@
 @inject IStyled Styled
 
 <Styled @bind-Classname="@example">
-    color: {colors.primary};
+    color: [colors.primary];
 </Styled>
 
 <h1>Theming</h1>
 
-<p>Using the <code>Theme</code> property in <code>IStyled</code> lets you store variables in a <code>Dictionary</code> you can use in your CSS later.
-    You can also define <code>Theme</code> objects and allow your user to switch between them. (Example coming soon).</p>
+<p>Using the <code>SetThemeValue</code> method in <code>IStyled</code> lets you store variables in a <code>Dictionary</code> you can use in your CSS later..</p>
 
-<p>
-    To use a theme variable surround it with brackets { } like in the example below.
-</p>
+<p>To use a theme variable surround it with square brackets [ ] like in the example below.</p>
 
 <p class="@example">Some text</p>
+
+<div>
+    <button @onclick="@onclickRed">Change theme value to red</button>
+</div>
+
+<div>
+    <button @onclick="@onclickHotpink">Change theme value to hotpink</button>
+</div>
 
 <PrettyCode CodeFile="_content/SampleCore/theming1.html" />
 
@@ -24,6 +29,16 @@
     protected override void OnInitialized()
     {
         //Normally this would be defined else where such as in MainLayout.cs
-        Styled.Theme.Values.Add("colors.primary", "hotpink");
+        Styled.SetThemeValue("colors.primary", "hotpink");
+    }
+
+    private void onclickRed()
+    {
+        Styled.SetThemeValue("colors.primary", "red");
+    }
+
+    private void onclickHotpink()
+    {
+        Styled.SetThemeValue("colors.primary", "hotpink");
     }
 }

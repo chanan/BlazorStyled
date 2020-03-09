@@ -14,7 +14,7 @@ namespace Sample
             //Configure Services
 
             //AddBlazorStyled is needed for BlazorStyled to work
-            builder.Services.AddBlazorStyled();
+            builder.Services.AddBlazorStyled(isDevelopment: false, isDebug: true);
 
             //The following is only used by the sample sites and is not required for BlazorStyled to work
             builder.Services.AddServicesForSampleSites();
@@ -22,9 +22,6 @@ namespace Sample
             //End Configure Services
 
             builder.RootComponents.Add<App>("app");
-
-            //Add BlazorStyled to root components
-            builder.RootComponents.Add<ClientSideStyled>("#styled");
 
             await builder.Build().RunAsync();
         }

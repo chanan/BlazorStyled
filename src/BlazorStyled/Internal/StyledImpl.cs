@@ -24,12 +24,6 @@ namespace BlazorStyled.Internal
             _id = id;
         }
 
-        public Theme Theme
-        {
-            get => _styleSheet.Theme;
-            set => _styleSheet.Theme = value;
-        }
-
         public string Css(string className, string css)
         {
             try
@@ -410,7 +404,12 @@ namespace BlazorStyled.Internal
 
         public void SetThemeValue(string name, string value)
         {
-            _styleSheet.SetThemeValue(name, value);
+            _styleSheet.SetThemeValue(_id, name, value);
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> GetThemeValues()
+        {
+            return _styleSheet.GetThemeValues(_id);
         }
 
         private readonly List<string> _elements = new List<string>

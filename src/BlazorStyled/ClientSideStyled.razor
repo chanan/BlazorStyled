@@ -1,6 +1,0 @@
-﻿@inherits StyledBase
-
-@foreach (var cssClass in StyleSheet)
-{
-    <CssClass @key="@cssClass.Hash" Css="@cssClass.ToString()" />
-}

@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ServerSideDebug</title>
     <base href="~/" />
-    @(await Html.RenderComponentAsync<BlazorStyled.ServerSideStyled>(RenderMode.Server))
 </head>
 <body>
     <app>@(await Html.RenderComponentAsync<App>(RenderMode.Server))</app>

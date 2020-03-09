@@ -3,32 +3,68 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BlazorStyled.Stylesheets
 {
-    internal class StyleSheet : IEnumerable<IRule>, IObservable<IStyleSheet>, IStyleSheet
+    internal class StyleSheet : IEnumerable<IRule>, IStyleSheet, IObservable<RuleContext>
     {
         private const string DEFAULT = "Default";
-        private readonly List<IObserver<IStyleSheet>> _observers = new List<IObserver<IStyleSheet>>();
-        private readonly IDictionary<string, IDictionary<string, IRule>> _classes = new Dictionary<string, IDictionary<string, IRule>>();
-        private readonly Hash _hash = new Hash();
+        private readonly List<IObserver<RuleContext>> _ruleObservers = new List<IObserver<RuleContext>>();
+        private readonly IDictionary<string, StyleSheetMetadata> _stylesheets = new Dictionary<string, StyleSheetMetadata>
+        {
+            { DEFAULT, new StyleSheetMetadata { Name = DEFAULT, Hash = DEFAULT.GetRandomHashCodeString() } }
+        };
+        private readonly Queue<RuleContext> _storage = new Queue<RuleContext>();
+        private SemaphoreSlim _scriptRenderedSemaphore = new SemaphoreSlim(1, 1);
+
+        public bool ScriptRendered { get; private set; } = false;
+
+        public async ValueTask<bool> BecomeScriptTag()
+        {
+            if (ScriptRendered) return false;
+            bool hasBecome = false;
+            await _scriptRenderedSemaphore.WaitAsync();
+            try
+            {
+                if (!ScriptRendered)
+                {
+                    ScriptRendered = true;
+                    hasBecome = true; ;
+                }
+            }
+            finally
+            {
+                _scriptRenderedSemaphore.Release();
+
+            }
+            return hasBecome;
+        }
+
+        public void UnbecomeScriptTag()
+        {
+            ScriptRendered = false;
+        }
 
         public void ClearStyles(string id)
         {
             string key = id ?? DEFAULT;
-            if (_classes.ContainsKey(key))
+            if (_stylesheets.ContainsKey(key))
             {
-                _classes[key].Clear();
-                NotifyObservers();
+                _stylesheets[key].Classes.Clear();
+                _stylesheets[key].Elements.Clear();
+                NotifyRuleObservers(new RuleContext { Event = RuleContextEvent.ClearStyles, Stylesheet = _stylesheets[key] });
             }
         }
 
         public void AddClass(IRule rule, string id)
         {
-            IDictionary<string, IRule> classes = GetClassesForId(id);
+            StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
             bool notify = false;
             if (rule.Selector.Contains("-"))
             {
+                IDictionary<string, IRule> classes = styleSheetMetadata.Classes;
                 if (!classes.ContainsKey(rule.Hash))
                 {
                     classes.Add(rule.Hash, rule);
@@ -37,39 +73,29 @@ namespace BlazorStyled.Stylesheets
             }
             else
             {
-                //merge html elements
-                notify = true;
-                if (TryGetHtmlElementClass(classes, rule.Selector, out PredefinedRuleSet existing))
+                IDictionary<string, IDictionary<string, IRule>> elements = styleSheetMetadata.Elements;
+                if (IsExistsHtmlElementClass(elements, rule))
                 {
-                    MergeHtmlElements(existing, rule);
+                    notify = false;
                 }
                 else
                 {
-                    classes.Add(rule.Hash, rule);
+                    AddHtmlElementClass(elements, rule);
+                    notify = true;
                 }
             }
             if (notify)
             {
-                NotifyObservers();
+                NotifyRuleObservers(new RuleContext { Event = RuleContextEvent.AddClass, Stylesheet = styleSheetMetadata, Rule = rule });
             }
         }
 
-        private void MergeHtmlElements(PredefinedRuleSet existing, IRule rule)
-        {
-            foreach (Declaration newDecelearion in rule.Declarations)
-            {
-                existing.MergeDeceleration(newDecelearion);
-            }
-        }
-
-        public int Count => _classes.Count;
-
-        public Theme Theme { get; set; } = new Theme();
+        public int Count => _stylesheets.Sum(sheet => sheet.Value.Classes.Count);
 
         public string GetHashCodes()
         {
-            List<string> list = (from classes in _classes.Values
-                                 from cssClass in classes.Values
+            List<string> list = (from sheet in _stylesheets.Values
+                                 from cssClass in sheet.Classes.Values
                                  select cssClass.Hash).ToList();
             return string.Join("", list);
         }
@@ -78,12 +104,12 @@ namespace BlazorStyled.Stylesheets
         public IEnumerator<IRule> GetEnumerator()
         {
             List<IRule> list = new List<IRule>();
-            List<IRule> imports = (from classes in _classes.Values
-                                   from rule in classes.Values
+            List<IRule> imports = (from sheet in _stylesheets.Values
+                                   from rule in sheet.Classes.Values
                                    where rule.RuleType == RuleType.Import
                                    select rule).ToList();
-            List<IRule> notImports = (from classes in _classes.Values
-                                      from rule in classes.Values
+            List<IRule> notImports = (from sheet in _stylesheets.Values
+                                      from rule in sheet.Classes.Values
                                       where rule.RuleType != RuleType.Import
                                       select rule).ToList();
             list.AddRange(imports);
@@ -98,8 +124,8 @@ namespace BlazorStyled.Stylesheets
 
         public IEnumerable<IRule> GetRulesWithoutImport()
         {
-            IEnumerable<IRule> q = from classes in _classes.Values
-                                   from rule in classes.Values
+            IEnumerable<IRule> q = from sheet in _stylesheets.Values
+                                   from rule in sheet.Classes.Values
                                    where rule.RuleType != RuleType.Import
                                    select rule;
 
@@ -109,8 +135,8 @@ namespace BlazorStyled.Stylesheets
         public IEnumerable<string> GetImportRules()
         {
             List<string> list = new List<string>();
-            List<IRule> rules = (from classes in _classes.Values
-                                 from rule in classes.Values
+            List<IRule> rules = (from sheet in _stylesheets.Values
+                                 from rule in sheet.Classes.Values
                                  where rule.RuleType == RuleType.Import
                                  select rule).ToList();
 
@@ -125,19 +151,11 @@ namespace BlazorStyled.Stylesheets
             return list.AsEnumerable();
         }
 
-        public IDisposable Subscribe(IObserver<IStyleSheet> observer)
-        {
-            if (!_observers.Contains(observer))
-            {
-                _observers.Add(observer);
-            }
-            return new Unsubscriber<IStyleSheet>(_observers, observer);
-        }
-
         public IList<IRule> GetRules(string id, string selector)
         {
             List<IRule> ret = new List<IRule>();
-            IDictionary<string, IRule> classes = GetClassesForId(id);
+            StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
+            IDictionary<string, IRule> classes = styleSheetMetadata.Classes;
             ret.Add(classes[selector]);
             string classname = "." + selector;
             IEnumerable<IRule> q = from r in classes.Values
@@ -147,69 +165,101 @@ namespace BlazorStyled.Stylesheets
             return ret;
         }
 
-        public void SetThemeValue(string name, string value)
+        public void SetThemeValue(string id, string name, string value)
         {
-            if (Theme.Values.ContainsKey(name))
+            StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
+            string oldValue = styleSheetMetadata.Theme.AddOrUpdate(name, value);
+            if(oldValue != null)
             {
-                Theme.Values[name] = value;
-            }
-            else
-            {
-                Theme.Values.Add(name, value);
-            }
-            NotifyObservers();
-        }
-
-        public IEnumerable<KeyValuePair<string, string>> GetThemeValues()
-        {
-            return Theme.Values.ToList().AsEnumerable();
-        }
-
-        public int GetThemeHashCode()
-        {
-            int result = 0;
-            foreach (KeyValuePair<string, string> kvp in GetThemeValues())
-            {
-                result += kvp.Key.GetStableHashCode();
-                result += kvp.Value.GetStableHashCode();
-            }
-            return result;
-        }
-
-        private void NotifyObservers()
-        {
-            foreach (IObserver<IStyleSheet> observer in _observers)
-            {
-                observer.OnNext(this);
+                NotifyRuleObservers(new RuleContext { 
+                    Event = RuleContextEvent.ThemeValueChanged, Stylesheet = styleSheetMetadata, 
+                    ThemeEntry = new KeyValuePair<string, string>(name, value), OldThemeValue = oldValue 
+                });
             }
         }
 
-        private bool TryGetHtmlElementClass(IDictionary<string, IRule> classes, string selector, out PredefinedRuleSet existing)
+        public IEnumerable<KeyValuePair<string, string>> GetThemeValues(string id)
         {
-            IEnumerable<IRule> q = from r in classes.Values
-                                   where r.RuleType == RuleType.PredefinedRuleSet && r.Selector == selector
-                                   select r;
-            existing = (PredefinedRuleSet)q.SingleOrDefault();
-            return existing != null;
+            StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
+            return styleSheetMetadata.Theme.GetTheme().ToList().AsEnumerable();
         }
 
-        private IDictionary<string, IRule> GetClassesForId(string id)
+        private void NotifyRuleObservers(RuleContext ruleContext)
+        {
+            if (_ruleObservers.Count == 0)
+            {
+                _storage.Enqueue(ruleContext);
+            }
+            if (_ruleObservers.Count != 0)
+            { 
+                foreach (IObserver<RuleContext> observer in _ruleObservers)
+                {
+                    if (_storage.Count != 0)
+                    {
+                        Queue<RuleContext> copy = new Queue<RuleContext>(_storage.ToArray());
+                        foreach (RuleContext rule in copy)
+                        {
+                            observer.OnNext(rule);
+                        }
+                    }
+                    observer.OnNext(ruleContext);
+                }
+                _storage.Clear();
+            }
+        }
+
+        private bool IsExistsHtmlElementClass(IDictionary<string, IDictionary<string, IRule>> elements, IRule rule)
+        {
+            IEnumerable<IRule> q = from rules in elements
+                                   from r in rules.Value
+                                   where rules.Key == rule.Selector &&
+                                   r.Value.RuleType == RuleType.PredefinedRuleSet &&
+                                   r.Key == rule.ToString().GetStableHashCodeString()
+                                   select r.Value;
+
+            return q.Count() != 0;
+        }
+
+        private void AddHtmlElementClass(IDictionary<string, IDictionary<string, IRule>> elements, IRule rule)
+        {
+            if (!elements.ContainsKey(rule.Selector))
+            {
+                elements.Add(rule.Selector, new Dictionary<string, IRule>());
+            }
+            IDictionary<string, IRule> elementRules = elements[rule.Selector];
+            string key = rule.ToString().GetStableHashCodeString();
+            if(!elementRules.ContainsKey(key))
+            {
+                elementRules.Add(key, rule);
+            }
+        }
+
+        private StyleSheetMetadata GetStyleSheetForId(string id)
         {
             string key = id ?? DEFAULT;
-            if (!_classes.ContainsKey(key))
+            if (!_stylesheets.ContainsKey(key))
             {
-                _classes.Add(key, new Dictionary<string, IRule>());
+                _stylesheets.Add(key, new StyleSheetMetadata { Name = key, Hash = key.GetStableHashCodeString() });
             }
-            return _classes[key];
+            return _stylesheets[key];
         }
-    }
 
-    internal class Unsubscriber<IStyleSheet> : IDisposable
+    public IDisposable Subscribe(IObserver<RuleContext> observer)
     {
-        private readonly List<IObserver<IStyleSheet>> _observers;
-        private readonly IObserver<IStyleSheet> _observer;
+        if (!_ruleObservers.Contains(observer))
+        {
+            _ruleObservers.Add(observer);
+        }
+        return new RuleUnsubscriber<RuleContext>(_ruleObservers, observer);
+    }
+  }
 
-        internal Unsubscriber(List<IObserver<IStyleSheet>> observers, IObserver<IStyleSheet> observer)
+    internal class RuleUnsubscriber<RuleContext> : IDisposable
+    {
+        private readonly List<IObserver<RuleContext>> _observers;
+        private readonly IObserver<RuleContext> _observer;
+
+        internal RuleUnsubscriber(List<IObserver<RuleContext>> observers, IObserver<RuleContext> observer)
         {
             _observers = observers;
             _observer = observer;

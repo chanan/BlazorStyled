@@ -1,9 +1,11 @@
-﻿using System;
+﻿using BlazorStyled.Internal;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorStyled.Stylesheets
 {
-    public interface IStyleSheet
+    internal interface IStyleSheet
     {
         int Count { get; }
         void AddClass(IRule rule, string id);
@@ -13,10 +15,11 @@ namespace BlazorStyled.Stylesheets
         IEnumerable<string> GetImportRules();
         IList<IRule> GetRules(string id, string selector);
         IEnumerable<IRule> GetRulesWithoutImport();
-        IDisposable Subscribe(IObserver<IStyleSheet> observer);
-        Theme Theme { get; set; }
-        void SetThemeValue(string name, string value);
-        IEnumerable<KeyValuePair<string, string>> GetThemeValues();
-        int GetThemeHashCode();
+        IDisposable Subscribe(IObserver<RuleContext> observer);
+        void SetThemeValue(string Id, string name, string value);
+        IEnumerable<KeyValuePair<string, string>> GetThemeValues(string Id);
+        bool ScriptRendered { get; }
+        ValueTask<bool> BecomeScriptTag();
+        void UnbecomeScriptTag();
     }
 }

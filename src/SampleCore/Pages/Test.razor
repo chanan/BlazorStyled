@@ -1,5 +1,14 @@
 @page "/test"
+@inject IStyled Styled 
 
-<Styled Classname=".xsDown"> 
-    @@media only screen and (max-width : 600px) { display: none !important; } 
-</Styled>
+<h1>Test</h1>
+
+<button @onclick="@onclick">Click</button>
+
+@code { 
+    
+    private void onclick()
+    {
+        Styled.ClearStyles();
+    }
+}

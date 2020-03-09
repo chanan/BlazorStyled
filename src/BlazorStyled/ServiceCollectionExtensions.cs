@@ -1,6 +1,7 @@
 ﻿using BlazorStyled.Internal;
 using BlazorStyled.Stylesheets;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace BlazorStyled
 {
@@ -8,9 +9,15 @@ namespace BlazorStyled
     {
         public static IServiceCollection AddBlazorStyled(this IServiceCollection serviceCollection, bool isDevelopment)
         {
+            return AddBlazorStyled(serviceCollection, isDevelopment, false);
+        }
+
+        public static IServiceCollection AddBlazorStyled(this IServiceCollection serviceCollection, bool isDevelopment, bool isDebug)
+        {
             Config config = new Config
             {
-                IsDevelopment = isDevelopment
+                IsDevelopment = isDevelopment,
+                IsDebug = isDebug
             };
             if (!serviceCollection.Contains("IConfig"))
             {
@@ -19,6 +26,13 @@ namespace BlazorStyled
             serviceCollection.AddSingleton<IStyleSheet, StyleSheet>();
             serviceCollection.AddTransient<IStyled, StyledImpl>();
             return serviceCollection;
+        }
+
+        public static IServiceCollection AddBlazorStyled(this IServiceCollection seriveCollection, Action<IConfig> config)
+        {
+            IConfig configObj = new Config();
+            config(configObj);
+            return AddBlazorStyled(seriveCollection, configObj.IsDevelopment, configObj.IsDebug);
         }
 
         public static IServiceCollection AddBlazorStyled(this IServiceCollection serviceCollection)

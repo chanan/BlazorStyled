@@ -10,9 +10,9 @@ namespace BlazorStyled
         string Css(List<string> classes, string css);
         string Keyframes(string css);
         void Fontface(string css);
-        Theme Theme { get; set; }
         void AddGoogleFonts(List<GoogleFont> googleFonts);
         IStyled WithId(string id);
         void SetThemeValue(string name, string value);
+        IEnumerable<KeyValuePair<string, string>> GetThemeValues();
     }
 }
