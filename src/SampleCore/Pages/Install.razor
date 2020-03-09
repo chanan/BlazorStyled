@@ -1,0 +1,61 @@
+﻿@page "/install"
+
+<h1>Install</h1>
+
+<h3>Install from Nuget</h3>
+
+<p>Add a reference to BlazorStyled from Nuget: <a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></p>
+
+<h3>Usage</h3>
+
+<p>
+    Add BlazorStyled to <code>Program.cs</code> (Client side blazor / WASM) or to your <code>Startup.cs</code> (Server side blazor).
+</p>
+
+<PrettyCode CodeFile="_content/SampleCore/install1.html" HighlightLines="7" Title="Client Side - Program.cs" />
+
+<PrettyCode CodeFile="_content/SampleCore/install5.html" HighlightLines="7" Title="Server side - Startup.cs" />
+
+<p>Add the reference to the package to your <code>_Imports.razor</code> file:</p>
+
+<PrettyCode CodeFile="_content/SampleCore/install3.html" HighlightLines="9" Title="_Imports.razor" />
+
+<h3>Options</h3>
+
+<p><code>AddBlazorStyled</code> has two options that can be useful during development:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Option</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>isDevelopment</code></td>
+            <td><code>false</code></td>
+            <td>
+                When <code>true</code>, css rules are written to the style tag in the head using <code>innerText</code>. This allows for editing of the rules in the javascript debugger. <br />
+                When <code>false</code>, css rules are written to the style tag using <code>insertRule</code>. This slightly faster and prevents rules from being edited in the javascript debugger.
+            </td>
+        </tr>
+        <tr>
+            <td><code>isDebug</code></td>
+            <td><code>false</code></td>
+            <td>
+                When <code>true</code>, debug info in outputted to the javascript console.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>API Usage</h3>
+
+<p>
+    Optionally, If you want to use the API (from a "code behind" for example), then inject <code>IStyled</code> into your component. If you are using
+    the <code>&lt;Styled /></code> class, you do not need to inject <code>IStyled</code>
+</p>
+
+<PrettyCode CodeFile="_content/SampleCore/install4.html" ShowLineNumbers="false" />
