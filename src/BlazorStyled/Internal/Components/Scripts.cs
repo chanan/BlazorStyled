@@ -65,6 +65,16 @@ namespace BlazorStyled.Internal.Components
             _unsubscriber = StyleSheet.Subscribe(this);
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if(firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("eval", _script);
+                await StyleSheet.BecomeScriptTag();
+                StyleSheet.UnbecomingScriptTag();
+            }
+        }
+
         //IObserver<RuleContext>
         public void OnCompleted()
         {
@@ -78,11 +88,11 @@ namespace BlazorStyled.Internal.Components
 
         public async void OnNext(RuleContext ruleContext)
         {
-            if (!_init)
-            {
-                await JSRuntime.InvokeVoidAsync("eval", _script);
-                _init = true;
-            }
+            await HandleRuleContext(ruleContext);
+        }
+
+        private async Task HandleRuleContext(RuleContext ruleContext)
+        {
             switch (ruleContext.Event)
             {
                 case RuleContextEvent.AddClass:
@@ -142,6 +152,7 @@ namespace BlazorStyled.Internal.Components
                 if (_unsubscriber != null)
                 {
                     _unsubscriber.Dispose();
+                    StyleSheet.UnbecomingScriptTag();
                     StyleSheet.UnbecomeScriptTag();
                 }
             }

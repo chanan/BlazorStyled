@@ -1,9 +1,11 @@
 ﻿@page "/"
 
-<Styled Classname=".rlG.PFl"> 
-    display: -ms-grid; 
-    display: grid; 
-    flex-shrink: 0; 
+<Styled @bind-Classname="@_p"> 
+    color: red;
 </Styled>
 
-<p>Test</p>
+<p class="@_p">Test</p>
+
+@code {
+    private string _p;
+}

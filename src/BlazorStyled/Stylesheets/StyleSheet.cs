@@ -18,8 +18,41 @@ namespace BlazorStyled.Stylesheets
         };
         private readonly Queue<RuleContext> _storage = new Queue<RuleContext>();
         private SemaphoreSlim _scriptRenderedSemaphore = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim _becomingScriptTagSemaphore = new SemaphoreSlim(1, 1);
 
         public bool ScriptRendered { get; private set; } = false;
+        public bool ScriptRendering { get; private set; } = false;
+        public Queue<RuleContext> Storage { get; set; } = new Queue<RuleContext>();
+
+        public async ValueTask<bool> BecomingScriptTag()
+        {
+            if (ScriptRendered || ScriptRendering)
+            {
+                return false;
+            }
+
+            bool hasBecome = false;
+            await _becomingScriptTagSemaphore.WaitAsync();
+            try
+            {
+                if (!ScriptRendered && !ScriptRendering)
+                {
+                    ScriptRendering = true;
+                    hasBecome = true; ;
+                }
+            }
+            finally
+            {
+                _becomingScriptTagSemaphore.Release();
+
+            }
+            return hasBecome;
+        }
+
+        public void UnbecomingScriptTag()
+        {
+            ScriptRendering = false;
+        }
 
         public async ValueTask<bool> BecomeScriptTag()
         {
@@ -36,6 +69,7 @@ namespace BlazorStyled.Stylesheets
                 {
                     ScriptRendered = true;
                     hasBecome = true; ;
+                    NotifyObserversOfSaveRules();
                 }
             }
             finally
@@ -193,26 +227,31 @@ namespace BlazorStyled.Stylesheets
 
         private void NotifyRuleObservers(RuleContext ruleContext)
         {
-            if (_ruleObservers.Count == 0)
+            if (!ScriptRendered)
             {
                 _storage.Enqueue(ruleContext);
             }
-            if (_ruleObservers.Count != 0)
+            if (ScriptRendered)
+            {
+                NotifyObserversOfSaveRules();
+
+                foreach (IObserver<RuleContext> observer in _ruleObservers)
+                {
+                    observer.OnNext(ruleContext);
+                }
+            }
+        }
+
+        private void NotifyObserversOfSaveRules()
+        {
+            foreach (RuleContext rule in _storage)
             {
                 foreach (IObserver<RuleContext> observer in _ruleObservers)
                 {
-                    if (_storage.Count != 0)
-                    {
-                        Queue<RuleContext> copy = new Queue<RuleContext>(_storage.ToArray());
-                        foreach (RuleContext rule in copy)
-                        {
-                            observer.OnNext(rule);
-                        }
-                    }
-                    observer.OnNext(ruleContext);
+                    observer.OnNext(rule);
                 }
-                _storage.Clear();
             }
+            _storage.Clear();
         }
 
         private bool IsExistsHtmlElementClass(IDictionary<string, IDictionary<string, IRule>> elements, IRule rule)

@@ -21,5 +21,9 @@ namespace BlazorStyled.Stylesheets
         bool ScriptRendered { get; }
         ValueTask<bool> BecomeScriptTag();
         void UnbecomeScriptTag();
+        bool ScriptRendering { get; }
+        ValueTask<bool> BecomingScriptTag();
+        void UnbecomingScriptTag();
+        Queue<RuleContext> Storage { get; set; }
     }
 }

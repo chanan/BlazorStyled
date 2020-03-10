@@ -23,7 +23,7 @@ namespace BlazorStyled
             {
                 serviceCollection.AddSingleton<IConfig>(config);
             }
-            serviceCollection.AddSingleton<IStyleSheet, StyleSheet>();
+            serviceCollection.AddScoped<IStyleSheet, StyleSheet>();
             serviceCollection.AddTransient<IStyled, StyledImpl>();
             return serviceCollection;
         }

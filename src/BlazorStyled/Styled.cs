@@ -40,9 +40,9 @@ namespace BlazorStyled
 
         protected override async void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if (!StyleSheet.ScriptRendered)
+            if (!StyleSheet.ScriptRendered && !StyleSheet.ScriptRendering)
             {
-                if (await StyleSheet.BecomeScriptTag())
+                if (await StyleSheet.BecomingScriptTag())
                 {
                     builder.OpenComponent<Scripts>(1);
                     builder.CloseComponent();
