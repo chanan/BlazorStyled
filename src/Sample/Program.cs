@@ -1,5 +1,6 @@
 ﻿using BlazorStyled;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using SampleCore;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace Sample
             //Configure Services
 
             //AddBlazorStyled is needed for BlazorStyled to work
+            builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddBlazorStyled(isDevelopment: false, isDebug: false);
 
             //The following is only used by the sample sites and is not required for BlazorStyled to work
