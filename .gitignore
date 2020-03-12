@@ -346,3 +346,6 @@ healthchecksdb
 
 # Exclude TestStyles.css
 TestStyles.css
+
+# Remove dist
+/dist

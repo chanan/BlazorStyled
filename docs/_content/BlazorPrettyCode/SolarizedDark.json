@@ -51,6 +51,18 @@
         "font-family": "Fira Code",
         "font-weight": "400"
       }
+    },
+    {
+      "Name": "CSS Propery",
+      "Settings": {
+        "color": "#268BD2"
+      }
+    },
+    {
+      "Name": "CSS Class",
+      "Settings": {
+        "color": "#B7A500"
+      }
     }
   ]
 }

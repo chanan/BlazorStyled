@@ -54,10 +54,10 @@ namespace BlazorStyled
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string classname = null;
-            
+
             string content = RenderAsString();
-            if(content != null && content.Length > 0)
-            { 
+            if (content != null && content.Length > 0)
+            {
                 if (IsKeyframes)
                 {
                     classname = styled.Keyframes(content);
@@ -94,15 +94,15 @@ namespace BlazorStyled
                 {
                     classname = styled.Css(content);
                 }
-                if(ComposeAttributes == null || !ClassnameChanged.HasDelegate)
+                if (ComposeAttributes == null || !ClassnameChanged.HasDelegate)
                 {
                     await NotifyChanged(classname);
                 }
             }
-            if (ComposeAttributes != null &&  ClassnameChanged.HasDelegate)
+            if (ComposeAttributes != null && ClassnameChanged.HasDelegate)
             {
                 StringBuilder sb = new StringBuilder();
-                if(classname != null)
+                if (classname != null)
                 {
                     sb.Append(classname).Append(" ");
                 }

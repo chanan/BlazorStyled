@@ -11,7 +11,6 @@ namespace BlazorStyled.Internal.Components
     internal class Scripts : ComponentBase, IObserver<RuleContext>, IDisposable
     {
         private IDisposable _unsubscriber;
-        private bool _init = false;
 
         //Injection
         [Inject] private IJSRuntime JSRuntime { get; set; }
@@ -67,7 +66,7 @@ namespace BlazorStyled.Internal.Components
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if(firstRender)
+            if (firstRender)
             {
                 await JSRuntime.InvokeVoidAsync("eval", _script);
                 await StyleSheet.BecomeScriptTag();
