@@ -1,0 +1,38 @@
+﻿@page "/whatsNew"
+
+<h1>What's New</h1>
+
+<dl>
+    <dt>Version 2.2.0 3/14/2020</dt>
+    <dd>
+        <ul>
+            <li>Added <a href="/globalStyles">GlobalStyles</a></li>
+        </ul>
+    </dd>
+    <dt>Version 2.1.0 3/12/2020</dt>
+    <dd>
+        <ul>
+            <li>Upgraded to WebAssembly 3.2 preview2</li>
+        </ul>
+    </dd>
+    <dt>Version 2.0.0 3/9/2020</dt>
+    <dd>
+        <h4>Breaking Changes</h4>
+        <ul>
+            <li>Setup: No need for tags in the head anymore. Remove them all. Only setup needed is register the services (<code>AddBlazorStyled</code>)</li>
+            <li>Themes API changes: Set theme values using <code>IStyled.SetThemeValue</code></li>
+            <li>Themes API changes: Get all values using <code>IStyled.GetThemeValues</code></li>
+         </ul>
+        <h4>Other Changes</h4>
+        <ul>
+            <li>Each Stylesheet id (<code>WithId</code>) now has its own style tag in the head</li>
+            <li>Compose now returns a list of classes instead of creating a new class with all the rules of the composed classes</li>
+            <li>
+                You can now put rules directly in the
+                <code>&lt;Styled>...&lt;/Styled></code> tag when composing that serve as the basis for the all the classes being composed
+            </li>
+            <li>A bug was fixed where a class with just a label caused an exception</li>
+        </ul>
+    </dd>
+</dl>
+
