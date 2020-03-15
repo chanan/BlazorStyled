@@ -27,6 +27,7 @@ namespace BlazorStyled
         [Parameter] public bool IsKeyframes { get; set; }
         [Parameter] public PseudoClasses PseudoClass { get; set; } = PseudoClasses.None;
         [Parameter] public EventCallback<string> ClassnameChanged { get; set; }
+        [Parameter] public string GlobalStyle { get; set; }
         [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> ComposeAttributes { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
@@ -117,6 +118,10 @@ namespace BlazorStyled
                     classname = sb.ToString().Trim();
                     await NotifyChanged(classname);
                 }
+            }
+            if(GlobalStyle != null & classname != null)
+            {
+                StyledService.GlobalStyles[GlobalStyle] = classname;
             }
         }
 

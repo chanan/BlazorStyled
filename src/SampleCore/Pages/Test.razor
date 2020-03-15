@@ -1,66 +1,6 @@
 @page "/test"
 @inject IStyled Styled
 
-<section class="@_currentSlideClass">
-    TEST
-</section>
-
-<Styled @bind-Classname="@_slide">
-    label: section;
-    display: none;
-    position: absolute;
-    width: 100%;
-    padding: 20px 0px;
-    pointer-events: auto;
-    z-index: 10;
-    -webkit-transform-style: flat;
-    transform-style: flat;
-    transition: -webkit-transform-origin 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985), -webkit-transform 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985), visibility 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985), opacity 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-    transition: transform-origin 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985), transform 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985), visibility 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985), opacity 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-    -webkit-perspective: 600px;
-    perspective: 600px;
-</Styled>
-
-<Styled @bind-Classname="@_center">
-    min-height: 0 !important;
-</Styled>
-
-<Styled @bind-Classname="@_present">
-    label: present;
-    display: block;
-    z-index: 11;
-    opacity: 1;
-</Styled>
-
-<Styled @bind-Classname="@_notPresent">
-    label: not-present;
-    pointer-events: none;
-    opacity: 0;
-</Styled>
-
-<Styled @bind-Classname="@_future">
-    label: future;
-</Styled>
-
-<Styled @bind-Classname="@_past">
-    label: past;
-</Styled>
-
-<Styled @bind-Classname="@_currentSlideClass"
-        Compose1="@_slide"
-        Compose2="@_center"
-        Compose3="@_present"
-        Compose4="@_notPresent"
-        Compose5="@_future"
-        Compose6="@_past"
-        Compose3If="@(Index == CurrentSlide)"
-        Compose4If="@(Index != CurrentSlide)"
-        Compose5If="@(Index > CurrentSlide)"
-        Compose6If="@(Index < CurrentSlide)" />
-
-@code {
-    private string _currentSlideClass, _slide, _center, _present, _notPresent, _future, _past;
-
-    public int Index { get; set; } = 5;
-    public int CurrentSlide { get; set; } = 5;
-}
+<div class="@Styled.GlobalStyles["ColorRed"]">
+    Test
+</div>

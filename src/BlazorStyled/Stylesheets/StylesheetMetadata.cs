@@ -10,5 +10,6 @@ namespace BlazorStyled.Stylesheets
         public IDictionary<string, IRule> Classes { get; set; } = new Dictionary<string, IRule>();
         public IDictionary<string, IDictionary<string, IRule>> Elements { get; set; } = new Dictionary<string, IDictionary<string, IRule>>();
         public Theme Theme { get; } = new Theme();
+        public InternalGlobalStyles GlobalStyles = new InternalGlobalStyles();
     }
 }

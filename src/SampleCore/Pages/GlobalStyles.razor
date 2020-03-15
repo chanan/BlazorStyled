@@ -1,0 +1,19 @@
+﻿@page "/globalStyles"
+@inject IStyled Styled
+
+<h1>Global Styles</h1>
+
+<p>
+    Global styles allows you to define a style and use it again later in a different component.
+    Assign a name ("ColorHotPink" in the example below) for the style in the <code>GlobalStyle</code> property in the <code>&lt;Styled /></code>.
+    For example, the below snippet is defined in <code>MainLayout.cs</code>:
+</p>
+
+<PrettyCode CodeFile="_content/SampleCore/globalstyles1.html" Title="MainLayout.cs" />
+
+<p>Once the style is defined as a Global Style you may use it in another component by injecting <code>IStyled</code> and 
+    accessing <code>Styled.GlobalStyles</code>. For example:</p>
+
+<p class="@Styled.GlobalStyles["ColorHotPink"]">This paragraph is hot pink because the it uses a global style that defines it to be hot pink.</p>
+
+<PrettyCode CodeFile="_content/SampleCore/globalstyles2.html" />

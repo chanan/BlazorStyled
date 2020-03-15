@@ -14,5 +14,6 @@ namespace BlazorStyled
         IStyled WithId(string id);
         void SetThemeValue(string name, string value);
         IEnumerable<KeyValuePair<string, string>> GetThemeValues();
+        IGlobalStyles GlobalStyles { get; }
     }
 }

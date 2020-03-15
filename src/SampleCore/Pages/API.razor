@@ -1,6 +1,6 @@
 ﻿@page "/api"
 
-<h3>API</h3>
+<h1>API</h1>
 
 <p>
     BlazorStyled's tag syntax is easy to use and works in most cases, but sometimes you might want to access BlazorStyled's API Directly. For example, if you are using a code behind MVVM class,
@@ -9,7 +9,7 @@
 
 <h4>AddGoogleFonts(List&lt;GoogleFont> googleFonts)</h4>
 
-<p>Adds an <code>@@import</code> to the top of your css with the google font css</p>
+<p>Adds an <code>@@import</code> to the top of your css with the Google font css</p>
 
 <h4>ClearStyles()</h4>
 
@@ -17,7 +17,7 @@
 
 <h4>Css(string css)</h4>
 
-<p>You can either pass a set od rule definations and get back a class name or a set of html element rules.</p>
+<p>You can either pass a set of rule definitions and get back a class name or a set of html element rules.</p>
 
 <h4>Css(string classname, string css)</h4>
 
@@ -46,3 +46,9 @@
 <h4>IEnumerable&lt;KeyValuePair&lt;string, string>> GetThemeValues()</h4>
 
 <p>Returns all the theme values</p>
+
+<h4>IGlobalStyles GlobalStyles { get; }</h4>
+
+<p><code>GlobalStyles</code> allow saving a global style to use later: <code>Styled.GlobalStyles["MyClassname"] = classname;</code></p>
+
+<p>It can later be retrieved by: <code>Styled.GlobalStyles["MyClassname"];</code> </p>

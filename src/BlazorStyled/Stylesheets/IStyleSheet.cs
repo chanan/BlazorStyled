@@ -16,8 +16,8 @@ namespace BlazorStyled.Stylesheets
         IList<IRule> GetRules(string id, string selector);
         IEnumerable<IRule> GetRulesWithoutImport();
         IDisposable Subscribe(IObserver<RuleContext> observer);
-        void SetThemeValue(string Id, string name, string value);
-        IEnumerable<KeyValuePair<string, string>> GetThemeValues(string Id);
+        void SetThemeValue(string id, string name, string value);
+        IEnumerable<KeyValuePair<string, string>> GetThemeValues(string id);
         bool ScriptRendered { get; }
         ValueTask<bool> BecomeScriptTag();
         void UnbecomeScriptTag();
@@ -25,5 +25,7 @@ namespace BlazorStyled.Stylesheets
         ValueTask<bool> BecomingScriptTag();
         void UnbecomingScriptTag();
         Queue<RuleContext> Storage { get; set; }
+        string GlobalStyle(string id, string globalClassName);
+        void AddOrUpdateGlobalStyle(string id, string globalClassName, string className);
     }
 }

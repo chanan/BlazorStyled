@@ -298,6 +298,18 @@ namespace BlazorStyled.Stylesheets
             }
             return new RuleUnsubscriber<RuleContext>(_ruleObservers, observer);
         }
+
+        public string GlobalStyle(string id, string globalClassName)
+        {
+            StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
+            return styleSheetMetadata.GlobalStyles[globalClassName];
+        }
+
+        public void AddOrUpdateGlobalStyle(string id, string globalClassName, string className)
+        {
+            StyleSheetMetadata styleSheetMetadata = GetStyleSheetForId(id);
+            styleSheetMetadata.GlobalStyles[globalClassName] = className;
+        }
     }
 
     internal class RuleUnsubscriber<RuleContext> : IDisposable

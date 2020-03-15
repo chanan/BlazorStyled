@@ -11,17 +11,20 @@ namespace BlazorStyled.Internal
         private const string DEFAULT = "Default";
         private readonly IStyleSheet _styleSheet;
         private readonly string _id;
+        private readonly IGlobalStyles _globalStyles;
 
-        public StyledImpl(IStyleSheet styleSheet)
+        public IGlobalStyles GlobalStyles => _globalStyles;
+
+        public StyledImpl(IStyleSheet styleSheet) : this(styleSheet, DEFAULT)
         {
-            _styleSheet = styleSheet;
-            _id = DEFAULT;
+
         }
 
         private StyledImpl(IStyleSheet styleSheet, string id)
         {
             _styleSheet = styleSheet;
             _id = id;
+            _globalStyles = new GlobalStyles(_id, _styleSheet);
         }
 
         public string Css(string className, string css)
