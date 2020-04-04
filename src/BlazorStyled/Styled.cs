@@ -3,21 +3,14 @@ using BlazorStyled.Internal.Components;
 using BlazorStyled.Stylesheets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorStyled
 {
-    public class Styled : ComponentBase, IDisposable
+    public class Styled : ComponentBase
     {
-        private readonly ServiceProvider _emptyServiceProvider = new ServiceCollection().BuildServiceProvider();
-        private readonly Func<string, string> _encoder = (string t) => t;
         private string _previousClassname;
 
         [Parameter] public RenderFragment ChildContent { get; set; }
@@ -56,7 +49,7 @@ namespace BlazorStyled
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
             string classname = null;
 
-            string content = RenderAsString();
+            string content = ChildContent.RenderAsSimpleString();
             if (content != null && content.Length > 0)
             {
                 if (IsKeyframes)
@@ -119,7 +112,7 @@ namespace BlazorStyled
                     await NotifyChanged(classname);
                 }
             }
-            if(GlobalStyle != null & classname != null)
+            if (GlobalStyle != null & classname != null)
             {
                 StyledService.GlobalStyles[GlobalStyle] = classname;
             }
@@ -233,59 +226,6 @@ namespace BlazorStyled
                 MediaQueries.LargerThanTablet => "@media only screen and (min-width:768px)",
                 _ => string.Empty,
             };
-        }
-
-        private string RenderAsString()
-        {
-            string result = string.Empty;
-            try
-            {
-                ParameterView paramView = ParameterView.FromDictionary(new Dictionary<string, object>() { { "ChildContent", ChildContent } });
-                using HtmlRenderer htmlRenderer = new HtmlRenderer(_emptyServiceProvider, NullLoggerFactory.Instance, _encoder);
-                IEnumerable<string> tokens = GetResult(htmlRenderer.Dispatcher.InvokeAsync(() => htmlRenderer.RenderComponentAsync<TempComponent>(paramView)));
-                result = string.Join("", tokens.ToArray());
-            }
-            catch
-            {
-                //ignored dont crash if can't get result
-            }
-            return result;
-        }
-
-        private IEnumerable<string> GetResult(Task<ComponentRenderedText> task)
-        {
-            if (task.IsCompleted && task.Status == TaskStatus.RanToCompletion && !task.IsFaulted && !task.IsCanceled)
-            {
-                return task.Result.Tokens;
-            }
-            else
-            {
-                ExceptionDispatchInfo.Capture(task.Exception).Throw();
-                throw new InvalidOperationException("We will never hit this line");
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _emptyServiceProvider.Dispose();
-            }
-        }
-
-        private class TempComponent : ComponentBase
-        {
-            [Parameter] public RenderFragment ChildContent { get; set; }
-
-            protected override void BuildRenderTree(RenderTreeBuilder builder)
-            {
-                builder.AddContent(0, ChildContent);
-            }
         }
     }
 }
