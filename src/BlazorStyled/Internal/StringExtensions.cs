@@ -1,16 +1,111 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BlazorStyled.Internal
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
-        private static Random rnd = new Random();
+        private static readonly Random rnd = new Random();
 
         public static string RemoveDuplicateSpaces(this string source)
         {
             return Regex.Replace(source, @"\s+", " ").Trim();
+        }
+
+        public static string RemoveComments(this string source)
+        {
+            return Regex.Replace(source, @"\/\*[\s\S]*?\*\/", string.Empty).Trim();
+        }
+
+        public static IList<ParsedClass> GetClasses(this string source)
+        {
+            return source.GetClasses(null);
+        }
+
+        public static IList<ParsedClass> GetClasses(this string source, string classname)
+        {
+            List<ParsedClass> classes = new List<ParsedClass>();
+            string[] rules = Regex.Split(source, @"[\@\#\.\w\-\,\s\n\r\t&%:()]+(?=\s*\{)");
+            MatchCollection classnames = Regex.Matches(source, @"[\@\#\.\w\-\,\s\n\r\t&%:()]+(?=\s*\{)");
+            ParsedClass root = null, parent = null;
+            if (rules[0].Trim() != string.Empty)
+            {
+                ParsedClass parsedClass = new ParsedClass(classname, rules[0].Trim());
+                root = parsedClass;
+                classes.Add(parsedClass);
+            }
+            else if (rules[0].Trim() == string.Empty && classname != null)
+            {
+                ParsedClass parsedClass = new ParsedClass(classname, string.Empty);
+                root = parsedClass;
+                classes.Add(parsedClass);
+            }
+            for (int i = 0; i < classnames.Count; i++)
+            {
+                ParsedClass parsedClass = new ParsedClass(classnames[i].Value.Trim(), rules[i + 1].Trim());
+                if (parsedClass.IsParent)
+                {
+                    parent = parsedClass;
+                    if (root == null)
+                    {
+                        classes.Add(parsedClass);
+                    }
+                    else
+                    {
+                        root.ChildClasses.Add(parsedClass);
+                    }
+                }
+                else
+                {
+                    if (parent == null)
+                    {
+                        if (root == null)
+                        {
+                            classes.Add(parsedClass);
+                        }
+                        else
+                        {
+                            root.ChildClasses.Add(parsedClass);
+                        }
+                    }
+                    else
+                    {
+                        parent.ChildClasses.Add(parsedClass);
+                        if (parsedClass.IsLastChild)
+                        {
+                            parent = null;
+                        }
+                    }
+                }
+            }
+            List<ParsedClass> ret = new List<ParsedClass>();
+            foreach (ParsedClass parsedClass in classes)
+            {
+                if (parsedClass.IsDynamic)
+                {
+                    ret.Add(parsedClass);
+                    foreach (ParsedClass child in parsedClass.ChildClasses)
+                    {
+                        child.Parent = parsedClass.Name;
+                        child.Name = child.Name.Replace("&", "." + parsedClass.Name);
+                        ret.Add(child);
+                    }
+                }
+                else if (parsedClass.IsMediaQuery)
+                {
+                    if (parsedClass.ChildClasses == null || parsedClass.ChildClasses != null && parsedClass.ChildClasses.Count > 0)
+                    {
+                        ret.Add(parsedClass);
+                    }
+                }
+                else
+                {
+                    ret.Add(parsedClass);
+                }
+            }
+            return ret;
         }
 
         public static int GetStableHashCode(this string str)

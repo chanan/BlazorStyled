@@ -1,5 +1,4 @@
 ﻿using BlazorStyled.Internal;
-using BlazorStyled.Stylesheets;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -23,8 +22,8 @@ namespace BlazorStyled
             {
                 serviceCollection.AddSingleton<IConfig>(config);
             }
-            serviceCollection.AddScoped<IStyleSheet, StyleSheet>();
             serviceCollection.AddTransient<IStyled, StyledImpl>();
+            serviceCollection.AddScoped<ScriptManager>();
             return serviceCollection;
         }
 

@@ -1,6 +1,13 @@
 @page "/test"
-@inject IStyled Styled
 
-<div class="@Styled.GlobalStyles["ColorRed"]">
-    Test
-</div>
+<Styled>
+    /*
+    This is a test
+    */
+    html {
+        color: red;
+    }
+    body {
+        background: black;
+    }
+</Styled>

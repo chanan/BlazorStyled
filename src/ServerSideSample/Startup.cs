@@ -44,7 +44,7 @@ namespace ServerSideSample
             }
 
             //AddBlazorStyled is needed for BlazorStyled to work
-            services.AddBlazorStyled();
+            services.AddBlazorStyled(isDevelopment: true, isDebug: true);
 
             //The following is only used by the sample sites and is not required for BlazorStyled to work
             services.AddServicesForSampleSites();

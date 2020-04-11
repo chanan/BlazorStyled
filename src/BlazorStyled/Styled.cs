@@ -1,8 +1,5 @@
 ﻿using BlazorStyled.Internal;
-using BlazorStyled.Internal.Components;
-using BlazorStyled.Stylesheets;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,24 +21,10 @@ namespace BlazorStyled
         [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> ComposeAttributes { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
-        [Inject] private IStyleSheet StyleSheet { get; set; }
-
 
         protected override async Task OnParametersSetAsync()
         {
             await ProcessParameters();
-        }
-
-        protected override async void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            if (!StyleSheet.ScriptRendered && !StyleSheet.ScriptRendering)
-            {
-                if (await StyleSheet.BecomingScriptTag())
-                {
-                    builder.OpenComponent<Scripts>(1);
-                    builder.CloseComponent();
-                }
-            }
         }
 
         private async Task ProcessParameters()
@@ -64,7 +47,7 @@ namespace BlazorStyled
                 else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
                 {
                     //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
-                    //Otherwise Classname was used and this an existing style which will be handled in OnParametersSet
+                    //Otherwise Classname was used and this an existing style which will be handled below
                     content = WrapWithMediaQuery(content);
                     classname = styled.Css(content);
                 }
@@ -86,7 +69,10 @@ namespace BlazorStyled
                 }
                 else
                 {
-                    classname = styled.Css(content);
+                    if (PseudoClass == PseudoClasses.None && MediaQuery == MediaQueries.None)
+                    {
+                        classname = styled.Css(content);
+                    }
                 }
                 if (ComposeAttributes == null || !ClassnameChanged.HasDelegate)
                 {
@@ -114,7 +100,7 @@ namespace BlazorStyled
             }
             if (GlobalStyle != null & classname != null)
             {
-                StyledService.GlobalStyles[GlobalStyle] = classname;
+                await StyledService.SetGlobalStyle(GlobalStyle, classname);
             }
         }
 

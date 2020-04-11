@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorStyled
 {
@@ -12,8 +13,10 @@ namespace BlazorStyled
         void Fontface(string css);
         void AddGoogleFonts(List<GoogleFont> googleFonts);
         IStyled WithId(string id);
-        void SetThemeValue(string name, string value);
-        IEnumerable<KeyValuePair<string, string>> GetThemeValues();
-        IGlobalStyles GlobalStyles { get; }
+        Task SetThemeValue(string name, string value);
+        Task<IDictionary<string, string>> GetThemeValues();
+        Task SetGlobalStyle(string name, string classname);
+        Task<IDictionary<string, string>> GetGlobalStyles();
+        Task<string> GetGlobalStyle(string name);
     }
 }
