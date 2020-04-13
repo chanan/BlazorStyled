@@ -49,9 +49,9 @@
 @code {
     private string example1, example2;
 
-    protected void click(string color)
+    protected async void click(string color)
     {
-        example2 = Styled.Css($"background-color: {color};");
+        example2 = await Styled.Css($"background-color: {color};");
         StateHasChanged();
     }
 }

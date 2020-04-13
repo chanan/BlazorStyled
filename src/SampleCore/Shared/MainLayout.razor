@@ -2,6 +2,8 @@
 @inject IStyled Styled
 @inject ITypography Typography
 
+<Typography Theme="Sutro" />
+
     <div class="@container" style="@visibility">
         <StyledGoogleFont Name="Fira Code" Styles="400" />
 
@@ -161,17 +163,14 @@
 
     private string visibility = "visibility: hidden;";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var theme = new BlazorTypography.Themes.Sutro();
-        Typography.ApplyTypography(theme);
-
         //Setup default theme (light)
-        Styled.SetThemeValue("colors.background-color", "#f0f0f0");
-        Styled.SetThemeValue("colors.text-color", "#994cc3");
-        Styled.SetThemeValue("colors.code-background", "rgba(117,63,131,0.07)");
-        Styled.SetThemeValue("colors.code-text", "#1B1D1D");
-        Styled.SetThemeValue("colors.hr", "hsla(0,0%,0%,0.2)");
+        await Styled.SetThemeValue("colors.background-color", "#f0f0f0");
+        await Styled.SetThemeValue("colors.text-color", "#994cc3");
+        await Styled.SetThemeValue("colors.code-background", "rgba(117,63,131,0.07)");
+        await Styled.SetThemeValue("colors.code-text", "#1B1D1D");
+        await Styled.SetThemeValue("colors.hr", "hsla(0,0%,0%,0.2)");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -9,8 +9,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-preview3.20168.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Sample\ClientSideSample.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -1,18 +1,37 @@
 ﻿@page "/"
 @inject IStyled Styled
 
-<Styled>
-    p {
-        color: red;
-    }
+<Styled @bind-Classname="@example">
+    color: [colors.primary];
 </Styled>
 
-<Styled @bind-Classname="@p">
-    font-size: 32px;
-</Styled>
+<p class="@example">Some text</p>
 
-<p class="@p">Hello</p>
+<div>
+    <button @onclick="@onclickRed">Change theme value to red</button>
+</div>
+
+<div>
+    <button @onclick="@onclickHotpink">Change theme value to hotpink</button>
+</div>
+
 
 @code {
-    private string p;
+    private string example;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Normally this would be defined else where such as in MainLayout.cs
+        await Styled.SetThemeValue("colors.primary", "hotpink");
+    }
+
+    private async void onclickRed()
+    {
+        await Styled.SetThemeValue("colors.primary", "red");
+    }
+
+    private async void onclickHotpink()
+    {
+        await Styled.SetThemeValue("colors.primary", "hotpink");
+    }
 }

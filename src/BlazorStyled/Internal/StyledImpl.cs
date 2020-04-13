@@ -11,19 +11,21 @@ namespace BlazorStyled.Internal
         private const string DEFAULT = "Default";
         private readonly ScriptManager _scriptManager;
         private readonly string _id;
+        private readonly int _priority;
 
-        public StyledImpl(ScriptManager scriptManager) : this(scriptManager, DEFAULT)
+        public StyledImpl(ScriptManager scriptManager) : this(scriptManager, DEFAULT, int.MaxValue)
         {
 
         }
 
-        private StyledImpl(ScriptManager scriptManager, string id)
+        private StyledImpl(ScriptManager scriptManager, string id, int priority)
         {
             _scriptManager = scriptManager;
             _id = id;
+            _priority = priority;
         }
 
-        public string Css(string className, string css)
+        public async Task<string> Css(string className, string css)
         {
             try
             {
@@ -31,8 +33,8 @@ namespace BlazorStyled.Internal
                 IList<ParsedClass> parsedClasses = css.GetClasses(className);
                 if (parsedClasses.Count > 0)
                 {
-                    Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, parsedClasses));
-                    return parsedClasses.First().Name;
+                    await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
+                    return parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
                 }
                 else
                 {
@@ -50,29 +52,29 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public string Css(string css)
+        public Task<string> Css(string css)
         {
             return Css((string)null, css);
         }
 
-        public string Css(List<string> classes, string css)
+        public async Task<string> Css(List<string> classes, string css)
         {
             StringBuilder sb = new StringBuilder();
             foreach (string cssClass in classes)
             {
-                string result = Css(cssClass, css);
+                string result = await Css(cssClass, css);
                 sb.Append(result).Append(' ');
             }
             return sb.ToString().Trim();
         }
 
-        public string Keyframes(string css)
+        public async Task<string> Keyframes(string css)
         {
             try
             {
                 css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
                 IList<ParsedClass> parsedClasses = css.GetClasses();
-                Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, parsedClasses));
+                await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
                 return parsedClasses.First().Hash;
             }
             catch (StyledException e)
@@ -85,11 +87,11 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public void Fontface(string css)
+        public async Task Fontface(string css)
         {
             try
             {
-                Css(css);
+                await Css(css);
             }
             catch (StyledException e)
             {
@@ -101,31 +103,37 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public void ClearStyles()
+        public async Task ClearStyles()
         {
-            //Not implemented
+            await _scriptManager.ClearStyles(_id.GetStableHashCodeString(), _id);
         }
 
-        public void AddGoogleFonts(List<GoogleFont> googleFonts)
+        public async Task AddGoogleFonts(List<GoogleFont> googleFonts)
         {
             string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
             string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
             IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
-            Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, parsedClasses));
+            await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
         }
 
         public IStyled WithId(string id)
         {
+            return WithId(id, 1000);
+        }
+
+        public IStyled WithId(string id, int priority)
+        {
             if (string.IsNullOrEmpty(id))
             {
                 id = DEFAULT;
+                priority = int.MaxValue;
             }
-            return new StyledImpl(_scriptManager, id.Replace(" ", "-"));
+            return new StyledImpl(_scriptManager, id.Replace(" ", "-"), priority);
         }
 
         public async Task SetThemeValue(string name, string value)
         {
-            await _scriptManager.SetThemeValue(_id.GetStableHashCodeString(), _id, name, value);
+            await _scriptManager.SetThemeValue(_id.GetStableHashCodeString(), _id, _priority, name, value);
         }
 
         public async Task<IDictionary<string, string>> GetThemeValues()

@@ -160,7 +160,7 @@ namespace BlazorStyled.Internal
                     sb.Append('.');
                 }
                 sb.Append(Name).Append('{');
-                if (Parent != null && IsMediaQuery)
+                if (IsMediaQuery && Parent != null)
                 {
                     sb.Append('.').Append(Parent).Append('{');
                 }
@@ -168,7 +168,7 @@ namespace BlazorStyled.Internal
                 {
                     sb.Append(property).Append(':').Append(Declarations[property]).Append(';');
                 }
-                if (Parent != null && IsMediaQuery)
+                if (IsMediaQuery && Parent != null)
                 {
                     sb.Append('}');
                 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,29 +27,23 @@ namespace BlazorStyled.Internal
             }
         }
 
-        /**
-         *  dev mode (This is not implemented)
-         *  dynamic classes, font faces (use hash), keyframes - don't add if exist
-         *  html elements, static classes - merge with existing classes
-         *  media queries - add/find external class then do the above
-         * */
-        internal async Task UpdatedParsedClasses(string stylesheetId, string stylesheetName, IList<ParsedClass> parsedClasses)
+        internal async Task UpdatedParsedClasses(string stylesheetId, string stylesheetName, int priority, IList<ParsedClass> parsedClasses)
         {
             await Init();
             string[] rules = parsedClasses.Select(c => c.ToString()).ToArray();
-            await JSRuntime.InvokeVoidAsync("BlazorStyled.insertClasses", stylesheetId, stylesheetName, rules, Config.IsDevelopment, Config.IsDebug);
+            await JSRuntime.InvokeVoidAsync("BlazorStyled.insertClasses", stylesheetId, stylesheetName, priority, rules, Config.IsDevelopment, Config.IsDebug);
         }
 
-        internal async Task SetThemeValue(string stylesheetId, string stylesheetName, string name, string value)
+        internal async Task SetThemeValue(string stylesheetId, string stylesheetName, int priority, string name, string value)
         {
             await Init();
-            await JSRuntime.InvokeVoidAsync("BlazorStyled.setThemeValue", stylesheetId, stylesheetName, name, value, Config.IsDevelopment, Config.IsDebug);
+            await JSRuntime.InvokeVoidAsync("BlazorStyled.setThemeValue", stylesheetId, stylesheetName, priority, name, value, Config.IsDevelopment, Config.IsDebug);
         }
 
         internal async Task<IDictionary<string, string>> GetThemeValues(string stylesheetId)
         {
             await Init();
-            return await JSRuntime.InvokeAsync<Dictionary<string, string>> ("BlazorStyled.getThemeValues", stylesheetId);
+            return await JSRuntime.InvokeAsync<Dictionary<string, string>>("BlazorStyled.getThemeValues", stylesheetId);
         }
 
         internal async Task SetGlobalStyle(string stylesheetId, string name, string value)
@@ -72,208 +65,13 @@ namespace BlazorStyled.Internal
             return styles[name];
         }
 
+        internal async Task ClearStyles(string stylesheetId, string stylesheetName)
+        {
+            await Init();
+            await JSRuntime.InvokeVoidAsync("BlazorStyled.clearStyles", stylesheetId, stylesheetName, Config.IsDebug);
+        }
+
         //Script
-        private readonly string _script = @"window.BlazorStyled = {
-    insertClasses: function (stylesheetId, stylesheetName, rules, development, debug) {
-        for (var i = 0; i < rules.length; i++) {
-            const rule = rules[i];
-            window.BlazorStyled.insertRule(stylesheetId, stylesheetName, rule, development, debug);
-        }
-    },
-    insertRule: function (stylesheetId, stylesheetName, rule, development, debug) {
-        const logger = initLogger(debug);
-        const sheet = getOrCreateSheet(stylesheetId, stylesheetName, logger);
-        const updatedRule = parseTheme(stylesheetId, rule, logger);
-        if(updatedRule)
-        {
-            if (development) {
-                writeRule(sheet, updatedRule, logger);
-            } else {
-                try {
-                    if (updatedRule.indexOf(':-moz') !== -1 && 'MozBoxSizing' in document.body.style) {
-                        insertRule(sheet.sheet, updatedRule, logger);
-                    }
-                    else if (updatedRule.indexOf(':-moz') === -1) {
-                        insertRule(sheet.sheet, updatedRule, logger);
-                    } else {
-                        logger.warn('Mozilla rule not inserted: ', updatedRule);
-                    }
-                } catch (err) {
-                    logger.error('Failed to insert: ', updatedRule);
-                    logger.error(err);
-                }
-            }
-        }
-    },
-    updateRule: function (stylesheetId, stylesheetName, selector, oldRule, rule, development, debug) {
-        const logger = initLogger(debug);
-        const sheet = getOrCreateSheet(stylesheetId, stylesheetName, logger);
-        if (development) {
-            updateWrittenRule(sheet, oldRule, rule, logger);
-        } else {
-            try {
-                updatedInsertedRule(sheet.sheet, oldRule, rule, logger);
-            } catch (err) {
-                logger.error('Failed to update: ', rule);
-                logger.error(err);
-            }
-        }
-    },
-    clearStyles: function (stylesheetId, stylesheetName, debug) {
-        const logger = initLogger(debug);
-        const sheet = document.getElementById(stylesheetId);
-        if (sheet) {
-            document.head.removeChild(sheet);
-            logger.log('Cleared stylesheet: ', stylesheetName);
-        }
-    },
-    setThemeValue: function (stylesheetId, stylesheetName, name, value, development, debug) {
-        const theme = getOrCreateTheme(stylesheetId);
-        theme.values[name] = value;
-        for(var rule in theme.rules) {
-            if(rule.indexOf(name) !== -1) {
-                window.BlazorStyled.insertRule(stylesheetId, stylesheetName, rule, development, debug);
-            }    
-        }
-    },
-    getThemeValues: function (stylesheetId) {
-        const theme = getOrCreateTheme(stylesheetId);
-        return theme.values;
-    },
-    setGlobalStyle: function (stylesheetId, name, value) {
-        const theme = getOrCreateTheme(stylesheetId);
-        theme.globalStyles[name] = value;
-    },
-    getGlobalStyles: function (stylesheetId) {
-        const theme = getOrCreateTheme(stylesheetId);
-        return theme.globalStyles;
-    },
-    themes: {}
-}
-
-function parseTheme(stylesheetId, rule, logger) {
-    if(rule.indexOf('[') === -1) {
-        return rule;
-    }
-    const theme = getOrCreateTheme(stylesheetId);
-    if(!theme.rules.find(r => r === rule)) {
-        theme.rules.push(rule);
-    }
-    const themeValueName = rule.substring(rule.indexOf('[') + 1, rule.indexOf(']'));
-    const themeValue = theme.values[themeValueName];
-    if(themeValue === undefined) {
-        return undefined;
-    }
-    const updated = rule.replace('[' + themeValueName + ']', themeValue);
-    return parseTheme(stylesheetId, updated, logger);
-}
-
-function getOrCreateTheme(stylesheetId) {
-    if(window.BlazorStyled.themes[stylesheetId] === undefined) {
-        window.BlazorStyled.themes[stylesheetId] = {
-            values: {},
-            rules: [],
-            globalStyles: {}
-        }
-    }
-    return window.BlazorStyled.themes[stylesheetId];
-}
-
-function initLogger(debug) {
-    this.debug = {};
-    if (debug) {
-        for (var m in console) {
-            if (typeof console[m] === 'function') {
-                this.debug[m] = console[m].bind(window.console);
-            }
-        }
-    } else {
-        for (var m2 in console) {
-            if (typeof console[m2] === 'function') {
-                this.debug[m2] = function () { };
-            }
-        }
-    }
-    return this.debug
-}
-
-function getOrCreateSheet(stylesheetId, stylesheetName, logger) {
-    const sheet = document.getElementById(stylesheetId);
-    if (sheet) return sheet;
-    const styleEl = document.createElement('style');
-    const id = document.createAttribute('id');
-    id.value = stylesheetId;
-    styleEl.setAttributeNode(id);
-    const dataName = document.createAttribute('data-blazorstyled-stylesheet-name');
-    dataName.value = stylesheetName;
-    styleEl.setAttributeNode(dataName);
-    const head = document.head;
-    if (head.firstChild) {
-        if (stylesheetName === 'Default') {
-            head.appendChild(styleEl);
-        } else {
-            head.insertBefore(styleEl, head.firstChild);
-        }
-    } else {
-        head.appendChild(styleEl);
-    }
-    logger.log('Inserted stylesheet: ', styleEl);
-    return styleEl;
-}
-
-function writeRule(sheet, rule, logger)
-{
-    if (!sheet.innerText)
-    {
-        sheet.innerText = rule;
-        logger.log('Written: ', rule);
-    }
-    else
-    {
-        if(sheet.innerText.indexOf(rule) == -1) 
-        {
-            sheet.innerText = rule.startsWith('@import') ? rule + sheet.innerText : sheet.innerText + rule;
-            logger.log('Written: ', rule);
-        }
-    }
-}
-function insertRule(sheet, rule, logger)
-{
-    const index = rule.startsWith('@import') ? 0 : sheet.cssRules.length;
-    sheet.insertRule(rule, index);
-    logger.log('Inserted at ' + index + ': ', rule);
-}
-
-function updateWrittenRule(sheet, oldRule, rule, logger)
-{
-    if (!sheet.innerText)
-    {
-        sheet.innerText = rule;
-    }
-    sheet.innerText = sheet.innerText.replace(oldRule, rule);
-    logger.log('Updated old rule: ' + oldRule + ' to new rule: ' + rule);
-}
-
-function updatedInsertedRule(sheet, oldRule, rule, logger)
-{
-    const temp = getOrCreateSheet('temp', 'temp', initLogger(false));
-    temp.sheet.insertRule(oldRule);
-    const oldCssText = temp.sheet.cssRules[0].cssText;
-    document.head.removeChild(temp);
-    let index = -1;
-    for (var i = 0; i < sheet.cssRules.length; i++)
-    {
-        if (sheet.cssRules[i].cssText === oldCssText)
-        {
-            index = i;
-        }
-    }
-    if (index !== -1)
-    {
-        sheet.deleteRule(index);
-        sheet.insertRule(rule, index);
-        logger.log('Updated old rule at ' + index + ': ' + oldRule + ' to new rule: ' + rule);
-    }
-}";
+        private readonly string _script = @"window.BlazorStyled={insertClasses:function(n,t,i,r,u,f){for(var e=0;e<r.length;e++){const o=r[e];window.BlazorStyled.insertClass(n,t,i,o,u,f)}},insertClass:function(n,t,i,r,u,f){const e=window.BlazorStyled.initLogger(f),s=window.BlazorStyled.getOrCreateSheet(n,t,i,e),o=window.BlazorStyled.parseTheme(n,r,e);if(o)if(u)window.BlazorStyled.writeRule(s,o,e);else try{o.indexOf(':-moz')!==-1&&'MozBoxSizing'in document.body.style?window.BlazorStyled.insertRule(s.sheet,o,e):o.indexOf(':-moz')===-1?window.BlazorStyled.insertRule(s.sheet,o,e):e.warn('Mozilla rule not inserted: ',o)}catch(h){e.error('Failed to insert: ',o);e.error(h)}},updateRule:function(n,t,i,r,u,f,e,o){const s=window.BlazorStyled.initLogger(o),h=window.BlazorStyled.getOrCreateSheet(n,t,i,s),c=window.BlazorStyled.parseTheme(n,f,s);if(e)window.BlazorStyled.updateWrittenRule(h,u,c,s);else try{window.BlazorStyled.updatedInsertedRule(h.sheet,u,c,s)}catch(l){s.error('Failed to update: ',f);s.error(l)}},clearStyles:function(n,t,i){const u=window.BlazorStyled.initLogger(i),r=document.getElementById(n);r&&(document.head.removeChild(r),u.log('Cleared stylesheet: ',t))},setThemeValue:function(n,t,i,r,u,f,e){const o=window.BlazorStyled.initLogger(e);try{const h=window.BlazorStyled.getOrCreateTheme(n),c=h.values[r];h.values[r]=u;for(var s in h.rules){const u=h.rules[s];if(u.indexOf(r)!==-1)if(c){const h=u.substring(0,u.indexOf('{')),s=window.BlazorStyled.parseTheme(n,u.replace('['+r+']',c),o);s&&window.BlazorStyled.updateRule(n,t,i,h,s,u,f,e)}else window.BlazorStyled.insertClass(n,t,i,u,f,e)}}catch(h){o.error('Failed to update: ',rule);o.error(h)}},getThemeValues:function(n){const t=window.BlazorStyled.getOrCreateTheme(n);return t.values},setGlobalStyle:function(n,t,i){const r=window.BlazorStyled.getOrCreateTheme(n);r.globalStyles[t]=i},getGlobalStyles:function(n){const t=window.BlazorStyled.getOrCreateTheme(n);return t.globalStyles},parseTheme:function(n,t,i){if(t.indexOf('[')===-1)return t;const r=window.BlazorStyled.getOrCreateTheme(n);r.rules.find(n=>n===t)||r.rules.push(t);const u=t.substring(t.indexOf('[')+1,t.indexOf(']')),f=r.values[u];if(f===undefined)return undefined;const e=t.replace('['+u+']',f);return window.BlazorStyled.parseTheme(n,e,i)},getOrCreateTheme:function(n){return window.BlazorStyled.themes[n]===undefined&&(window.BlazorStyled.themes[n]={values:{},rules:[],globalStyles:{}}),window.BlazorStyled.themes[n]},initLogger:function(n){var t,i;if(this.debug={},n)for(t in console)typeof console[t]=='function'&&(this.debug[t]=console[t].bind(window.console));else for(i in console)typeof console[i]=='function'&&(this.debug[i]=function(){});return this.debug},getOrCreateSheet:function(n,t,i,r){const e='data-blazorstyled-priority',o=document.getElementById(n);if(o)return o;const f=document.createElement('style'),s=document.createAttribute('id');s.value=n;f.setAttributeNode(s);const h=document.createAttribute('data-blazorstyled-name');h.value=t;f.setAttributeNode(h);const c=document.createAttribute(e);c.value=i;f.setAttributeNode(c);const u=document.head;if(u.hasChildNodes()){let n=!1;for(let t=0;t<u.children.length;t++){const r=u.children[t];if(r.hasAttribute(e)){const o=r.getAttribute(e),s=parseInt(o,10);i>=s&&!n&&(n=!0,t!==u.children.length-1?u.insertBefore(f,u.children[t+1]):u.appendChild(f))}}n||u.insertBefore(f,u.firstChild)}else u.appendChild(f);return r.log('Inserted stylesheet: ',f),f},writeRule:function(n,t,i){n.innerText?n.innerText.indexOf(t)===-1&&(n.innerText=t.startsWith('@import')?t+n.innerText:n.innerText+t,i.log('Written: ',t)):(n.innerText=t,i.log('Written: ',t))},insertRule:function(n,t,i){const r=t.startsWith('@import')?0:n.cssRules.length;n.insertRule(t,r);i.log('Inserted at '+r+': ',t)},updateWrittenRule:function(n,t,i,r){n.innerText||(n.innerText=i);n.innerText=n.innerText.replace(t,i);r.log('Updated old rule: '+t+' to new rule: '+i)},updatedInsertedRule:function(n,t,i,r){const e=window.BlazorStyled.getOrCreateSheet('temp','temp',initLogger(!1));e.sheet.insertRule(t);const o=e.sheet.cssRules[0].cssText;document.head.removeChild(e);let u=-1;for(var f=0;f<n.cssRules.length;f++)n.cssRules[f].cssText===o&&(u=f);u!==-1&&(n.deleteRule(u),n.insertRule(i,u),r.log('Updated old rule at '+u+': '+t+' to new rule: '+i))},themes:{}};";
     }
 }

@@ -44,7 +44,8 @@ namespace ServerSideSample
             }
 
             //AddBlazorStyled is needed for BlazorStyled to work
-            services.AddBlazorStyled(isDevelopment: true, isDebug: true);
+            IConfigurationSection section = Configuration.GetSection("BlazorStyled");
+            services.AddBlazorStyled(isDevelopment: section.GetValue<bool>("development"), isDebug: section.GetValue<bool>("debug"));
 
             //The following is only used by the sample sites and is not required for BlazorStyled to work
             services.AddServicesForSampleSites();

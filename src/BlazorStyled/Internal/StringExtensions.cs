@@ -8,6 +8,7 @@ namespace BlazorStyled.Internal
     internal static class StringExtensions
     {
         private static readonly Random rnd = new Random();
+        private static readonly string _pattern = @"[\""\+>\=\*\@\#\.\w\-\,\s\n\r\t&%:()\[\]]+(?=\s*\{)";
 
         public static string RemoveDuplicateSpaces(this string source)
         {
@@ -27,8 +28,8 @@ namespace BlazorStyled.Internal
         public static IList<ParsedClass> GetClasses(this string source, string classname)
         {
             List<ParsedClass> classes = new List<ParsedClass>();
-            string[] rules = Regex.Split(source, @"[\@\#\.\w\-\,\s\n\r\t&%:()]+(?=\s*\{)");
-            MatchCollection classnames = Regex.Matches(source, @"[\@\#\.\w\-\,\s\n\r\t&%:()]+(?=\s*\{)");
+            string[] rules = Regex.Split(source, _pattern);
+            MatchCollection classnames = Regex.Matches(source, _pattern);
             ParsedClass root = null, parent = null;
             if (rules[0].Trim() != string.Empty)
             {
@@ -95,8 +96,12 @@ namespace BlazorStyled.Internal
                 }
                 else if (parsedClass.IsMediaQuery)
                 {
-                    if (parsedClass.ChildClasses == null || parsedClass.ChildClasses != null && parsedClass.ChildClasses.Count > 0)
+                    if (parsedClass.ChildClasses == null || (parsedClass.ChildClasses != null && parsedClass.ChildClasses.Count > 0))
                     {
+                        foreach(ParsedClass child in parsedClass.ChildClasses)
+                        {
+                            child.Name = child.Name.Replace("&", "." + child.Hash);
+                        }
                         ret.Add(parsedClass);
                     }
                 }

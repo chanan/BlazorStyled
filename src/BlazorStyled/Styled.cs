@@ -37,41 +37,41 @@ namespace BlazorStyled
             {
                 if (IsKeyframes)
                 {
-                    classname = styled.Keyframes(content);
+                    classname = await styled.Keyframes(content);
                 }
                 else if (Classname != null && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     //html elements
-                    styled.Css(ApplyPseudoClass(Classname), content);
+                    await styled.Css(ApplyPseudoClass(Classname), content);
                 }
                 else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
                 {
                     //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
                     //Otherwise Classname was used and this an existing style which will be handled below
-                    content = WrapWithMediaQuery(content);
-                    classname = styled.Css(content);
+                    content = WrapWithMediaQuery("&{" + content + "}");
+                    classname = await styled.Css(content);
                 }
                 else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate && _previousClassname == null)
                 {
                     //Media query support for classes where an existing Classname already exists
                     content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
-                    styled.Css(GetMediaQuery(), content);
+                    await styled.Css(GetMediaQuery(), content);
                 }
                 else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None && _previousClassname == null)
                 {
                     //Media queries for html elements
-                    styled.Css(GetMediaQuery(), content);
+                    await styled.Css(GetMediaQuery(), content);
                 }
                 else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
-                    styled.Css(content);
+                    await styled.Css(content);
                 }
                 else
                 {
                     if (PseudoClass == PseudoClasses.None && MediaQuery == MediaQueries.None)
                     {
-                        classname = styled.Css(content);
+                        classname = await styled.Css(content);
                     }
                 }
                 if (ComposeAttributes == null || !ClassnameChanged.HasDelegate)
