@@ -217,7 +217,7 @@
     logger.log('Updated old rule: ' + oldRule + ' to new rule: ' + rule);
   },
   updatedInsertedRule: function (sheet, oldRule, rule, logger) {
-    const temp = window.BlazorStyled.getOrCreateSheet('temp', 'temp', initLogger(false));
+    const temp = window.BlazorStyled.getOrCreateSheet('temp', 'temp', window.BlazorStyled.initLogger(false));
     temp.sheet.insertRule(oldRule);
     const oldCssText = temp.sheet.cssRules[0].cssText;
     document.head.removeChild(temp);
