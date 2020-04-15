@@ -75,12 +75,12 @@ namespace BlazorStyled.Internal
         private readonly string _script = @"window.BlazorStyled = {
   insertClasses: function (stylesheetId, stylesheetName, priority, rules, development, debug) {
     //console.log('insertClasses');
-    //console.time('insertClasses');
+    console.time('insertClasses');
     for (var i = 0; i < rules.length; i++) {
       const rule = rules[i];
       window.BlazorStyled.insertClass(stylesheetId, stylesheetName, priority, rule, development, debug);
     }
-    //console.timeEnd('insertClasses');
+    console.timeEnd('insertClasses');
   },
   insertClass: function (stylesheetId, stylesheetName, priority, rule, development, debug) {
     //console.log('insertClass');
@@ -266,6 +266,7 @@ namespace BlazorStyled.Internal
     return styleEl;
   },
   writeRule: function (sheet, rule, logger) {
+    console.time('writeRule');
     if (!sheet.innerText) {
       sheet.innerText = rule;
       logger.log('Written: ', rule);
@@ -275,6 +276,7 @@ namespace BlazorStyled.Internal
         logger.log('Written: ', rule);
       }
     }
+    console.timeEnd('writeRule');
   },
   insertRule: function (sheet, rule, logger) {
     const index = rule.startsWith('@import') ? 0 : sheet.cssRules.length;

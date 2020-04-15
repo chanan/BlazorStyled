@@ -48,35 +48,23 @@ namespace BlazorStyled.Internal
             Name = Hash;
         }
 
-        private IDictionary<string, string> ParseDeclerations(string body)
+        private string ParseDeclerations(string body)
         {
-            IDictionary<string, string> declarations = new SortedDictionary<string, string>();
             string str = body.Trim();
-            str = str.StartsWith("{") && str.EndsWith("}") ? str.Substring(1, str.Trim().Length - 2).Trim() : str;
-            string[] declarationsString = str.Split(';');
-            foreach (string declarationString in declarationsString)
+            if (str.Contains("label"))
             {
-                if (declarationString.IndexOf(':') != -1)
+                int start = str.IndexOf(":", str.IndexOf("label"));
+                if (start != -1)
                 {
-                    Tuple<string, string> declaration = ParseDeclaration(declarationString.Trim());
-                    if (declaration != null && declaration.Item1 != "label")
+                    int end = str.IndexOf(";", start);
+                    if (end != -1)
                     {
-                        if (declarations.ContainsKey(declaration.Item1))
-                        {
-                            declarations[declaration.Item1] = declaration.Item2;
-                        }
-                        else
-                        {
-                            declarations.Add(declaration.Item1, declaration.Item2);
-                        }
-                    }
-                    else
-                    {
-                        Label = declaration.Item2;
+                        Label = str.Substring(start + 1, end - start - 1).Trim();
+                        str = str.Substring(0, start - 5) + str.Substring(end, str.Length - end - 1);
                     }
                 }
             }
-            return declarations;
+            return str.StartsWith("{") && str.EndsWith("}") ? str.Substring(1, str.Trim().Length - 2).Trim() : str;
         }
 
         private Tuple<string, string> ParseDeclaration(string input)
@@ -109,42 +97,9 @@ namespace BlazorStyled.Internal
         public bool IsElement => !IsDynamic && !IsFontface && !IsKeyframes && !IsMediaQuery; //TODO: This might not be correct
         public bool IsLastChild { get; private set; }
         public string Parent { get; set; }
-        public IDictionary<string, string> Declarations { get; private set; } = new SortedDictionary<string, string>();
+        public string Declarations { get; private set; }
         public string ImportUri { get; private set; }
         public bool IsImportUri => ImportUri != null;
-
-        public bool MergeDecelerations(IDictionary<string, string> declarations)
-        {
-            bool changed = false;
-            foreach (string property in declarations.Keys)
-            {
-                if (property != "label")
-                {
-                    if (Declarations.ContainsKey(property))
-                    {
-                        if (Declarations[property] != declarations[property])
-                        {
-                            Declarations[property] = declarations[property];
-                            changed = true;
-                        }
-                    }
-                    else
-                    {
-                        Declarations.Add(property, declarations[property]);
-                        changed = true;
-                    }
-                }
-            }
-            if (changed)
-            {
-                _hash = null;
-                if (IsDynamic)
-                {
-                    Name = Hash;
-                }
-            }
-            return changed;
-        }
 
         public override string ToString()
         {
@@ -153,7 +108,7 @@ namespace BlazorStyled.Internal
             {
                 sb.Append("@import url('").Append(ImportUri).Append("');");
             }
-            if (Declarations.Count > 0)
+            if (Declarations != null)
             {
                 if (IsDynamic)
                 {
@@ -164,10 +119,7 @@ namespace BlazorStyled.Internal
                 {
                     sb.Append('.').Append(Parent).Append('{');
                 }
-                foreach (string property in Declarations.Keys)
-                {
-                    sb.Append(property).Append(':').Append(Declarations[property]).Append(';');
-                }
+                sb.Append(Declarations);
                 if (IsMediaQuery && Parent != null)
                 {
                     sb.Append('}');
@@ -194,7 +146,7 @@ namespace BlazorStyled.Internal
             {
                 sb.Append("@import url('").Append(ImportUri).Append("');");
             }
-            if (Declarations.Count > 0)
+            if (Declarations != null)
             {
                 if (IsDynamic)
                 {
@@ -205,10 +157,7 @@ namespace BlazorStyled.Internal
                 {
                     sb.Append('.').Append(Parent).Append('{');
                 }
-                foreach (string property in Declarations.Keys)
-                {
-                    sb.Append(property).Append(':').Append(Declarations[property]).Append(';');
-                }
+                sb.Append(Declarations);
                 if (Parent != null && IsMediaQuery)
                 {
                     sb.Append('}');

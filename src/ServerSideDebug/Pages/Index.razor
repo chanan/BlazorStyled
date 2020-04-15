@@ -2,36 +2,15 @@
 @inject IStyled Styled
 
 <Styled @bind-Classname="@example">
-    color: [colors.primary];
+    color: red;
+    label: test;
 </Styled>
 
-<p class="@example">Some text</p>
-
-<div>
-    <button @onclick="@onclickRed">Change theme value to red</button>
-</div>
-
-<div>
-    <button @onclick="@onclickHotpink">Change theme value to hotpink</button>
+<div class="@example">
+    This is a test!
 </div>
 
 
 @code {
     private string example;
-
-    protected override async Task OnInitializedAsync()
-    {
-        //Normally this would be defined else where such as in MainLayout.cs
-        await Styled.SetThemeValue("colors.primary", "hotpink");
-    }
-
-    private async void onclickRed()
-    {
-        await Styled.SetThemeValue("colors.primary", "red");
-    }
-
-    private async void onclickHotpink()
-    {
-        await Styled.SetThemeValue("colors.primary", "hotpink");
-    }
 }
