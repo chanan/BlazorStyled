@@ -25,7 +25,7 @@ namespace BlazorStyled.Internal
             _priority = priority;
         }
 
-        public async Task<string> Css(string className, string css)
+        public async Task<string> CssAsync(string className, string css)
         {
             try
             {
@@ -33,14 +33,14 @@ namespace BlazorStyled.Internal
                 IList<ParsedClass> parsedClasses = css.GetClasses(className);
                 if (parsedClasses.Count > 0)
                 {
+                    string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
                     await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
-                    return parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
+                    return hash;
                 }
                 else
                 {
                     return string.Empty;
                 }
-
             }
             catch (StyledException e)
             {
@@ -52,17 +52,60 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public Task<string> Css(string css)
+        public Task<string> CssAsync(string css)
         {
-            return Css((string)null, css);
+            return CssAsync((string)null, css);
         }
 
-        public async Task<string> Css(List<string> classes, string css)
+        public async Task<string> CssAsync(List<string> classes, string css)
         {
             StringBuilder sb = new StringBuilder();
             foreach (string cssClass in classes)
             {
-                string result = await Css(cssClass, css);
+                string result = await CssAsync(cssClass, css);
+                sb.Append(result).Append(' ');
+            }
+            return sb.ToString().Trim();
+        }
+
+        public string Css(string className, string css)
+        {
+            try
+            {
+                css = css.RemoveComments().RemoveDuplicateSpaces();
+                IList<ParsedClass> parsedClasses = css.GetClasses(className);
+                if (parsedClasses.Count > 0)
+                {
+                    string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
+                    Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
+                    return hash;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            catch (StyledException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw StyledException.GetException(css, e);
+            }
+        }
+
+        public string Css(string css)
+        {
+            return Css((string)null, css);
+        }
+
+        public string Css(List<string> classes, string css)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string cssClass in classes)
+            {
+                string result = Css(cssClass, css);
                 sb.Append(result).Append(' ');
             }
             return sb.ToString().Trim();
@@ -91,7 +134,7 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                await Css(css);
+                await CssAsync(css);
             }
             catch (StyledException e)
             {

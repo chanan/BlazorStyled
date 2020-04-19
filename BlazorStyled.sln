@@ -25,6 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSidePreRender", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSideSample", "src\ClientSideSample\ClientSideSample.csproj", "{D9BBEBEB-4695-4033-90D2-89223661761C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorTypography", "..\BlazorTypography\src\BlazorTypography\BlazorTypography.csproj", "{77D2B9D7-84EC-482F-97F9-7C70F88268C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorPrettyCode", "..\BlazorPrettyCode\src\BlazorPrettyCode\BlazorPrettyCode.csproj", "{8F8DEBF6-653A-41F7-AF65-88C5077DA10A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{D9BBEBEB-4695-4033-90D2-89223661761C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9BBEBEB-4695-4033-90D2-89223661761C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9BBEBEB-4695-4033-90D2-89223661761C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77D2B9D7-84EC-482F-97F9-7C70F88268C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77D2B9D7-84EC-482F-97F9-7C70F88268C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77D2B9D7-84EC-482F-97F9-7C70F88268C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77D2B9D7-84EC-482F-97F9-7C70F88268C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F8DEBF6-653A-41F7-AF65-88C5077DA10A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F8DEBF6-653A-41F7-AF65-88C5077DA10A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F8DEBF6-653A-41F7-AF65-88C5077DA10A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F8DEBF6-653A-41F7-AF65-88C5077DA10A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

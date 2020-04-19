@@ -1,5 +1,6 @@
 ﻿using BlazorStyled.Internal;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace BlazorStyled
     public class Styled : ComponentBase
     {
         private string _previousClassname;
+        private int _previousHash;
 
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public string Id { get; set; }
@@ -30,10 +32,12 @@ namespace BlazorStyled
         private async Task ProcessParameters()
         {
             IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
+
             string classname = null;
 
             string content = ChildContent.RenderAsSimpleString();
-            if (content != null && content.Length > 0)
+            int _currentHash = CalculateHash(content);
+            if (content != null && content.Length > 0 && (_currentHash != _previousHash || _currentHash == _previousHash && ComposeAttributes != null))
             {
                 if (IsKeyframes)
                 {
@@ -42,36 +46,36 @@ namespace BlazorStyled
                 else if (Classname != null && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     //html elements
-                    await styled.Css(ApplyPseudoClass(Classname), content);
+                    styled.Css(ApplyPseudoClass(Classname), content);
                 }
                 else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
                 {
                     //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
                     //Otherwise Classname was used and this an existing style which will be handled below
                     content = WrapWithMediaQuery("&{" + content + "}");
-                    classname = await styled.Css(content);
+                    classname = styled.Css(content);
                 }
                 else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate && _previousClassname == null)
                 {
                     //Media query support for classes where an existing Classname already exists
-                    content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
-                    await styled.Css(GetMediaQuery(), content);
+                    content = WrapClass(ApplyPseudoClass(Classname), content);
+                    styled.Css(WrapWithMediaQuery(content));
                 }
                 else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None && _previousClassname == null)
                 {
                     //Media queries for html elements
-                    await styled.Css(GetMediaQuery(), content);
+                    styled.Css(GetMediaQuery(), content);
                 }
                 else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
-                    content = WrapWithMediaQuery(ApplyPseudoClass(Classname), content);
-                    await styled.Css(content);
+                    content = WrapClass(ApplyPseudoClass(Classname), content);
+                    styled.Css(content);
                 }
                 else
                 {
                     if (PseudoClass == PseudoClasses.None && MediaQuery == MediaQueries.None)
                     {
-                        classname = await styled.Css(content);
+                        classname = styled.Css(content);
                     }
                 }
                 if (ComposeAttributes == null || !ClassnameChanged.HasDelegate)
@@ -102,6 +106,17 @@ namespace BlazorStyled
             {
                 await StyledService.SetGlobalStyle(GlobalStyle, classname);
             }
+            _previousHash = _currentHash;
+        }
+
+        private int CalculateHash(string content)
+        {
+            return content.GetStableHashCode() +
+                Id.GetStableHashCode() +
+                Classname.GetStableHashCode() +
+                Enum.GetName(typeof(MediaQueries), MediaQuery).GetStableHashCode() +
+                Enum.GetName(typeof(PseudoClasses), PseudoClass).GetStableHashCode() +
+                GlobalStyle.GetStableHashCode();
         }
 
         private IList<string> GetComposeClasses()
@@ -188,7 +203,7 @@ namespace BlazorStyled
             return $"{query}{{{content}}}";
         }
 
-        private string WrapWithMediaQuery(string classname, string content)
+        private string WrapClass(string classname, string content)
         {
             //If classname includes a dash it is a classname, otherwise it is html elements
             if (classname.IndexOf('-') != -1)

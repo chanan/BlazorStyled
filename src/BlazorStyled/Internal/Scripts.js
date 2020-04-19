@@ -1,51 +1,44 @@
 ﻿window.BlazorStyled = {
   insertClasses: function (stylesheetId, stylesheetName, priority, rules, development, debug) {
-    //console.log('insertClasses');
     for (var i = 0; i < rules.length; i++) {
       const rule = rules[i];
       window.BlazorStyled.insertClass(stylesheetId, stylesheetName, priority, rule, development, debug);
     }
   },
   insertClass: function (stylesheetId, stylesheetName, priority, rule, development, debug) {
-    //console.log('insertClass');
     const logger = window.BlazorStyled.initLogger(debug);
     const sheet = window.BlazorStyled.getOrCreateSheet(stylesheetId, stylesheetName, priority, logger);
     const updatedRule = window.BlazorStyled.parseTheme(stylesheetId, rule, logger);
-    //console.log('insertClass updatedRule: ', updatedRule);
     if (updatedRule) {
       if (development) {
         window.BlazorStyled.writeRule(sheet, updatedRule, logger);
       } else {
         try {
-          if (updatedRule.indexOf(':-moz') !== -1 && 'MozBoxSizing' in document.body.style) {
+          if (updatedRule.indexOf(":-moz") !== -1 && "MozBoxSizing" in document.body.style) {
             window.BlazorStyled.insertRule(sheet.sheet, updatedRule, logger);
-          } else if (updatedRule.indexOf(':-moz') === -1) {
+          } else if (updatedRule.indexOf(":-moz") === -1) {
             window.BlazorStyled.insertRule(sheet.sheet, updatedRule, logger);
           } else {
-            logger.warn('Mozilla rule not inserted: ', updatedRule);
+            logger.warn("Mozilla rule not inserted: ", updatedRule);
           }
         } catch (err) {
-          logger.error('Failed to insert: ', updatedRule);
+          logger.error("Failed to insert: ", updatedRule);
           logger.error(err);
         }
       }
     }
   },
   updateRule: function (stylesheetId, stylesheetName, priority, selector, oldRule, rule, development, debug) {
-    //console.log('updateRule - rule: ', rule);
     const logger = window.BlazorStyled.initLogger(debug);
     const sheet = window.BlazorStyled.getOrCreateSheet(stylesheetId, stylesheetName, priority, logger);
     const updatedRule = window.BlazorStyled.parseTheme(stylesheetId, rule, logger);
-    //console.log('updateRule updatedRule: ', updatedRule);
     if (development) {
-        //console.log('here1');
-        window.BlazorStyled.updateWrittenRule(sheet, oldRule, updatedRule, logger);
-        //console.log('here2');
+      window.BlazorStyled.updateWrittenRule(sheet, oldRule, updatedRule, logger);
     } else {
       try {
         window.BlazorStyled.updatedInsertedRule(sheet.sheet, oldRule, updatedRule, logger);
       } catch (err) {
-        logger.error('Failed to update: ', rule);
+        logger.error("Failed to update: ", rule);
         logger.error(err);
       }
     }
@@ -55,42 +48,46 @@
     const sheet = document.getElementById(stylesheetId);
     if (sheet) {
       document.head.removeChild(sheet);
-      logger.log('Cleared stylesheet: ', stylesheetName);
+      logger.log("Cleared stylesheet: ", stylesheetName);
     }
   },
   setThemeValue: function (stylesheetId, stylesheetName, priority, name, value, development, debug) {
     const logger = window.BlazorStyled.initLogger(debug);
     try {
-        const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
-        const oldValue = theme.values[name];
-        //console.log('oldValue: ', oldValue);
-        theme.values[name] = value;
-        //console.log('theme: ', theme);
-        //console.log('updated: ', theme.values[name]);
-        for (var i in theme.rules) {
-          const rule = theme.rules[i];
-          if (rule.indexOf(name) !== -1) {
-            //console.log('found rule: ', rule);
-            if(oldValue) {
-                //console.log('update');
-                const selector = rule.substring(0, rule.indexOf('{'));
-                const oldRule = window.BlazorStyled.parseTheme(stylesheetId, rule.replace('[' + name + ']', oldValue), logger);
-                //console.log('oldRule: ', oldRule);
-                if(oldRule) {
-                    window.BlazorStyled.updateRule(stylesheetId, stylesheetName, priority, selector, oldRule, rule, development, debug);
-                    //console.log('end update');
-                }
-            } else {
-                //console.log('insert');
-                window.BlazorStyled.insertClass(stylesheetId, stylesheetName, priority, rule, development, debug);
+      const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
+      const oldValue = theme.values[name];
+      theme.values[name] = value;
+      for (var i in theme.rules) {
+        const rule = theme.rules[i];
+        if (rule.indexOf(name) !== -1) {
+          if (oldValue) {
+            const selector = rule.substring(0, rule.indexOf("{"));
+            const oldRule = window.BlazorStyled.parseTheme(
+              stylesheetId,
+              rule.replace("[" + name + "]", oldValue),
+              logger
+            );
+            if (oldRule) {
+              window.BlazorStyled.updateRule(
+                stylesheetId,
+                stylesheetName,
+                priority,
+                selector,
+                oldRule,
+                rule,
+                development,
+                debug
+              );
             }
+          } else {
+            window.BlazorStyled.insertClass(stylesheetId, stylesheetName, priority, rule, development, debug);
           }
         }
+      }
     } catch (err) {
-        logger.error('Failed to update: ', rule);
-        logger.error(err);
+      logger.error("Failed to update: ", rule);
+      logger.error(err);
     }
-    //console.log('end setThemeValue');
   },
   getThemeValues: function (stylesheetId) {
     const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
@@ -105,19 +102,19 @@
     return theme.globalStyles;
   },
   parseTheme: function (stylesheetId, rule, logger) {
-    if (rule.indexOf('[') === -1) {
+    if (rule.indexOf("[") === -1) {
       return rule;
     }
     const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
     if (!theme.rules.find((r) => r === rule)) {
       theme.rules.push(rule);
     }
-    const themeValueName = rule.substring(rule.indexOf('[') + 1, rule.indexOf(']'));
+    const themeValueName = rule.substring(rule.indexOf("[") + 1, rule.indexOf("]"));
     const themeValue = theme.values[themeValueName];
     if (themeValue === undefined) {
       return undefined;
     }
-    const updated = rule.replace('[' + themeValueName + ']', themeValue);
+    const updated = rule.replace("[" + themeValueName + "]", themeValue);
     return window.BlazorStyled.parseTheme(stylesheetId, updated, logger);
   },
   getOrCreateTheme: function (stylesheetId) {
@@ -134,13 +131,13 @@
     this.debug = {};
     if (debug) {
       for (var m in console) {
-        if (typeof console[m] === 'function') {
+        if (typeof console[m] === "function") {
           this.debug[m] = console[m].bind(window.console);
         }
       }
     } else {
       for (var m2 in console) {
-        if (typeof console[m2] === 'function') {
+        if (typeof console[m2] === "function") {
           this.debug[m2] = function () {};
         }
       }
@@ -148,12 +145,12 @@
     return this.debug;
   },
   getOrCreateSheet: function (stylesheetId, stylesheetName, priority, logger) {
-    const DATA_PRIORITY = 'data-blazorstyled-priority';
-    const DATA_NAME = 'data-blazorstyled-name';
+    const DATA_PRIORITY = "data-blazorstyled-priority";
+    const DATA_NAME = "data-blazorstyled-name";
     const sheet = document.getElementById(stylesheetId);
     if (sheet) return sheet;
-    const styleEl = document.createElement('style');
-    const id = document.createAttribute('id');
+    const styleEl = document.createElement("style");
+    const id = document.createAttribute("id");
     id.value = stylesheetId;
     styleEl.setAttributeNode(id);
     const dataName = document.createAttribute(DATA_NAME);
@@ -186,38 +183,34 @@
     } else {
       head.appendChild(styleEl);
     }
-    logger.log('Inserted stylesheet: ', styleEl);
+    logger.log("Inserted stylesheet: ", styleEl);
     return styleEl;
   },
   writeRule: function (sheet, rule, logger) {
     if (!sheet.innerText) {
       sheet.innerText = rule;
-      logger.log('Written: ', rule);
+      logger.log("Written: ", rule);
     } else {
       if (sheet.innerText.indexOf(rule) === -1) {
-        sheet.innerText = rule.startsWith('@import') ? rule + sheet.innerText : sheet.innerText + rule;
-        logger.log('Written: ', rule);
+        sheet.innerText = rule.startsWith("@import") ? rule + sheet.innerText : sheet.innerText + rule;
+        logger.log("Written: ", rule);
       }
     }
   },
   insertRule: function (sheet, rule, logger) {
-    const index = rule.startsWith('@import') ? 0 : sheet.cssRules.length;
+    const index = rule.startsWith("@import") ? 0 : sheet.cssRules.length;
     sheet.insertRule(rule, index);
-    logger.log('Inserted at ' + index + ': ', rule);
+    logger.log("Inserted at " + index + ": ", rule);
   },
   updateWrittenRule: function (sheet, oldRule, rule, logger) {
-    //console.log('updateWrittenRule');
     if (!sheet.innerText) {
       sheet.innerText = rule;
     }
-    //console.log('oldRule: ', oldRule);
-    //console.log('rule: ', rule);
-    //console.log('sheet.innerText.replace(oldRule, rule): ', sheet.innerText.replace(oldRule, rule));
     sheet.innerText = sheet.innerText.replace(oldRule, rule);
-    logger.log('Updated old rule: ' + oldRule + ' to new rule: ' + rule);
+    logger.log("Updated old rule: " + oldRule + " to new rule: " + rule);
   },
   updatedInsertedRule: function (sheet, oldRule, rule, logger) {
-    const temp = window.BlazorStyled.getOrCreateSheet('temp', 'temp', window.BlazorStyled.initLogger(false));
+    const temp = window.BlazorStyled.getOrCreateSheet("temp", "temp", window.BlazorStyled.initLogger(false));
     temp.sheet.insertRule(oldRule);
     const oldCssText = temp.sheet.cssRules[0].cssText;
     document.head.removeChild(temp);
@@ -230,7 +223,7 @@
     if (index !== -1) {
       sheet.deleteRule(index);
       sheet.insertRule(rule, index);
-      logger.log('Updated old rule at ' + index + ': ' + oldRule + ' to new rule: ' + rule);
+      logger.log("Updated old rule at " + index + ": " + oldRule + " to new rule: " + rule);
     }
   },
   themes: {},

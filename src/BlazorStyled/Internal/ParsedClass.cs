@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Security;
 using System.Text;
 
 namespace BlazorStyled.Internal
@@ -18,16 +18,21 @@ namespace BlazorStyled.Internal
                 IsDynamic = false;
                 Name = name;
             }
-            if (IsMediaQuery)
+            if ((IsMediaQuery && name.Contains("&")) ||  (IsMediaQuery & body.Contains("{")) ||IsKeyframes)
+            {
+                ChildClasses = new List<ParsedClass>();
+                body = null;
+            }
+            else if(IsMediaQuery)
             {
                 ChildClasses = new List<ParsedClass>();
             }
-            if (body.EndsWith("} }") || body.EndsWith("}}"))
+            if (body !=null && (body.EndsWith("} }") || body.EndsWith("}}")))
             {
                 Declarations = ParseDeclerations(body.Substring(0, body.Length - 1));
                 IsLastChild = true;
             }
-            else if (body == "{")
+            else if (body != null && body == "{") //TODO: This might not be needed anymore
             {
                 ChildClasses = new List<ParsedClass>();
             }
@@ -50,6 +55,7 @@ namespace BlazorStyled.Internal
 
         private string ParseDeclerations(string body)
         {
+            if (body == null) return null;
             string str = body.Trim();
             if (str.Contains("label"))
             {
@@ -60,30 +66,11 @@ namespace BlazorStyled.Internal
                     if (end != -1)
                     {
                         Label = str.Substring(start + 1, end - start - 1).Trim();
-                        str = str.Substring(0, start - 5) + str.Substring(end, str.Length - end - 1);
+                        str = str.Substring(0, start - 5) + str.Substring(end + 1, str.Length - end - 1).Trim();
                     }
                 }
             }
             return str.StartsWith("{") && str.EndsWith("}") ? str.Substring(1, str.Trim().Length - 2).Trim() : str;
-        }
-
-        private Tuple<string, string> ParseDeclaration(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                return null;
-            }
-
-            try
-            {
-                string property = input.Substring(0, input.IndexOf(':')).ToLower().Trim();
-                string value = input.Substring(input.IndexOf(':') + 1).Trim();
-                return new Tuple<string, string>(property, value);
-            }
-            catch (Exception e)
-            {
-                throw StyledException.GetException(input, "This is likely cause by a missing ':' character", e);
-            }
         }
 
         public string Name { get; set; }
@@ -93,7 +80,7 @@ namespace BlazorStyled.Internal
         public bool IsParent => ChildClasses != null;
         public bool IsMediaQuery => !IsDynamic && Name.IndexOf("@media") != -1;
         public bool IsFontface => !IsDynamic && Name.IndexOf("@font-face") != -1;
-        public bool IsKeyframes => !IsDynamic && IsParent && Name.IndexOf("@keyframe") != -1;
+        public bool IsKeyframes => !IsDynamic && Name.IndexOf("@keyframe") != -1;
         public bool IsElement => !IsDynamic && !IsFontface && !IsKeyframes && !IsMediaQuery; //TODO: This might not be correct
         public bool IsLastChild { get; private set; }
         public string Parent { get; set; }

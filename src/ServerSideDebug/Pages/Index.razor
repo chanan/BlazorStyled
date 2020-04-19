@@ -1,16 +1,18 @@
 ﻿@page "/"
 @inject IStyled Styled
 
-<Styled @bind-Classname="@example">
-    color: red;
-    label: test;
-</Styled>
 
-<div class="@example">
-    This is a test!
+    <Styled @bind-Classname="@navColumn" MediaQuery="MediaQueries.LargerThanTablet">
+        label: nav-column;
+        flex-shrink: 0;
+        position: fixed;
+        width: 225px;
+    </Styled>
+
+<div class="@navColumn">
+    Test
 </div>
 
-
 @code {
-    private string example;
+    private string navColumn;
 }

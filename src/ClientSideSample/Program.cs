@@ -16,7 +16,7 @@ namespace ClientSideSample
 
             //AddBlazorStyled is needed for BlazorStyled to work
             builder.Services.AddBaseAddressHttpClient();
-            builder.Services.AddBlazorStyled(isDevelopment: true, isDebug: true);
+            builder.Services.AddBlazorStyled(isDevelopment: false, isDebug: false);
 
             //The following is only used by the sample sites and is not required for BlazorStyled to work
             builder.Services.AddServicesForSampleSites();

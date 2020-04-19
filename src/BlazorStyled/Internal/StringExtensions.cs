@@ -8,7 +8,6 @@ namespace BlazorStyled.Internal
     internal static class StringExtensions
     {
         private static readonly Random rnd = new Random();
-        private static readonly string _pattern = @"[\""\+>\=\*\@\#\.\w\-\,\s\n\r\t&%:()\[\]]+(?=\s*\{)";
 
         public static string RemoveDuplicateSpaces(this string source)
         {
@@ -28,40 +27,35 @@ namespace BlazorStyled.Internal
         public static IList<ParsedClass> GetClasses(this string source, string classname)
         {
             List<ParsedClass> classes = new List<ParsedClass>();
-            string[] rules = Regex.Split(source, _pattern);
-            MatchCollection classnames = Regex.Matches(source, _pattern);
             ParsedClass root = null, parent = null;
-            if (rules[0].Trim() != string.Empty)
+            if (source.IndexOf('{') == -1)
             {
-                ParsedClass parsedClass = new ParsedClass(classname, rules[0].Trim());
-                root = parsedClass;
+                ParsedClass parsedClass = new ParsedClass(classname, source.Trim());
                 classes.Add(parsedClass);
             }
-            else if (rules[0].Trim() == string.Empty && classname != null)
+            else
             {
-                ParsedClass parsedClass = new ParsedClass(classname, string.Empty);
-                root = parsedClass;
-                classes.Add(parsedClass);
-            }
-            for (int i = 0; i < classnames.Count; i++)
-            {
-                ParsedClass parsedClass = new ParsedClass(classnames[i].Value.Trim(), rules[i + 1].Trim());
-                if (parsedClass.IsParent)
+                ReadOnlySpan<char> main = source.AsSpan().Trim();
+                bool first = true;
+                while (main.IndexOf('{') != -1)
                 {
-                    parent = parsedClass;
-                    if (root == null)
+                    int startRules = main.IndexOf('{');
+                    int endRules = main.IndexOf('}');
+                    ReadOnlySpan<char> classnameSpan = main.Slice(0, startRules).Trim();
+                    ReadOnlySpan<char> rules = main.Slice(startRules + 1, endRules - startRules - 1).Trim();
+                    if (first && classnameSpan.IndexOf(';') != -1)
                     {
-                        classes.Add(parsedClass);
+                        int lastSemiColon = classnameSpan.LastIndexOf(';');
+                        ParsedClass baseClass = new ParsedClass(classname, main.Slice(0, lastSemiColon + 1).ToString());
+                        root = baseClass;
+                        classes.Add(baseClass);
+                        classnameSpan = classnameSpan.Slice(lastSemiColon + 1);
                     }
-                    else
+
+                    ParsedClass parsedClass = new ParsedClass(classnameSpan.ToString(), rules.ToString());
+                    if (parsedClass.IsParent)
                     {
-                        root.ChildClasses.Add(parsedClass);
-                    }
-                }
-                else
-                {
-                    if (parent == null)
-                    {
+                        parent = parsedClass;
                         if (root == null)
                         {
                             classes.Add(parsedClass);
@@ -73,14 +67,39 @@ namespace BlazorStyled.Internal
                     }
                     else
                     {
-                        parent.ChildClasses.Add(parsedClass);
-                        if (parsedClass.IsLastChild)
+                        if (parent == null)
                         {
-                            parent = null;
+                            if (root == null)
+                            {
+                                classes.Add(parsedClass);
+                            }
+                            else
+                            {
+                                root.ChildClasses.Add(parsedClass);
+                            }
                         }
+                        else
+                        {
+                            parent.ChildClasses.Add(parsedClass);
+                        }
+                    }
+                    if (parsedClass.IsKeyframes || (parsedClass.IsMediaQuery && parsedClass.Declarations == null)) //|| (parsedClass.IsMediaQuery && parsedClass.Declarations != null)
+                    {
+                        endRules = startRules;
+                    }
+                    first = false;
+                    main = main.Slice(endRules + 1);
+                    if(main.TrimStart().IndexOf('}') == 0)
+                    {
+                        if(main.Length > 2)
+                        {
+                            main = main.Slice(2);
+                        }
+                        parent = null;
                     }
                 }
             }
+
             List<ParsedClass> ret = new List<ParsedClass>();
             foreach (ParsedClass parsedClass in classes)
             {
@@ -98,7 +117,7 @@ namespace BlazorStyled.Internal
                 {
                     if (parsedClass.ChildClasses == null || (parsedClass.ChildClasses != null && parsedClass.ChildClasses.Count > 0))
                     {
-                        foreach(ParsedClass child in parsedClass.ChildClasses)
+                        foreach (ParsedClass child in parsedClass.ChildClasses)
                         {
                             child.Name = child.Name.Replace("&", "." + child.Hash);
                         }
@@ -115,6 +134,10 @@ namespace BlazorStyled.Internal
 
         public static int GetStableHashCode(this string str)
         {
+            if (str == null)
+            {
+                return 0;
+            }
             unchecked
             {
                 int hash1 = 5381;
