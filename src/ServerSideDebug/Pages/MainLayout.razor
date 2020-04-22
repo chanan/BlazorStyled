@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+
+<Styled @bind-Classname="@div">
+    background-color: yellow;
+</Styled>
+
+<Styled GlobalStyle="ColorHotPink">
+    label: color-hotpink;
+    color: hotpink;
+</Styled>
+
+
+<div class="@div">
+    @Body
+</div>
+
+@code {
+    private string div;
+}

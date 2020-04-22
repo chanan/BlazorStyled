@@ -1,5 +1,6 @@
 ﻿@inject IStyled Styled
 
-<p class="@Styled.GlobalStyles[" ColorHotPink"]">
-    This paragraph is hot pink because the it uses a global style that defines it to be hot pink.
+<p class="@Styled.GetGlobalStyle("ColorHotPink")">
+    This paragraph is hot pink because the it uses 
+    a global style that defines it to be hot pink.
 </p>

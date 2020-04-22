@@ -5,22 +5,27 @@ namespace BlazorStyled
 {
     public interface IStyled
     {
-        Task ClearStyles();
+        Task ClearStylesAsync();
+        void ClearStyles();
         Task<string> CssAsync(string css);
         Task<string> CssAsync(string className, string css);
         Task<string> CssAsync(List<string> classes, string css);
         string Css(string css);
         string Css(string className, string css);
         string Css(List<string> classes, string css);
-        Task<string> Keyframes(string css);
-        Task Fontface(string css);
-        Task AddGoogleFonts(List<GoogleFont> googleFonts);
+        Task<string> KeyframesAsync(string css);
+        Task FontfaceAsync(string css);
+        Task AddGoogleFontsAsync(List<GoogleFont> googleFonts);
+        string Keyframes(string css);
+        void Fontface(string css);
+        void AddGoogleFonts(List<GoogleFont> googleFonts);
         IStyled WithId(string id);
         IStyled WithId(string id, int priority = 1000);
-        Task SetThemeValue(string name, string value);
-        Task<IDictionary<string, string>> GetThemeValues();
-        Task SetGlobalStyle(string name, string classname);
-        Task<IDictionary<string, string>> GetGlobalStyles();
-        Task<string> GetGlobalStyle(string name);
+        Task SetThemeValueAsync(string name, string value);
+        void SetThemeValue(string name, string value);
+        Task<IDictionary<string, string>> GetThemeValuesAsync();
+        void SetGlobalStyle(string name, string classname);
+        IDictionary<string, string> GetGlobalStyles();
+        string GetGlobalStyle(string name);
     }
 }

@@ -2,17 +2,4 @@
 @inject IStyled Styled
 
 
-    <Styled @bind-Classname="@navColumn" MediaQuery="MediaQueries.LargerThanTablet">
-        label: nav-column;
-        flex-shrink: 0;
-        position: fixed;
-        width: 225px;
-    </Styled>
-
-<div class="@navColumn">
-    Test
-</div>
-
-@code {
-    private string navColumn;
-}
+<p class="@Styled.GetGlobalStyle("ColorHotPink")">style</p>

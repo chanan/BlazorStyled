@@ -41,7 +41,7 @@ namespace BlazorStyled
             {
                 if (IsKeyframes)
                 {
-                    classname = await styled.Keyframes(content);
+                    classname = styled.Keyframes(content);
                 }
                 else if (Classname != null && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
@@ -102,9 +102,10 @@ namespace BlazorStyled
                     await NotifyChanged(classname);
                 }
             }
-            if (GlobalStyle != null & classname != null)
+            if (GlobalStyle != null & classname != null && _currentHash != _previousHash)
             {
-                await StyledService.SetGlobalStyle(GlobalStyle, classname);
+                _previousHash = _currentHash; // This needs to be done here even though it is also two lines down. Do not remove!
+                StyledService.SetGlobalStyle(GlobalStyle, classname);
             }
             _previousHash = _currentHash;
         }

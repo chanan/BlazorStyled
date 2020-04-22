@@ -19,7 +19,7 @@
 @code {
     private string arrow, gradient;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         arrow = Styled.Css(Mixins.Triangle(new TriangleConfiguration
         {

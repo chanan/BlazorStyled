@@ -14,15 +14,15 @@
         window.BlazorStyled.writeRule(sheet, updatedRule, logger);
       } else {
         try {
-          if (updatedRule.indexOf(":-moz") !== -1 && "MozBoxSizing" in document.body.style) {
+          if (updatedRule.indexOf(':-moz') !== -1 && 'MozBoxSizing' in document.body.style) {
             window.BlazorStyled.insertRule(sheet.sheet, updatedRule, logger);
-          } else if (updatedRule.indexOf(":-moz") === -1) {
+          } else if (updatedRule.indexOf(':-moz') === -1) {
             window.BlazorStyled.insertRule(sheet.sheet, updatedRule, logger);
           } else {
-            logger.warn("Mozilla rule not inserted: ", updatedRule);
+            logger.warn('Mozilla rule not inserted: ', updatedRule);
           }
         } catch (err) {
-          logger.error("Failed to insert: ", updatedRule);
+          logger.error('Failed to insert: ', updatedRule);
           logger.error(err);
         }
       }
@@ -38,7 +38,7 @@
       try {
         window.BlazorStyled.updatedInsertedRule(sheet.sheet, oldRule, updatedRule, logger);
       } catch (err) {
-        logger.error("Failed to update: ", rule);
+        logger.error('Failed to update: ', rule);
         logger.error(err);
       }
     }
@@ -48,7 +48,7 @@
     const sheet = document.getElementById(stylesheetId);
     if (sheet) {
       document.head.removeChild(sheet);
-      logger.log("Cleared stylesheet: ", stylesheetName);
+      logger.log('Cleared stylesheet: ', stylesheetName);
     }
   },
   setThemeValue: function (stylesheetId, stylesheetName, priority, name, value, development, debug) {
@@ -61,10 +61,10 @@
         const rule = theme.rules[i];
         if (rule.indexOf(name) !== -1) {
           if (oldValue) {
-            const selector = rule.substring(0, rule.indexOf("{"));
+            const selector = rule.substring(0, rule.indexOf('{'));
             const oldRule = window.BlazorStyled.parseTheme(
               stylesheetId,
-              rule.replace("[" + name + "]", oldValue),
+              rule.replace('[' + name + ']', oldValue),
               logger
             );
             if (oldRule) {
@@ -85,7 +85,7 @@
         }
       }
     } catch (err) {
-      logger.error("Failed to update: ", rule);
+      logger.error('Failed to update: ', rule);
       logger.error(err);
     }
   },
@@ -93,28 +93,20 @@
     const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
     return theme.values;
   },
-  setGlobalStyle: function (stylesheetId, name, value) {
-    const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
-    theme.globalStyles[name] = value;
-  },
-  getGlobalStyles: function (stylesheetId) {
-    const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
-    return theme.globalStyles;
-  },
   parseTheme: function (stylesheetId, rule, logger) {
-    if (rule.indexOf("[") === -1) {
+    if (rule.indexOf('[') === -1) {
       return rule;
     }
     const theme = window.BlazorStyled.getOrCreateTheme(stylesheetId);
     if (!theme.rules.find((r) => r === rule)) {
       theme.rules.push(rule);
     }
-    const themeValueName = rule.substring(rule.indexOf("[") + 1, rule.indexOf("]"));
+    const themeValueName = rule.substring(rule.indexOf('[') + 1, rule.indexOf(']'));
     const themeValue = theme.values[themeValueName];
     if (themeValue === undefined) {
       return undefined;
     }
-    const updated = rule.replace("[" + themeValueName + "]", themeValue);
+    const updated = rule.replace('[' + themeValueName + ']', themeValue);
     return window.BlazorStyled.parseTheme(stylesheetId, updated, logger);
   },
   getOrCreateTheme: function (stylesheetId) {
@@ -122,35 +114,40 @@
       window.BlazorStyled.themes[stylesheetId] = {
         values: {},
         rules: [],
-        globalStyles: {},
       };
     }
     return window.BlazorStyled.themes[stylesheetId];
   },
   initLogger: function (debug) {
-    this.debug = {};
     if (debug) {
-      for (var m in console) {
-        if (typeof console[m] === "function") {
-          this.debug[m] = console[m].bind(window.console);
+      if (!window.BlazorStyled.debug.init) {
+        for (var m in console) {
+          if (typeof console[m] === 'function') {
+            window.BlazorStyled.debug[m] = console[m].bind(window.console);
+          }
         }
+        window.BlazorStyled.debug.init = true;
       }
+      return window.BlazorStyled.debug;
     } else {
-      for (var m2 in console) {
-        if (typeof console[m2] === "function") {
-          this.debug[m2] = function () {};
+      if (!window.BlazorStyled.fakeDebug.init) {
+        for (var m2 in console) {
+          if (typeof console[m2] === 'function') {
+            window.BlazorStyled.fakeDebug[m2] = function () {};
+          }
         }
+        window.BlazorStyled.fakeDebug.init = true;
       }
+      return window.BlazorStyled.fakeDebug;
     }
-    return this.debug;
   },
   getOrCreateSheet: function (stylesheetId, stylesheetName, priority, logger) {
-    const DATA_PRIORITY = "data-blazorstyled-priority";
-    const DATA_NAME = "data-blazorstyled-name";
+    const DATA_PRIORITY = 'data-blazorstyled-priority';
+    const DATA_NAME = 'data-blazorstyled-name';
     const sheet = document.getElementById(stylesheetId);
     if (sheet) return sheet;
-    const styleEl = document.createElement("style");
-    const id = document.createAttribute("id");
+    const styleEl = document.createElement('style');
+    const id = document.createAttribute('id');
     id.value = stylesheetId;
     styleEl.setAttributeNode(id);
     const dataName = document.createAttribute(DATA_NAME);
@@ -183,37 +180,34 @@
     } else {
       head.appendChild(styleEl);
     }
-    logger.log("Inserted stylesheet: ", styleEl);
+    logger.log('Inserted stylesheet: ', styleEl);
     return styleEl;
   },
   writeRule: function (sheet, rule, logger) {
     if (!sheet.innerText) {
       sheet.innerText = rule;
-      logger.log("Written: ", rule);
+      logger.log('Written: ', rule);
     } else {
       if (sheet.innerText.indexOf(rule) === -1) {
-        sheet.innerText = rule.startsWith("@import") ? rule + sheet.innerText : sheet.innerText + rule;
-        logger.log("Written: ", rule);
+        sheet.innerText = rule.startsWith('@import') ? rule + sheet.innerText : sheet.innerText + rule;
+        logger.log('Written: ', rule);
       }
     }
   },
   insertRule: function (sheet, rule, logger) {
-    const index = rule.startsWith("@import") ? 0 : sheet.cssRules.length;
+    const index = rule.startsWith('@import') ? 0 : sheet.cssRules.length;
     sheet.insertRule(rule, index);
-    logger.log("Inserted at " + index + ": ", rule);
+    logger.log('Inserted at ' + index + ': ', rule);
   },
   updateWrittenRule: function (sheet, oldRule, rule, logger) {
     if (!sheet.innerText) {
       sheet.innerText = rule;
     }
     sheet.innerText = sheet.innerText.replace(oldRule, rule);
-    logger.log("Updated old rule: " + oldRule + " to new rule: " + rule);
+    logger.log('Updated old rule: ' + oldRule + ' to new rule: ' + rule);
   },
   updatedInsertedRule: function (sheet, oldRule, rule, logger) {
-    const temp = window.BlazorStyled.getOrCreateSheet("temp", "temp", window.BlazorStyled.initLogger(false));
-    temp.sheet.insertRule(oldRule);
-    const oldCssText = temp.sheet.cssRules[0].cssText;
-    document.head.removeChild(temp);
+    const oldCssText = window.BlazorStyled.getRuleText(rule);
     let index = -1;
     for (var i = 0; i < sheet.cssRules.length; i++) {
       if (sheet.cssRules[i].cssText === oldCssText) {
@@ -223,8 +217,21 @@
     if (index !== -1) {
       sheet.deleteRule(index);
       sheet.insertRule(rule, index);
-      logger.log("Updated old rule at " + index + ": " + oldRule + " to new rule: " + rule);
+      logger.log('Updated old rule at ' + index + ': ' + oldRule + ' to new rule: ' + rule);
     }
   },
+  getRuleText: function (rule) {
+    const head = document.head;
+    const styleEl = document.createElement('style');
+    window.BlazorStyled.debug.log(styleEl);
+    window.BlazorStyled.debug.dir(StyleEl);
+    head.appendChild(styleEl);
+    styleEl.sheet.insertRule(rule);
+    const text = temp.sheet.cssRules[0].cssText;
+    head.removeChild(styleEl);
+    return text;
+  },
   themes: {},
+  debug: {},
+  fakeDebug: {},
 };

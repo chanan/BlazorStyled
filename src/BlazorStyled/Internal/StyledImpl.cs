@@ -111,7 +111,7 @@ namespace BlazorStyled.Internal
             return sb.ToString().Trim();
         }
 
-        public async Task<string> Keyframes(string css)
+        public async Task<string> KeyframesAsync(string css)
         {
             try
             {
@@ -130,7 +130,26 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public async Task Fontface(string css)
+        public string Keyframes(string css)
+        {
+            try
+            {
+                css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
+                IList<ParsedClass> parsedClasses = css.GetClasses();
+                Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
+                return parsedClasses.First().Hash;
+            }
+            catch (StyledException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw StyledException.GetException(css, e);
+            }
+        }
+
+        public async Task FontfaceAsync(string css)
         {
             try
             {
@@ -146,17 +165,46 @@ namespace BlazorStyled.Internal
             }
         }
 
-        public async Task ClearStyles()
+        public void Fontface(string css)
+        {
+            try
+            {
+                Css(css);
+            }
+            catch (StyledException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw StyledException.GetException(css, e);
+            }
+        }
+
+        public async Task ClearStylesAsync()
         {
             await _scriptManager.ClearStyles(_id.GetStableHashCodeString(), _id);
         }
 
-        public async Task AddGoogleFonts(List<GoogleFont> googleFonts)
+        public void ClearStyles()
+        {
+            Task.Run(() => _scriptManager.ClearStyles(_id.GetStableHashCodeString(), _id));
+        }
+
+        public async Task AddGoogleFontsAsync(List<GoogleFont> googleFonts)
         {
             string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
             string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
             IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
             await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
+        }
+
+        public void AddGoogleFonts(List<GoogleFont> googleFonts)
+        {
+            string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
+            string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
+            IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
+            Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
         }
 
         public IStyled WithId(string id)
@@ -174,29 +222,34 @@ namespace BlazorStyled.Internal
             return new StyledImpl(_scriptManager, id.Replace(" ", "-"), priority);
         }
 
-        public async Task SetThemeValue(string name, string value)
+        public async Task SetThemeValueAsync(string name, string value)
         {
             await _scriptManager.SetThemeValue(_id.GetStableHashCodeString(), _id, _priority, name, value);
         }
 
-        public async Task<IDictionary<string, string>> GetThemeValues()
+        public void SetThemeValue(string name, string value)
+        {
+            Task.Run(() => _scriptManager.SetThemeValue(_id.GetStableHashCodeString(), _id, _priority, name, value));
+        }
+
+        public async Task<IDictionary<string, string>> GetThemeValuesAsync()
         {
             return await _scriptManager.GetThemeValues(_id.GetStableHashCodeString());
         }
 
-        public async Task SetGlobalStyle(string name, string classname)
+        public string GetGlobalStyle(string name)
         {
-            await _scriptManager.SetGlobalStyle(_id.GetStableHashCodeString(), name, classname);
+            return _scriptManager.GetGlobalStyle(_id.GetStableHashCodeString(), name);
         }
 
-        public async Task<IDictionary<string, string>> GetGlobalStyles()
+        public void SetGlobalStyle(string name, string classname)
         {
-            return await _scriptManager.GetGlobalStyles(_id.GetStableHashCodeString());
+            _scriptManager.SetGlobalStyle(_id.GetStableHashCodeString(), name, classname);
         }
 
-        public async Task<string> GetGlobalStyle(string name)
+        public IDictionary<string, string> GetGlobalStyles()
         {
-            return await _scriptManager.GetGlobalStyle(_id.GetStableHashCodeString(), name);
+            return _scriptManager.GetGlobalStyles(_id.GetStableHashCodeString());
         }
     }
 }
