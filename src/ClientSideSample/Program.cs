@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SampleCore;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System;
 
 namespace ClientSideSample
 {
@@ -15,7 +17,6 @@ namespace ClientSideSample
             //Configure Services
 
             //AddBlazorStyled is needed for BlazorStyled to work
-            builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddBlazorStyled(isDevelopment: false, isDebug: false);
 
             //The following is only used by the sample sites and is not required for BlazorStyled to work
@@ -25,7 +26,7 @@ namespace ClientSideSample
 
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddBaseAddressHttpClient();
+            builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             await builder.Build().RunAsync();
         }
