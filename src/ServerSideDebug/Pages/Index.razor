@@ -1,5 +1,12 @@
 ﻿@page "/"
 @inject IStyled Styled
 
+<Styled @bind-Classname="@p">
+    color: red;
+</Styled>
 
-<p class="@Styled.GetGlobalStyle("ColorHotPink")">style</p>
+<p class="@p">This is a test</p>
+
+@code {
+    private string p;
+}

@@ -57,17 +57,24 @@ namespace BlazorStyled.Internal
 
         internal void SetGlobalStyle(string stylesheetId, string name, string value)
         {
-            if (!_globalStyles.ContainsKey(stylesheetId))
+            try
             {
-                _globalStyles.Add(stylesheetId, new Dictionary<string, string>());
+                if (!_globalStyles.ContainsKey(stylesheetId))
+                {
+                    _globalStyles.Add(stylesheetId, new Dictionary<string, string>());
+                }
+                if (_globalStyles.ContainsKey(name))
+                {
+                    _globalStyles[stylesheetId][name] = value;
+                }
+                else
+                {
+                    _globalStyles[stylesheetId].Add(name, value);
+                }
             }
-            if (_globalStyles.ContainsKey(name))
+            catch (Exception)
             {
-                _globalStyles[stylesheetId][name] = value;
-            }
-            else
-            {
-                _globalStyles[stylesheetId].Add(name, value);
+                //Ignored
             }
         }
 
@@ -294,27 +301,37 @@ namespace BlazorStyled.Internal
     }
   },
   insertRule: function (sheet, rule, logger) {
-    const index = rule.startsWith('@import') ? 0 : sheet.cssRules.length;
-    sheet.insertRule(rule, index);
-    logger.log('Inserted at ' + index + ': ', rule);
+    const ruleIndex = window.BlazorStyled.ruleIndexOf(sheet, rule);
+    if(ruleIndex === -1) {
+        const index = rule.startsWith('@import') ? 0 : sheet.cssRules.length;
+        sheet.insertRule(rule, index);
+        logger.log('Inserted at ' + index + ': ', rule);
+    }
+  },
+  ruleIndexOf(sheet, rule) {
+    const cssText = window.BlazorStyled.getRuleText(rule);
+    let index = -1;
+    for (var i = 0; i < sheet.cssRules.length; i++) {
+        if (sheet.cssRules[i].cssText === cssText) {
+            index = i;
+        }
+    }
+    return index;
   },
   updateWrittenRule: function (sheet, oldRule, rule, logger) {
     if (!sheet.innerText) {
       sheet.innerText = rule;
     }
-    sheet.innerText = sheet.innerText.replace(oldRule, rule);
-    logger.log('Updated old rule: ' + oldRule + ' to new rule: ' + rule);
+    if(sheet.innerText.indexOf(rule) === -1) {
+        sheet.innerText = sheet.innerText.replace(oldRule, rule);
+        logger.log('Updated old rule: ' + oldRule + ' to new rule: ' + rule);
+    }
   },
   updateInsertedRule: function (sheet, oldRule, rule, logger) {
     const oldCssText = window.BlazorStyled.getRuleText(oldRule);
     const newCssText = window.BlazorStyled.getRuleText(rule);
     if(oldCssText !== newCssText) {
-        let index = -1;
-        for (var i = 0; i < sheet.cssRules.length; i++) {
-          if (sheet.cssRules[i].cssText === oldCssText) {
-            index = i;
-          }
-        }
+        const index = window.BlazorStyled.ruleIndexOf(sheet, oldRule);
         if (index !== -1) {
           sheet.deleteRule(index);
           sheet.insertRule(rule, index);

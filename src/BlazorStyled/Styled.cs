@@ -14,6 +14,7 @@ namespace BlazorStyled
 
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public string Id { get; set; }
+        [Parameter] public int? Priority { get; set; }
         [Parameter] public string Classname { get; set; }
         [Parameter] public MediaQueries MediaQuery { get; set; } = MediaQueries.None;
         [Parameter] public bool IsKeyframes { get; set; }
@@ -24,14 +25,14 @@ namespace BlazorStyled
 
         [Inject] private IStyled StyledService { get; set; }
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await ProcessParameters();
         }
 
         private async Task ProcessParameters()
         {
-            IStyled styled = Id == null ? StyledService : StyledService.WithId(Id);
+            IStyled styled = Id == null ? StyledService : Priority.HasValue ? StyledService.WithId(Id, Priority.Value) : StyledService.WithId(Id);
 
             string classname = null;
 

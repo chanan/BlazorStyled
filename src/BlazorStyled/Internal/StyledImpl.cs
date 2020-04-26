@@ -13,7 +13,7 @@ namespace BlazorStyled.Internal
         private readonly string _id;
         private readonly int _priority;
 
-        public StyledImpl(ScriptManager scriptManager) : this(scriptManager, DEFAULT, int.MaxValue)
+        public StyledImpl(ScriptManager scriptManager) : this(scriptManager, DEFAULT, 100_000)
         {
 
         }
@@ -209,7 +209,7 @@ namespace BlazorStyled.Internal
 
         public IStyled WithId(string id)
         {
-            return WithId(id, 1000);
+            return WithId(id, 1000);  //Default to less than the default sheet (100,000)
         }
 
         public IStyled WithId(string id, int priority)
@@ -217,7 +217,7 @@ namespace BlazorStyled.Internal
             if (string.IsNullOrEmpty(id))
             {
                 id = DEFAULT;
-                priority = int.MaxValue;
+                priority = 100_000;
             }
             return new StyledImpl(_scriptManager, id.Replace(" ", "-"), priority);
         }

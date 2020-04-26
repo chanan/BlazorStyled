@@ -13,15 +13,13 @@ namespace BlazorStyled
 
         public static IServiceCollection AddBlazorStyled(this IServiceCollection serviceCollection, bool isDevelopment, bool isDebug)
         {
-            Config config = new Config
+            IConfig config = new Config
             {
                 IsDevelopment = isDevelopment,
                 IsDebug = isDebug
             };
-            if (!serviceCollection.Contains("IConfig"))
-            {
-                serviceCollection.AddSingleton<IConfig>(config);
-            }
+            serviceCollection.AddScoped<IConfig>(provider => config);
+            
             serviceCollection.AddTransient<IStyled, StyledImpl>();
             serviceCollection.AddScoped<ScriptManager>();
             return serviceCollection;
@@ -37,19 +35,6 @@ namespace BlazorStyled
         public static IServiceCollection AddBlazorStyled(this IServiceCollection serviceCollection)
         {
             return serviceCollection.AddBlazorStyled(false);
-        }
-
-        private static bool Contains(this IServiceCollection serviceCollection, string serviceName)
-        {
-            bool found = false;
-            foreach (ServiceDescriptor service in serviceCollection)
-            {
-                if (service.ServiceType != null && service.ServiceType.Name == serviceName)
-                {
-                    found = true;
-                }
-            }
-            return found;
         }
     }
 }

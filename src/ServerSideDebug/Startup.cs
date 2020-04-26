@@ -22,7 +22,7 @@ namespace ServerSideDebug
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazorStyled(isDevelopment:true, isDebug: true);
+            services.AddBlazorStyled(isDevelopment: false, isDebug: true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
