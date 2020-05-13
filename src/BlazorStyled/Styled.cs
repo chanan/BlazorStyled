@@ -1,7 +1,9 @@
 ﻿using BlazorStyled.Internal;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.ObjectPool;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,8 +11,11 @@ namespace BlazorStyled
 {
     public class Styled : ComponentBase
     {
+        private static readonly DefaultObjectPoolProvider objectPoolProvider = new DefaultObjectPoolProvider();
+        private static readonly ObjectPool<StringBuilder> stringBuilderPool = objectPoolProvider.CreateStringBuilderPool();
+
         private string _previousClassname;
-        private int _previousHash;
+        private uint _previousHash;
 
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public string Id { get; set; }
@@ -34,10 +39,15 @@ namespace BlazorStyled
         {
             IStyled styled = Id == null ? StyledService : Priority.HasValue ? StyledService.WithId(Id, Priority.Value) : StyledService.WithId(Id);
 
+            if(Classname == "blazor-styled-hide")
+            {
+                Classname = null;
+            }
+
             string classname = null;
 
             string content = ChildContent.RenderAsSimpleString();
-            int _currentHash = CalculateHash(content);
+            uint _currentHash = CalculateHash(content);
             if (content != null && content.Length > 0 && (_currentHash != _previousHash || _currentHash == _previousHash && ComposeAttributes != null))
             {
                 if (IsKeyframes)
@@ -86,20 +96,16 @@ namespace BlazorStyled
             }
             if (ComposeAttributes != null && ClassnameChanged.HasDelegate)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = stringBuilderPool.Get();
                 if (classname != null)
                 {
-                    sb.Append(classname).Append(" ");
+                    sb.Append(classname).Append(' ');
                 }
-                IList<string> composeClasses = GetComposeClasses();
-                foreach (string cls in composeClasses)
-                {
-                    string selector = ComposeAttributes[cls].ToString();
-                    sb.Append(selector).Append(" ");
-                }
+                sb.Append(GetComposeClasses());
                 if (sb.Length != 0)
                 {
                     classname = sb.ToString().Trim();
+                    stringBuilderPool.Return(sb);
                     await NotifyChanged(classname);
                 }
             }
@@ -111,43 +117,44 @@ namespace BlazorStyled
             _previousHash = _currentHash;
         }
 
-        private int CalculateHash(string content)
+        private uint CalculateHash(string content)
         {
             return content.GetStableHashCode() +
                 Id.GetStableHashCode() +
-                Classname.GetStableHashCode() +
+                (!ClassnameChanged.HasDelegate ? Classname.GetStableHashCode() : 0) +
                 Enum.GetName(typeof(MediaQueries), MediaQuery).GetStableHashCode() +
                 Enum.GetName(typeof(PseudoClasses), PseudoClass).GetStableHashCode() +
                 GlobalStyle.GetStableHashCode();
         }
 
-        private IList<string> GetComposeClasses()
+        private string GetComposeClasses()
         {
-            IList<string> ret = new List<string>();
+            StringBuilder sb = stringBuilderPool.Get();
+
             foreach (string key in ComposeAttributes.Keys)
             {
-                if (key.ToLower().StartsWith("compose") && !key.ToLower().EndsWith("if"))
+                if (key.StartsWith("compose", StringComparison.InvariantCultureIgnoreCase) && !key.EndsWith("if", StringComparison.InvariantCultureIgnoreCase))
                 {
                     if (ComposeAttributes[key] != null)
                     {
-                        bool allowedToUse = true;
-                        foreach (string innerKey in ComposeAttributes.Keys)
+                        string ifKey = key + "if";
+                        var kvp = ComposeAttributes.FirstOrDefault(x => String.Equals(x.Key, ifKey, StringComparison.InvariantCultureIgnoreCase));
+                        if(kvp.Key != null)
                         {
-                            if (innerKey.ToLower() == $"{key}If".ToLower())
+                            if (bool.TryParse(kvp.Value.ToString().ToString(), out bool result) && result)
                             {
-                                if (bool.TryParse(ComposeAttributes[innerKey].ToString(), out bool result) && !result)
-                                {
-                                    allowedToUse = false;
-                                }
+                                sb.Append(ComposeAttributes[key].ToString()).Append(' ');
                             }
                         }
-                        if (allowedToUse)
+                        else
                         {
-                            ret.Add(key);
+                            sb.Append(ComposeAttributes[key].ToString()).Append(' ');
                         }
                     }
                 }
             }
+            string ret = sb.ToString();
+            stringBuilderPool.Return(sb);
             return ret;
         }
 

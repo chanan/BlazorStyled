@@ -40,6 +40,13 @@ namespace BlazorStyled.Internal
         {
             await Init();
             string[] rules = parsedClasses.Select(c => c.ToString()).ToArray();
+            foreach (string rule in rules)
+            {
+                if(rule.IndexOf("<br") != -1)
+                {
+                    Console.WriteLine("rule");
+                }
+            }
             await JSRuntime.InvokeVoidAsync("BlazorStyled.insertClasses", stylesheetId, stylesheetName, priority, rules, Config.IsDevelopment, Config.IsDebug);
         }
 
@@ -91,9 +98,13 @@ namespace BlazorStyled.Internal
         {
             if (_globalStyles.ContainsKey(stylesheetId))
             {
-                return _globalStyles[stylesheetId][name];
+                if (_globalStyles[stylesheetId].ContainsKey(name))
+                {
+                    return _globalStyles[stylesheetId][name];
+                }
+                return string.Empty;
             }
-            return null;
+            return string.Empty;
         }
 
         internal async Task ClearStyles(string stylesheetId, string stylesheetName)
@@ -265,23 +276,25 @@ namespace BlazorStyled.Internal
     const head = document.head;
     if (head.hasChildNodes()) {
       let found = false;
+      let foundOne = false;
       for (let i = 0; i < head.children.length; i++) {
         const node = head.children[i];
         if (node.hasAttribute(DATA_PRIORITY)) {
+          foundOne = true;
           const attr = node.getAttribute(DATA_PRIORITY);
-          const currentPriority = parseInt(attr, 10);
-          if (priority >= currentPriority && !found) {
+          const nodePriority = parseInt(attr, 10);
+          if (nodePriority > priority) {
             found = true;
-            if (i !== head.children.length - 1) {
-              head.insertBefore(styleEl, head.children[i + 1]);
-            } else {
-              head.appendChild(styleEl);
-            }
+            head.insertBefore(styleEl, node);
+            break;
           }
         }
       }
-      if (!found) {
+      if (!found && !foundOne) {
         head.insertBefore(styleEl, head.firstChild);
+      }
+      if (!found && foundOne) {
+        head.appendChild(styleEl);
       }
     } else {
       head.appendChild(styleEl);

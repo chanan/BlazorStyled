@@ -12,15 +12,17 @@ namespace BlazorStyled.Internal
         private readonly ScriptManager _scriptManager;
         private readonly string _id;
         private readonly int _priority;
+        private readonly Cache _cache;
 
-        public StyledImpl(ScriptManager scriptManager) : this(scriptManager, DEFAULT, 100_000)
+        public StyledImpl(ScriptManager scriptManager,Cache cache) : this(scriptManager, cache, DEFAULT, 100_000)
         {
 
         }
 
-        private StyledImpl(ScriptManager scriptManager, string id, int priority)
+        private StyledImpl(ScriptManager scriptManager, Cache cache, string id, int priority)
         {
             _scriptManager = scriptManager;
+            _cache = cache;
             _id = id;
             _priority = priority;
         }
@@ -29,18 +31,29 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css = css.RemoveComments().RemoveDuplicateSpaces();
-                IList<ParsedClass> parsedClasses = css.GetClasses(className);
-                if (parsedClasses.Count > 0)
+                string preParseHash = css.GetStableHashCodeString();
+                if(!_cache.Seen.ContainsKey(preParseHash))
                 {
-                    string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
-                    await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
-                    return hash;
-                }
+                    css = css.RemoveComments().RemoveDuplicateSpaces();
+                    IList<ParsedClass> parsedClasses = css.GetClasses(className);
+                    if (parsedClasses.Count > 0)
+                    {
+                        string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
+                        await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
+                        _cache.Seen.Add(preParseHash, hash);
+                        return hash;
+                    }
+                    else
+                    {
+                        _cache.Seen.Add(preParseHash, string.Empty);
+                        return string.Empty;
+                    }
+                } 
                 else
                 {
-                    return string.Empty;
+                    return _cache.Seen[preParseHash];
                 }
+                
             }
             catch (StyledException e)
             {
@@ -72,17 +85,27 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css = css.RemoveComments().RemoveDuplicateSpaces();
-                IList<ParsedClass> parsedClasses = css.GetClasses(className);
-                if (parsedClasses.Count > 0)
+                string preParseHash = css.GetStableHashCodeString();
+                if (!_cache.Seen.ContainsKey(preParseHash))
                 {
-                    string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
-                    Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
-                    return hash;
+                    css = css.RemoveComments().RemoveDuplicateSpaces();
+                    IList<ParsedClass> parsedClasses = css.GetClasses(className);
+                    if (parsedClasses.Count > 0)
+                    {
+                        string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
+                        Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
+                        _cache.Seen.Add(preParseHash, hash);
+                        return hash;
+                    }
+                    else
+                    {
+                        _cache.Seen.Add(preParseHash, string.Empty);
+                        return string.Empty;
+                    }
                 }
                 else
                 {
-                    return string.Empty;
+                    return _cache.Seen[preParseHash];
                 }
             }
             catch (StyledException e)
@@ -115,10 +138,19 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
-                IList<ParsedClass> parsedClasses = css.GetClasses();
-                await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
-                return parsedClasses.First().Hash;
+                string preParseHash = css.GetStableHashCodeString();
+                if (!_cache.Seen.ContainsKey(preParseHash))
+                {
+                    css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
+                    IList<ParsedClass> parsedClasses = css.GetClasses();
+                    await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
+                    _cache.Seen.Add(preParseHash, parsedClasses.First().Hash);
+                    return parsedClasses.First().Hash;
+                }
+                else
+                {
+                    return _cache.Seen[preParseHash];
+                }
             }
             catch (StyledException e)
             {
@@ -134,10 +166,19 @@ namespace BlazorStyled.Internal
         {
             try
             {
-                css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
-                IList<ParsedClass> parsedClasses = css.GetClasses();
-                Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
-                return parsedClasses.First().Hash;
+                string preParseHash = css.GetStableHashCodeString();
+                if (!_cache.Seen.ContainsKey(preParseHash))
+                {
+                    css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
+                    IList<ParsedClass> parsedClasses = css.GetClasses();
+                    Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
+                    _cache.Seen.Add(preParseHash, parsedClasses.First().Hash);
+                    return parsedClasses.First().Hash;
+                }
+                else
+                {
+                    return _cache.Seen[preParseHash];
+                }
             }
             catch (StyledException e)
             {
@@ -183,11 +224,13 @@ namespace BlazorStyled.Internal
 
         public async Task ClearStylesAsync()
         {
+            _cache.Seen.Clear();
             await _scriptManager.ClearStyles(_id.GetStableHashCodeString(), _id);
         }
 
         public void ClearStyles()
         {
+            _cache.Seen.Clear();
             Task.Run(() => _scriptManager.ClearStyles(_id.GetStableHashCodeString(), _id));
         }
 
@@ -195,16 +238,24 @@ namespace BlazorStyled.Internal
         {
             string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
             string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
-            IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
-            await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
+            string preParseHash = uri.GetStableHashCodeString();
+            if (!_cache.Seen.ContainsKey(preParseHash))
+            {
+                IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
+                await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
+            }
         }
 
         public void AddGoogleFonts(List<GoogleFont> googleFonts)
         {
             string fontString = string.Join("|", googleFonts.Select(googleFont => googleFont.Name.Replace(' ', '+') + ':' + string.Join(",", googleFont.Styles)));
             string uri = $"//fonts.googleapis.com/css?family={fontString}&display=swap";
-            IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
-            Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
+            string preParseHash = uri.GetStableHashCodeString();
+            if (!_cache.Seen.ContainsKey(preParseHash))
+            {
+                IList<ParsedClass> parsedClasses = new List<ParsedClass> { new ParsedClass(uri) };
+                Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
+            }
         }
 
         public IStyled WithId(string id)
@@ -219,7 +270,7 @@ namespace BlazorStyled.Internal
                 id = DEFAULT;
                 priority = 100_000;
             }
-            return new StyledImpl(_scriptManager, id.Replace(" ", "-"), priority);
+            return new StyledImpl(_scriptManager, _cache, id.Replace(" ", "-"), priority);
         }
 
         public async Task SetThemeValueAsync(string name, string value)

@@ -1,6 +1,7 @@
 ﻿using BlazorStyled.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 
 namespace BlazorStyled
 {
@@ -19,7 +20,7 @@ namespace BlazorStyled
                 IsDebug = isDebug
             };
             serviceCollection.AddScoped<IConfig>(provider => config);
-            
+            serviceCollection.AddScoped<Cache>();
             serviceCollection.AddTransient<IStyled, StyledImpl>();
             serviceCollection.AddScoped<ScriptManager>();
             return serviceCollection;

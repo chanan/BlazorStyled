@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.ObjectPool;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,15 +10,39 @@ namespace BlazorStyled.Internal
     internal static class StringExtensions
     {
         private static readonly Random rnd = new Random();
+        private static readonly Regex comments = new Regex(@"\/\*[\s\S]*?\*\/", RegexOptions.Compiled);
+        private static readonly DefaultObjectPoolProvider objectPoolProvider = new DefaultObjectPoolProvider();
+        private static readonly ObjectPool<StringBuilder> stringBuilderPool = objectPoolProvider.CreateStringBuilderPool();
 
         public static string RemoveDuplicateSpaces(this string source)
         {
-            return Regex.Replace(source, @"\s+", " ").Trim();
+            int len = source.Length;
+            char[] src = source.ToCharArray();
+            int dstIdx = 0;
+            bool lastWasWS = false;
+            for (int i = 0; i < len; i++)
+            {
+                char ch = src[i];
+                if(Char.IsWhiteSpace(ch))
+                {
+                    if (lastWasWS == false)
+                    {
+                        src[dstIdx++] = ' ';
+                        lastWasWS = true;
+                    }
+                }
+                else
+                {
+                    lastWasWS = false;
+                    src[dstIdx++] = ch;
+                }
+            }
+            return new string(src, 0, dstIdx);
         }
 
         public static string RemoveComments(this string source)
         {
-            return Regex.Replace(source, @"\/\*[\s\S]*?\*\/", string.Empty).Trim();
+            return comments.Replace(source, string.Empty);
         }
 
         public static IList<ParsedClass> GetClasses(this string source)
@@ -89,9 +115,9 @@ namespace BlazorStyled.Internal
                     }
                     first = false;
                     main = main.Slice(endRules + 1);
-                    if(main.TrimStart().IndexOf('}') == 0)
+                    if (main.TrimStart().IndexOf('}') == 0)
                     {
-                        if(main.Length > 2)
+                        if (main.Length > 2)
                         {
                             main = main.Slice(2);
                         }
@@ -132,13 +158,13 @@ namespace BlazorStyled.Internal
             return ret;
         }
 
-        public static int GetStableHashCode(this string str)
+        public static uint GetStableHashCode(this string str)
         {
             if (str == null)
             {
                 return 0;
             }
-            unchecked
+            /*unchecked
             {
                 int hash1 = 5381;
                 int hash2 = hash1;
@@ -155,7 +181,8 @@ namespace BlazorStyled.Internal
                 }
 
                 return hash1 + (hash2 * 1566083941);
-            }
+            }*/
+            return To32BitFnv1aHash(str);
         }
 
         public static string GetStableHashCodeString(this string str)
@@ -174,7 +201,7 @@ namespace BlazorStyled.Internal
         {
             const string alphabet = "abcdefghijklmnopqrstuvwxyz";
             uint length = (uint)alphabet.Length;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = stringBuilderPool.Get();
             int pos = 0;
             do
             {
@@ -190,7 +217,44 @@ namespace BlazorStyled.Internal
                     }
                 }
             } while (i != 0);
-            return sb.ToString();
+            string ret = sb.ToString();
+            stringBuilderPool.Return(sb);
+            return ret;
+        }
+
+        private static uint To32BitFnv1aHash(this string toHash, bool separateUpperByte = false)
+        {
+            IEnumerable<byte> bytesToHash;
+
+            if (separateUpperByte)
+                bytesToHash = toHash.ToCharArray()
+                    .Select(c => new[] { (byte)((c - (byte)c) >> 8), (byte)c })
+                    .SelectMany(c => c);
+            else
+                bytesToHash = toHash.ToCharArray()
+                    .Select(Convert.ToByte);
+
+            //this is the actual hash function; very simple
+            uint hash = FnvConstants.FnvOffset32;
+
+            unchecked
+            {
+                foreach (var chunk in bytesToHash)
+                {
+                    hash ^= chunk;
+                    hash *= FnvConstants.FnvPrime32;
+                }
+            }
+           
+            return hash;
+        }
+
+        private static class FnvConstants
+        {
+            public static readonly uint FnvPrime32 = 16777619;
+            public static readonly ulong FnvPrime64 = 1099511628211;
+            public static readonly uint FnvOffset32 = 2166136261;
+            public static readonly ulong FnvOffset64 = 14695981039346656037;
         }
     }
 }

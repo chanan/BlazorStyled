@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Security;
+﻿using Microsoft.Extensions.ObjectPool;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BlazorStyled.Internal
 {
     internal class ParsedClass
     {
+        private static readonly DefaultObjectPoolProvider objectPoolProvider = new DefaultObjectPoolProvider();
+        private static readonly ObjectPool<StringBuilder> stringBuilderPool = objectPoolProvider.CreateStringBuilderPool();
+
         public ParsedClass(string name, string body)
         {
             if (name == null)
@@ -18,16 +21,16 @@ namespace BlazorStyled.Internal
                 IsDynamic = false;
                 Name = name;
             }
-            if ((IsMediaQuery && name.Contains("&")) ||  (IsMediaQuery & body.Contains("{")) ||IsKeyframes)
+            if ((IsMediaQuery && name.Contains("&")) || (IsMediaQuery & body.Contains("{")) || IsKeyframes)
             {
                 ChildClasses = new List<ParsedClass>();
                 body = null;
             }
-            else if(IsMediaQuery)
+            else if (IsMediaQuery)
             {
                 ChildClasses = new List<ParsedClass>();
             }
-            if (body !=null && (body.EndsWith("} }") || body.EndsWith("}}")))
+            if (body != null && (body.EndsWith("} }") || body.EndsWith("}}")))
             {
                 Declarations = ParseDeclerations(body.Substring(0, body.Length - 1));
                 IsLastChild = true;
@@ -55,7 +58,11 @@ namespace BlazorStyled.Internal
 
         private string ParseDeclerations(string body)
         {
-            if (body == null) return null;
+            if (body == null)
+            {
+                return null;
+            }
+
             string str = body.Trim();
             if (str.Contains("label"))
             {
@@ -90,7 +97,7 @@ namespace BlazorStyled.Internal
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = stringBuilderPool.Get();
             if (IsImportUri)
             {
                 sb.Append("@import url('").Append(ImportUri).Append("');");
@@ -123,12 +130,14 @@ namespace BlazorStyled.Internal
                 }
                 sb.Append('}');
             }
-            return sb.ToString();
+            string ret = sb.ToString();
+            stringBuilderPool.Return(sb);
+            return ret;
         }
 
         private string ToStringForHash()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = stringBuilderPool.Get();
             if (IsImportUri)
             {
                 sb.Append("@import url('").Append(ImportUri).Append("');");
@@ -160,7 +169,9 @@ namespace BlazorStyled.Internal
                 }
                 sb.Append('}');
             }
-            return sb.ToString();
+            string ret = sb.ToString();
+            stringBuilderPool.Return(sb);
+            return ret;
         }
 
         private string _hash = null;
