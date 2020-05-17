@@ -14,7 +14,7 @@ namespace BlazorStyled.Internal
         private readonly int _priority;
         private readonly Cache _cache;
 
-        public StyledImpl(ScriptManager scriptManager,Cache cache) : this(scriptManager, cache, DEFAULT, 100_000)
+        public StyledImpl(ScriptManager scriptManager, Cache cache) : this(scriptManager, cache, DEFAULT, 100_000)
         {
 
         }
@@ -32,7 +32,7 @@ namespace BlazorStyled.Internal
             try
             {
                 string preParseHash = css.GetStableHashCodeString();
-                if(!_cache.Seen.ContainsKey(preParseHash))
+                if (!_cache.Seen.ContainsKey(preParseHash))
                 {
                     css = css.RemoveComments().RemoveDuplicateSpaces();
                     IList<ParsedClass> parsedClasses = css.GetClasses(className);
@@ -40,20 +40,26 @@ namespace BlazorStyled.Internal
                     {
                         string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
                         await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
-                        _cache.Seen.Add(preParseHash, hash);
+                        if (!_cache.Seen.ContainsKey(preParseHash))
+                        {
+                            _cache.Seen.Add(preParseHash, hash);
+                        }
                         return hash;
                     }
                     else
                     {
-                        _cache.Seen.Add(preParseHash, string.Empty);
+                        if (!_cache.Seen.ContainsKey(preParseHash))
+                        {
+                            _cache.Seen.Add(preParseHash, string.Empty);
+                        }
                         return string.Empty;
                     }
-                } 
+                }
                 else
                 {
                     return _cache.Seen[preParseHash];
                 }
-                
+
             }
             catch (StyledException e)
             {
@@ -94,12 +100,18 @@ namespace BlazorStyled.Internal
                     {
                         string hash = parsedClasses.First().IsMediaQuery ? parsedClasses.First().ChildClasses.First().Name.Replace(".", string.Empty) : parsedClasses.First().Name;
                         Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
-                        _cache.Seen.Add(preParseHash, hash);
+                        if (!_cache.Seen.ContainsKey(preParseHash))
+                        {
+                            _cache.Seen.Add(preParseHash, hash);
+                        }
                         return hash;
                     }
                     else
                     {
-                        _cache.Seen.Add(preParseHash, string.Empty);
+                        if (!_cache.Seen.ContainsKey(preParseHash))
+                        {
+                            _cache.Seen.Add(preParseHash, string.Empty);
+                        }
                         return string.Empty;
                     }
                 }
@@ -144,7 +156,10 @@ namespace BlazorStyled.Internal
                     css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
                     IList<ParsedClass> parsedClasses = css.GetClasses();
                     await _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses);
-                    _cache.Seen.Add(preParseHash, parsedClasses.First().Hash);
+                    if (!_cache.Seen.ContainsKey(preParseHash))
+                    {
+                        _cache.Seen.Add(preParseHash, parsedClasses.First().Hash);
+                    }
                     return parsedClasses.First().Hash;
                 }
                 else
@@ -172,7 +187,10 @@ namespace BlazorStyled.Internal
                     css = "@keyframes &{" + css.RemoveComments().RemoveDuplicateSpaces() + "}";
                     IList<ParsedClass> parsedClasses = css.GetClasses();
                     Task.Run(() => _scriptManager.UpdatedParsedClasses(_id.GetStableHashCodeString(), _id, _priority, parsedClasses));
-                    _cache.Seen.Add(preParseHash, parsedClasses.First().Hash);
+                    if (!_cache.Seen.ContainsKey(preParseHash))
+                    {
+                        _cache.Seen.Add(preParseHash, parsedClasses.First().Hash);
+                    }
                     return parsedClasses.First().Hash;
                 }
                 else

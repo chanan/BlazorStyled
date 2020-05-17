@@ -42,7 +42,7 @@ namespace BlazorStyled.Internal
             string[] rules = parsedClasses.Select(c => c.ToString()).ToArray();
             foreach (string rule in rules)
             {
-                if(rule.IndexOf("<br") != -1)
+                if (rule.IndexOf("<br") != -1)
                 {
                     Console.WriteLine("rule");
                 }

@@ -2,7 +2,7 @@
 
 namespace BlazorStyled.Internal
 {
-    class Cache
+    internal class Cache
     {
         public readonly IDictionary<string, string> Seen = new SortedDictionary<string, string>();
     }

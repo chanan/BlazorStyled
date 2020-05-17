@@ -39,7 +39,7 @@ namespace BlazorStyled
         {
             IStyled styled = Id == null ? StyledService : Priority.HasValue ? StyledService.WithId(Id, Priority.Value) : StyledService.WithId(Id);
 
-            if(Classname == "blazor-styled-hide")
+            if (Classname == "blazor-styled-hide")
             {
                 Classname = null;
             }
@@ -52,41 +52,41 @@ namespace BlazorStyled
             {
                 if (IsKeyframes)
                 {
-                    classname = styled.Keyframes(content);
+                    classname = await styled.KeyframesAsync(content);
                 }
                 else if (Classname != null && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     //html elements
-                    styled.Css(ApplyPseudoClass(Classname), content);
+                    await styled.CssAsync(ApplyPseudoClass(Classname), content);
                 }
                 else if (MediaQuery != MediaQueries.None && ClassnameChanged.HasDelegate)
                 {
                     //If ClassnameChanged has a delegate then @bind-Classname was used and this is a "new" style
                     //Otherwise Classname was used and this an existing style which will be handled below
                     content = WrapWithMediaQuery("&{" + content + "}");
-                    classname = styled.Css(content);
+                    classname = await styled.CssAsync(content);
                 }
                 else if (Classname != null && MediaQuery != MediaQueries.None && !ClassnameChanged.HasDelegate && _previousClassname == null)
                 {
                     //Media query support for classes where an existing Classname already exists
                     content = WrapClass(ApplyPseudoClass(Classname), content);
-                    styled.Css(WrapWithMediaQuery(content));
+                    await styled.CssAsync(WrapWithMediaQuery(content));
                 }
                 else if (Classname == null && PseudoClass == PseudoClasses.None && MediaQuery != MediaQueries.None && _previousClassname == null)
                 {
                     //Media queries for html elements
-                    styled.Css(GetMediaQuery(), content);
+                    await styled.CssAsync(GetMediaQuery(), content);
                 }
                 else if (Classname != null && PseudoClass != PseudoClasses.None && MediaQuery == MediaQueries.None && _previousClassname == null)
                 {
                     content = WrapClass(ApplyPseudoClass(Classname), content);
-                    styled.Css(content);
+                    await styled.CssAsync(content);
                 }
                 else
                 {
                     if (PseudoClass == PseudoClasses.None && MediaQuery == MediaQueries.None)
                     {
-                        classname = styled.Css(content);
+                        classname = await styled.CssAsync(content);
                     }
                 }
                 if (ComposeAttributes == null || !ClassnameChanged.HasDelegate)
@@ -137,9 +137,8 @@ namespace BlazorStyled
                 {
                     if (ComposeAttributes[key] != null)
                     {
-                        string ifKey = key + "if";
-                        var kvp = ComposeAttributes.FirstOrDefault(x => String.Equals(x.Key, ifKey, StringComparison.InvariantCultureIgnoreCase));
-                        if(kvp.Key != null)
+                        KeyValuePair<string, object> kvp = ComposeAttributes.FirstOrDefault(x => x.Key.StartsWith(key, StringComparison.InvariantCultureIgnoreCase) && x.Key.EndsWith("if", StringComparison.InvariantCultureIgnoreCase));
+                        if (kvp.Key != null)
                         {
                             if (bool.TryParse(kvp.Value.ToString().ToString(), out bool result) && result)
                             {

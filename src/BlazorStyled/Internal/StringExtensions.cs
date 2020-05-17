@@ -23,7 +23,7 @@ namespace BlazorStyled.Internal
             for (int i = 0; i < len; i++)
             {
                 char ch = src[i];
-                if(Char.IsWhiteSpace(ch))
+                if (char.IsWhiteSpace(ch))
                 {
                     if (lastWasWS == false)
                     {
@@ -187,7 +187,7 @@ namespace BlazorStyled.Internal
 
         public static string GetStableHashCodeString(this string str)
         {
-            uint i = (uint)str.GetStableHashCode();
+            uint i = str.GetStableHashCode();
             return i.ConvertToBase64Arithmetic();
         }
 
@@ -222,31 +222,21 @@ namespace BlazorStyled.Internal
             return ret;
         }
 
-        private static uint To32BitFnv1aHash(this string toHash, bool separateUpperByte = false)
+        private static uint To32BitFnv1aHash(this string toHash)
         {
-            IEnumerable<byte> bytesToHash;
-
-            if (separateUpperByte)
-                bytesToHash = toHash.ToCharArray()
-                    .Select(c => new[] { (byte)((c - (byte)c) >> 8), (byte)c })
-                    .SelectMany(c => c);
-            else
-                bytesToHash = toHash.ToCharArray()
-                    .Select(Convert.ToByte);
-
-            //this is the actual hash function; very simple
-            uint hash = FnvConstants.FnvOffset32;
-
             unchecked
             {
-                foreach (var chunk in bytesToHash)
+                ReadOnlySpan<char> span = toHash.AsSpan();
+                uint hash = FnvConstants.FnvOffset32;
+                
+                foreach (char chunk in span)
                 {
                     hash ^= chunk;
                     hash *= FnvConstants.FnvPrime32;
                 }
+
+                return hash;
             }
-           
-            return hash;
         }
 
         private static class FnvConstants
