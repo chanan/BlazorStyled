@@ -29,7 +29,7 @@ namespace BlazorStyled
         private void OnLoadTaskCompleted(Task completedTask)
         {
             mLoadTasks.Remove(completedTask);
-            if (!mLoadTasks.Any())
+            if (mLoadTasks.Count == 0)
             {
                 SetLoading(false);
             }
