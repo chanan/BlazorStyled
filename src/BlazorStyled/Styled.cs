@@ -27,12 +27,20 @@ namespace BlazorStyled
         [Parameter] public EventCallback<string> ClassnameChanged { get; set; }
         [Parameter] public string GlobalStyle { get; set; }
         [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> ComposeAttributes { get; set; }
+        [CascadingParameter] public StyledGroupContext StyleGroupContext { get; set; }
 
         [Inject] private IStyled StyledService { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await ProcessParameters();
+            if (StyleGroupContext == null)
+            {
+                await ProcessParameters();
+            }
+            else
+            {
+                StyleGroupContext.RegisterLoadTask(ProcessParameters());
+            }
         }
 
         private async Task ProcessParameters()
