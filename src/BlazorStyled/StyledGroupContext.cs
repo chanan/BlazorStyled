@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace BlazorStyled
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly List<Task> mLoadTasks = new List<Task>();
+        private readonly ConcurrentDictionary<Task, object> mLoadTasks = new ConcurrentDictionary<Task, object>();
         public bool Loading { get; set; } = true;
         public event Action<bool> OnLoadingChanged;
 
@@ -23,12 +24,12 @@ namespace BlazorStyled
 
             SetLoading(true);
             task.ContinueWith(OnLoadTaskCompleted);
-            mLoadTasks.Add(task);
+            mLoadTasks.TryAdd(task, null);
         }
 
         private void OnLoadTaskCompleted(Task completedTask)
         {
-            mLoadTasks.Remove(completedTask);
+            mLoadTasks.TryRemove(completedTask, out _);
             if (mLoadTasks.Count == 0)
             {
                 SetLoading(false);
