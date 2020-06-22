@@ -20,7 +20,12 @@ namespace BlazorStyled
         protected override void OnInitialized()
         {
             StyleGroupContext.OnLoadingChanged += OnLoadingChanged;
-            base.OnInitialized();
+            StyleGroupContext.SetRendering(true);
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            StyleGroupContext.SetRendering(false);
         }
 
         private async void OnLoadingChanged(bool loading)
