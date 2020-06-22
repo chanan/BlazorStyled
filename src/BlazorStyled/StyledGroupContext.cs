@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 
@@ -9,9 +7,7 @@ namespace BlazorStyled
 {
     public class StyledGroupContext
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private readonly ConcurrentDictionary<Task, object> mLoadTasks = new ConcurrentDictionary<Task, object>();
+        private int mTaskCounter;
         public bool Loading { get; set; } = true;
         public event Action<bool> OnLoadingChanged;
 
@@ -24,13 +20,13 @@ namespace BlazorStyled
 
             SetLoading(true);
             task.ContinueWith(OnLoadTaskCompleted);
-            mLoadTasks.TryAdd(task, null);
+            Interlocked.Increment(ref mTaskCounter);
         }
 
-        private void OnLoadTaskCompleted(Task completedTask)
+        private void OnLoadTaskCompleted(Task _)
         {
-            mLoadTasks.TryRemove(completedTask, out _);
-            if (mLoadTasks.Count == 0)
+            Interlocked.Decrement(ref mTaskCounter);
+            if (mTaskCounter == 0)
             {
                 SetLoading(false);
             }
