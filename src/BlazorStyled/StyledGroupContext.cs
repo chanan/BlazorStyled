@@ -37,8 +37,8 @@ namespace BlazorStyled
             }
 
             SetLoading(true);
-            task.ContinueWith(OnLoadTaskCompleted);
             Interlocked.Increment(ref mTaskCounter);
+            task.ContinueWith(OnLoadTaskCompleted);
         }
 
         private void OnLoadTaskCompleted(Task _)
