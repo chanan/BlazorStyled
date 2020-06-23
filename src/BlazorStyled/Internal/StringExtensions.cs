@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.ObjectPool;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +10,6 @@ namespace BlazorStyled.Internal
     {
         private static readonly Random rnd = new Random();
         private static readonly Regex comments = new Regex(@"\/\*[\s\S]*?\*\/", RegexOptions.Compiled);
-        private static readonly DefaultObjectPoolProvider objectPoolProvider = new DefaultObjectPoolProvider();
-        private static readonly ObjectPool<StringBuilder> stringBuilderPool = objectPoolProvider.CreateStringBuilderPool();
 
         public static string RemoveDuplicateSpaces(this string source)
         {
@@ -148,7 +145,7 @@ namespace BlazorStyled.Internal
                             child.Name = child.Name.Replace("&", "." + child.Hash);
                         }
                         ret.Add(parsedClass);
-                    }
+                    } 
                 }
                 else
                 {
@@ -164,24 +161,6 @@ namespace BlazorStyled.Internal
             {
                 return 0;
             }
-            /*unchecked
-            {
-                int hash1 = 5381;
-                int hash2 = hash1;
-
-                for (int i = 0; i < str.Length && str[i] != '\0'; i += 2)
-                {
-                    hash1 = ((hash1 << 5) + hash1) ^ str[i];
-                    if (i == str.Length - 1 || str[i + 1] == '\0')
-                    {
-                        break;
-                    }
-
-                    hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
-                }
-
-                return hash1 + (hash2 * 1566083941);
-            }*/
             return To32BitFnv1aHash(str);
         }
 
@@ -201,7 +180,7 @@ namespace BlazorStyled.Internal
         {
             const string alphabet = "abcdefghijklmnopqrstuvwxyz";
             uint length = (uint)alphabet.Length;
-            StringBuilder sb = stringBuilderPool.Get();
+            StringBuilder sb = new StringBuilder();
             int pos = 0;
             do
             {
@@ -217,9 +196,7 @@ namespace BlazorStyled.Internal
                     }
                 }
             } while (i != 0);
-            string ret = sb.ToString();
-            stringBuilderPool.Return(sb);
-            return ret;
+            return sb.ToString();
         }
 
         private static uint To32BitFnv1aHash(this string toHash)

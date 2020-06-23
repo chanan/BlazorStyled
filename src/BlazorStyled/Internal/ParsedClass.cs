@@ -1,14 +1,10 @@
-﻿using Microsoft.Extensions.ObjectPool;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace BlazorStyled.Internal
 {
     internal class ParsedClass
     {
-        private static readonly DefaultObjectPoolProvider objectPoolProvider = new DefaultObjectPoolProvider();
-        private static readonly ObjectPool<StringBuilder> stringBuilderPool = objectPoolProvider.CreateStringBuilderPool();
-
         public ParsedClass(string name, string body)
         {
             if (name == null)
@@ -97,7 +93,7 @@ namespace BlazorStyled.Internal
 
         public override string ToString()
         {
-            StringBuilder sb = stringBuilderPool.Get();
+            StringBuilder sb = new StringBuilder();
             if (IsImportUri)
             {
                 sb.Append("@import url('").Append(ImportUri).Append("');");
@@ -130,14 +126,12 @@ namespace BlazorStyled.Internal
                 }
                 sb.Append('}');
             }
-            string ret = sb.ToString();
-            stringBuilderPool.Return(sb);
-            return ret;
+            return sb.ToString();
         }
 
         private string ToStringForHash()
         {
-            StringBuilder sb = stringBuilderPool.Get();
+            StringBuilder sb = new StringBuilder();
             if (IsImportUri)
             {
                 sb.Append("@import url('").Append(ImportUri).Append("');");
@@ -169,9 +163,7 @@ namespace BlazorStyled.Internal
                 }
                 sb.Append('}');
             }
-            string ret = sb.ToString();
-            stringBuilderPool.Return(sb);
-            return ret;
+            return sb.ToString();
         }
 
         private string _hash = null;

@@ -24,6 +24,9 @@ namespace BlazorStyled
         Task SetThemeValueAsync(string name, string value);
         void SetThemeValue(string name, string value);
         Task<IDictionary<string, string>> GetThemeValuesAsync();
+        IDictionary<string, string> GetThemeValues();
+        string GetThemeValue(string name);
+        Task<string> GetThemeValueAsync(string name);
         void SetGlobalStyle(string name, string classname);
         IDictionary<string, string> GetGlobalStyles();
         string GetGlobalStyle(string name);

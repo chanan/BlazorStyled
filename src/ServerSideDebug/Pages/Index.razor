@@ -1,12 +1,18 @@
 ﻿@page "/"
 @inject IStyled Styled
 
-<Styled @bind-Classname="@p">
-    color: red;
-</Styled>
+    <Styled @bind-Classname="@ExtraSmallOnlyClass">
+        @@media (min-width:0px) and (max-width:599.95px) {
+            &{
+                display: none;
+            }
+        }
+    </Styled>
 
-<p class="@p">This is a test</p>
+<div class="@ExtraSmallOnlyClass">
+    This is small
+</div>
 
 @code {
-    private string p;
+    private string ExtraSmallOnlyClass;
 }

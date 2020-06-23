@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorTypography" Version="1.5.0-alpha-02" />
+    <PackageReference Include="BlazorTypography" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>
