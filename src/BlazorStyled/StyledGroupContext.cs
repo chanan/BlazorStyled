@@ -1,18 +1,31 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 
 namespace BlazorStyled
 {
     public class StyledGroupContext
     {
         private int mTaskCounter;
-        public bool Loading { get; set; } = true;
+        public bool Loading { get; private set; } = true;
         public event Action<bool> OnLoadingChanged;
         private bool mRendering = true;
+        private CancellationTokenSource mDebouncerCancellationTokenSource;
+        public TimeSpan DebouncerTimeout { get; set; } = TimeSpan.Zero;
 
         public void SetRendering(bool value)
+        {
+            if (DebouncerTimeout > TimeSpan.Zero)
+            {
+                DebounceSetRendering(value);
+            }
+            else
+            {
+                SetRendering(value);
+            }
+        }
+
+        private void SetRenderingInternal(bool value)
         {
             if (value == mRendering)
             {
@@ -65,6 +78,25 @@ namespace BlazorStyled
 
             Loading = value;
             OnLoadingChanged?.Invoke(value);
+        }
+
+        private async Task DebouncerTask(bool value, CancellationToken token)
+        {
+            await Task.Delay(DebouncerTimeout);
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
+            SetRenderingInternal(value);
+        }
+
+        private void DebounceSetRendering(bool value)
+        {
+            mDebouncerCancellationTokenSource?.Cancel();
+            mDebouncerCancellationTokenSource = new CancellationTokenSource();
+            DebouncerTask(value, mDebouncerCancellationTokenSource.Token).ConfigureAwait(false);
         }
     }
 }
