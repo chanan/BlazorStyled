@@ -2,29 +2,31 @@
 @inject IStyled Styled
 @inject ITypography Typography
 
-<Typography Theme="Sutro" />
+    <StyledGroup>
 
-    <div class="@container" style="@visibility">
-        <StyledGoogleFont Name="Fira Code" Styles="400" />
+        <Typography Theme="Sutro" />
 
-        <Styled>
-            html {
+        <div class="@container" style="@visibility">
+            <StyledGoogleFont Name="Fira Code" Styles="400" />
+
+            <Styled>
+                html {
                 color: [colors.text-color];
-            }
-            body {
+                }
+                body {
                 background-color: [colors.background-color];
                 color: [colors.text-color];
-            }
-            p {
+                }
+                p {
                 color: [colors.text-color];
-            }
-            hr {
+                }
+                hr {
                 background-color: [colors.hr];
-            }
-        </Styled>
+                }
+            </Styled>
 
-        <Styled>
-            p > code {
+            <Styled>
+                p > code {
                 font-family: 'Fira Code', monospace;
                 margin-top: 20px;
                 color: [colors.code-text];
@@ -34,151 +36,152 @@
                 border-radius: 0.325rem;
                 margin: 0;
                 padding: 0.2rem 0.325rem;
-            }
-            code {
+                }
+                code {
                 line-height: 1.25em;
-            }
-            pre {
+                }
+                pre {
                 line-height: 1.25em;
-            }
-            h1 {
+                }
+                h1 {
                 margin-top: 0px;
-            }
-        </Styled>
+                }
+            </Styled>
 
-        <Styled @bind-Classname="@container">
-            label: container;
-            margin: auto;
-        </Styled>
+            <Styled @bind-Classname="@container">
+                label: container;
+                margin: auto;
+            </Styled>
 
-        <Styled Classname="@container" MediaQuery="MediaQueries.LargerThanTablet">
-            width: 1024px;
-            display: flex;
-        </Styled>
+            <Styled Classname="@container" MediaQuery="MediaQueries.LargerThanTablet">
+                width: 1024px;
+                display: flex;
+            </Styled>
 
-        <Styled @bind-Classname="@navColumn" MediaQuery="MediaQueries.LargerThanTablet">
-            label: nav-column;
-            @column
-            flex-shrink: 0;
-            position: fixed;
-            width: 225px;
-        </Styled>
+            <Styled @bind-Classname="@navColumn" MediaQuery="MediaQueries.LargerThanTablet">
+                label: nav-column;
+                @column
+                flex-shrink: 0;
+                position: fixed;
+                width: 225px;
+            </Styled>
 
-        <Styled @bind-Classname="@mainColumn" MediaQuery="MediaQueries.LargerThanTablet">
-            label: main-column;
-            @column
-            width: 876px;
-            margin-left: 225px;
-        </Styled>
+            <Styled @bind-Classname="@mainColumn" MediaQuery="MediaQueries.LargerThanTablet">
+                label: main-column;
+                @column
+                width: 876px;
+                margin-left: 225px;
+            </Styled>
 
-        <Styled @bind-Classname="@topNav">
-            label: top-nav;
-            padding: 20px 20px 20px 0px;
-        </Styled>
+            <Styled @bind-Classname="@topNav">
+                label: top-nav;
+                padding: 20px 20px 20px 0px;
+            </Styled>
 
-        <Styled Classname="@topNav" MediaQuery="MediaQueries.LargerThanTablet">
-            flex-shrink: 0;
-        </Styled>
+            <Styled Classname="@topNav" MediaQuery="MediaQueries.LargerThanTablet">
+                flex-shrink: 0;
+            </Styled>
 
-        <Styled @bind-Classname="@topMain">
-            label: top-main;
-            padding: 20px;
-        </Styled>
+            <Styled @bind-Classname="@topMain">
+                label: top-main;
+                padding: 20px;
+            </Styled>
 
-        <Styled Classname="@topMain" MediaQuery="MediaQueries.LargerThanTablet">
-            flex-shrink: 0;
-            display: inline-flex;
-            position: fixed;
-            width: 100%;
-        </Styled>
+            <Styled Classname="@topMain" MediaQuery="MediaQueries.LargerThanTablet">
+                flex-shrink: 0;
+                display: inline-flex;
+                position: fixed;
+                width: 100%;
+            </Styled>
 
-        <Styled @bind-Classname="@bottom">
-            label: content;
-            padding: 20px;
-        </Styled>
+            <Styled @bind-Classname="@bottom">
+                label: content;
+                padding: 20px;
+            </Styled>
 
-        <Styled Classname="@bottom" MediaQuery="MediaQueries.LargerThanTablet">
-            flex-grow: 1;
-        </Styled>
+            <Styled Classname="@bottom" MediaQuery="MediaQueries.LargerThanTablet">
+                flex-grow: 1;
+            </Styled>
 
-        <Styled @bind-Classname="@main" MediaQuery="MediaQueries.LargerThanTablet">
-            margin-top: 90px;
-        </Styled>
+            <Styled @bind-Classname="@main" MediaQuery="MediaQueries.LargerThanTablet">
+                margin-top: 90px;
+            </Styled>
 
-        <Styled @bind-Classname="@brand">
-            label: brand;
-            margin: 0;
-            margin-left: 16px;
-            padding: 0;
-            font-size: 24px;
-            color: #D36AC2;
-        </Styled>
+            <Styled @bind-Classname="@brand">
+                label: brand;
+                margin: 0;
+                margin-left: 16px;
+                padding: 0;
+                font-size: 24px;
+                color: #D36AC2;
+            </Styled>
 
-        <Styled @bind-Classname="@ul">
-            label: nav-ul;
-            display: inline-flex;
-            list-style: none;
-            margin: 0;
-        </Styled>
+            <Styled @bind-Classname="@ul">
+                label: nav-ul;
+                display: inline-flex;
+                list-style: none;
+                margin: 0;
+            </Styled>
 
-        <Styled @bind-Classname="@li">
-            label: nav-li;
-            margin-right: 20px;
-        </Styled>
+            <Styled @bind-Classname="@li">
+                label: nav-li;
+                margin-right: 20px;
+            </Styled>
 
-        <Styled GlobalStyle="ColorHotPink">
-            label: color-hotpink;
-            color: hotpink;
-        </Styled>
+            <Styled GlobalStyle="ColorHotPink">
+                label: color-hotpink;
+                color: hotpink;
+            </Styled>
 
 
-        <div class="@navColumn">
-            <div class="@topNav"><h1 class="@brand">BlazorStyled</h1></div>
-            <div class="@bottom">
-                <NavMenu />
+            <div class="@navColumn">
+                <div class="@topNav"><h1 class="@brand">BlazorStyled</h1></div>
+                <div class="@bottom">
+                    <NavMenu />
+                </div>
+            </div>
+            <div class="@mainColumn">
+                <div class="@topMain">
+                    <ul class="@ul">
+                        <li class="@li"><a href="https://github.com/chanan/BlazorStyled"><img src="https://img.shields.io/github/stars/chanan/BlazorStyled.svg?style=social&label=Stars" /></a></li>
+                        <li class="@li"><a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></li>
+                        <li class="@li"><Toggle /></li>
+                    </ul>
+                </div>
+                <div class="@bottom @main">
+                    @Body
+                </div>
             </div>
         </div>
-        <div class="@mainColumn">
-            <div class="@topMain">
-                <ul class="@ul">
-                    <li class="@li"><a href="https://github.com/chanan/BlazorStyled"><img src="https://img.shields.io/github/stars/chanan/BlazorStyled.svg?style=social&label=Stars" /></a></li>
-                    <li class="@li"><a href="https://www.nuget.org/packages/BlazorStyled/"><img src="https://img.shields.io/nuget/vpre/BlazorStyled.svg" /></a></li>
-                    <li class="@li"><Toggle /></li>
-                </ul>
-            </div>
-            <div class="@bottom @main">
-                @Body
-            </div>
-        </div>
-    </div>
+    </StyledGroup>
 
-@code {
-    private string container, navColumn, mainColumn, topNav, topMain, bottom, brand, ul, li, main;
+    @code {
+        private string container, navColumn, mainColumn, topNav, topMain, bottom, brand, ul, li, main;
 
-    private string column = @"
+        private string column = @"
             height: 100%;
             display: flex;
             flex-direction: column;
         ";
 
-    private string visibility = "visibility: hidden;";
+        private string visibility = "visibility: hidden;";
 
-    protected override void OnInitialized()
-    {
-        //Setup default theme (light)
-        Styled.SetThemeValue("colors.background-color", "#f0f0f0");
-        Styled.SetThemeValue("colors.text-color", "#994cc3");
-        Styled.SetThemeValue("colors.code-background", "rgba(117,63,131,0.07)");
-        Styled.SetThemeValue("colors.code-text", "#1B1D1D");
-        Styled.SetThemeValue("colors.hr", "hsla(0,0%,0%,0.2)");
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(firstRender)
+        protected override void OnInitialized()
         {
-            visibility = string.Empty;
-            await InvokeAsync(() => StateHasChanged()).ConfigureAwait(false);
+            //Setup default theme (light)
+            Styled.SetThemeValue("colors.background-color", "#f0f0f0");
+            Styled.SetThemeValue("colors.text-color", "#994cc3");
+            Styled.SetThemeValue("colors.code-background", "rgba(117,63,131,0.07)");
+            Styled.SetThemeValue("colors.code-text", "#1B1D1D");
+            Styled.SetThemeValue("colors.hr", "hsla(0,0%,0%,0.2)");
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                visibility = string.Empty;
+                await InvokeAsync(() => StateHasChanged()).ConfigureAwait(false);
+            }
         }
     }
-}
