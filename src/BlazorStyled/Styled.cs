@@ -1,6 +1,5 @@
 ﻿using BlazorStyled.Internal;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.ObjectPool;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +10,6 @@ namespace BlazorStyled
 {
     public class Styled : ComponentBase
     {
-        private static readonly DefaultObjectPoolProvider objectPoolProvider = new DefaultObjectPoolProvider();
-        private static readonly ObjectPool<StringBuilder> stringBuilderPool = objectPoolProvider.CreateStringBuilderPool();
-
         private string _previousClassname;
         private uint _previousHash;
 
@@ -104,7 +100,7 @@ namespace BlazorStyled
             }
             if (ComposeAttributes != null && ClassnameChanged.HasDelegate)
             {
-                StringBuilder sb = stringBuilderPool.Get();
+                StringBuilder sb = new StringBuilder();
                 if (classname != null)
                 {
                     sb.Append(classname).Append(' ');
@@ -113,7 +109,6 @@ namespace BlazorStyled
                 if (sb.Length != 0)
                 {
                     classname = sb.ToString().Trim();
-                    stringBuilderPool.Return(sb);
                     await NotifyChanged(classname);
                 }
             }
@@ -137,7 +132,7 @@ namespace BlazorStyled
 
         private string GetComposeClasses()
         {
-            StringBuilder sb = stringBuilderPool.Get();
+            StringBuilder sb = new StringBuilder();
 
             foreach (string key in ComposeAttributes.Keys)
             {
@@ -160,9 +155,7 @@ namespace BlazorStyled
                     }
                 }
             }
-            string ret = sb.ToString();
-            stringBuilderPool.Return(sb);
-            return ret;
+            return sb.ToString();
         }
 
         private async Task NotifyChanged(string classname)

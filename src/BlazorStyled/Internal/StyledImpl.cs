@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -304,6 +305,23 @@ namespace BlazorStyled.Internal
         public async Task<IDictionary<string, string>> GetThemeValuesAsync()
         {
             return await _scriptManager.GetThemeValues(_id.GetStableHashCodeString());
+        }
+
+        public IDictionary<string, string> GetThemeValues()
+        {
+            return Task.Run(() => GetThemeValues()).Result;
+        }
+
+        public string GetThemeValue(string name)
+        {
+            IDictionary<string, string> themeValues = GetThemeValues();
+            return themeValues[name];
+        }
+
+        public async Task<string> GetThemeValueAsync(string name)
+        {
+            IDictionary<string, string> themeValues = await GetThemeValuesAsync();
+            return themeValues[name];
         }
 
         public string GetGlobalStyle(string name)

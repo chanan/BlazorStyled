@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorPrettyCode" Version="1.5.0-alpha-03" />
-    <PackageReference Include="BlazorTypography" Version="1.5.0-alpha-05" />
+    <PackageReference Include="BlazorPrettyCode" Version="1.5.0" />
+    <PackageReference Include="BlazorTypography" Version="1.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.4" />
     <PackageReference Include="Polished" Version="1.0.0" />

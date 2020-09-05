@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
     <LangVersion>8.0</LangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PackageId>BlazorStyled</PackageId>
-    <Version>3.0.0-alpha-07</Version>
+    <Version>3.0.1-alpha-01</Version>
     <Authors>Chanan Braunstein</Authors>
     <Title>BlazorStyled</Title>
     <Description>CSS in Blazor Components</Description>
@@ -14,11 +14,8 @@
     <PackageTags>blazor;css;styled-components</PackageTags>
     <RepositoryUrl>https://github.com/chanan/BlazorStyled</RepositoryUrl>
   </PropertyGroup>
-
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.4" />
   </ItemGroup>
 
 </Project>
