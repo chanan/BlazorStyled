@@ -5,7 +5,7 @@
     <LangVersion>8.0</LangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PackageId>BlazorStyled</PackageId>
-    <Version>3.1-rc1</Version>
+    <Version>3.1.0</Version>
     <Authors>Chanan Braunstein</Authors>
     <Title>BlazorStyled</Title>
     <Description>CSS in Blazor Components</Description>
